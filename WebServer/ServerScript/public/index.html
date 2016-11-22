@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>ITE WebGL</title>
+    <link rel="SHORTCUT ICON" href="favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="stylesheets/jquery.mobile-1.4.3.min.css">
+
+    <script src="javascripts/libs/jquery-2.1.1.min.js"></script>
+    <script src="javascripts/libs/jquery.mobile-1.4.3.min.js"></script>
+    <script src="javascripts/libs/gl-matrix-min.js"></script>
+    <script src="javascripts/libs/hand.minified-1.3.8.js"></script>
+
+    <script src="javascripts/initWebGL.js"></script>
+    <script src="javascripts/modelCmds.js"></script>
+    <script src="javascripts/PostProcessor.js"></script>
+    <script src="javascripts/Interfaces.js"></script>
+    <script src="javascripts/main.js"></script>
+    <script src="javascripts/Renderer.js"></script>
+    <script src="javascripts/Gui.js"></script>
+    <script src="javascripts/Geometries.js"></script>
+
+</head>
+<body style="margin:0; padding:0; width:100%; height:100%; overflow:hidden">
+    <script>
+        $(window).ready(function () {
+            main();
+        });
+    </script>
+
+    <div data-role="page" id="mainPage">
+        <div data-role="header" data-position="right" data-fullscreen="true" id="header">
+            <h1 id="plotTitle">ITE WebGL</h1>
+            <a href="#leftPanel" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Open Panel</a>
+            <a href="#rightPanel" class="ui-btn ui-icon-arrow-r ui-btn-icon-right">Open Panel</a>
+        </div>
+
+
+        <canvas style="margin:0; padding:0;" id="webgl"></canvas>
+
+
+        <div data-role="panel" data-swipe-close="false" data-display="overlay" data-dismissible="false" id="leftPanel">
+            <a href="#mainPage" data-rel="close" class="ui-btn ui-shadow ui-corner-all ui-btn-a ui-btn-icon-left ui-icon-back">Close panel</a>
+
+            <button class="ui-btn ui-corner-all" id="btnFullScreen">FullScreen</button>
+
+            <div data-role="controlgroup" data-type="horizontal">
+                <button id="btnReset" data-role="ui-btn">Reset View</button>
+                <button id="btnLight" data-role="ui-btn">Light on/off</button>
+            </div>
+
+                <label for="xPosi">x Position</label>
+                <input type="range" name="points" id="xPosi" value="0" min="-100" max="100" step="0.1" data-highlight="true" />
+
+                <label for="yPosi">y Position</label>
+                <input type="range" name="points" id="yPosi" value="0" min="-100" max="100" step="0.1" data-highlight="true" />
+
+                <label for="zPosi">z Position</label>
+                <input type="range" name="points" id="zPosi" value="0" min="-100" max="100" step="0.1" data-highlight="true" />
+
+        </div>
+
+        <div data-role="panel" data-swipe-close="false" data-display="overlay" data-dismissible="false" data-position="right" id="rightPanel">
+
+            <a href="#mainPage" data-rel="close" class="ui-btn  ui-shadow ui-corner-all ui-btn-a ui-btn-icon-right ui-icon-back">Close panel</a>
+
+            <label for="modelList">Select Model File</label>
+            <select name="modelSelector" id="modelList">
+                <option value="start">Select Model</option>
+            </select>
+
+            <label for="PlotGroup">Select PlotGroup</label>
+            <select name="PlotGroupSelecter" id="resultList">
+                <option value="start">Select PlotGroup</option>
+            </select>
+
+            <p>Configure Plots</p>
+
+            <ul id="plotList">
+            </ul>
+
+
+        </div>
+    
+        <div data-role="panel" data-swipe-close="false" data-display="overlay" data-dismissible="false" data-position="right" id="panelPlotConfig">
+            <a href="#rightPanel" data-rel="close" class="ui-btn  ui-shadow ui-corner-all ui-btn-a ui-btn-icon-right ui-icon-back">Back</a>
+            <p>Plot Configuration</p>
+            <p id="plotType"></p>
+            <fieldset data-role="controlgroup" class="template" id="tmpVisible">
+                <label class="template" for="check1"></label>
+                <input class="template" type="checkbox" id="check1" />
+            </fieldset>
+
+            <fieldset data-role="controlgroup" class="template" id="tmpScale">
+                <label class="template" for="scale1">Scalation</label>
+                <input class="template" type="range" id="scale1" value="100" min="0" max="200" step="0.1" data-highlight="true">
+            </fieldset>
+
+            <fieldset data-role="controlgroup" class="template" id="tmpColor">
+                <label class="template" for="selector1">Select Color</label>
+                <select class="template" name="tmpSelector" id="selector1">
+                    <option value="start">Select Color</option>
+                </select>
+            </fieldset>
+
+            <fieldset data-role="controlgroup" class="template" id="tmpTexture">
+                <label class="template" for="selector2">Select Colortable</label>
+                <select class="template" name="tmpSelector" id="selector2">
+                    <option value="start">Select Colortable</option>
+                </select>
+            </fieldset>
+
+        </div>
+
+
+        <div id="templates">
+            <ul id="plotList">
+                <li class="template" id="tmpListItem"><a></a></li>
+            </ul>
+        </div>
+
+    </div>
+
+
+
+
+    <div data-role="page" data-dialog="true" id="problemInfo">
+        <div data-role="header">
+            <h1>Some problems occur...</h1>
+        </div>
+
+        <div data-role="main" class="ui-content" id="browserSupport">
+            <p>Your Browser doesn't support:</p>
+        </div>
+        <div data-role="footer">
+            <a href="#mainPage" class="ui-btn">OK</a>
+        </div>
+    </div>
+
+    <div data-role="page" data-dialog="true" id="errorWindow">
+        <div data-role="header">
+            <h1>An Error has occured...</h1>
+        </div>
+        <div data-role="main" class="ui-content" id="errorMain">
+
+        </div>
+        <div data-role="footer">
+            <a href="#mainPage" class="ui-btn">OK</a>
+        </div>
+
+    </div>
+
+
+
+
+</body>
+</html>

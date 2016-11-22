@@ -1,0 +1,8 @@
+[
+    { "modelId": "inductor_3d_2015-12-01 18-56-26", "name": "Root: inductor_3d.mph (root)" },
+    { "modelId": "capacitor_ac_2015-12-01 18-50-09", "name": "Root: capacitor_ac.mph (root)" },
+    { "modelId": "capacitor_fringing_fields_2015-12-01 18-51-10", "name": "Root: capacitor_fringing_fields.mph (root)" },
+    { "modelId": "capacitor_tunable_2015-12-01 18-52-37", "name": "Root: capacitor_tunable.mph (root)" },
+    { "modelId": "coil_above_plate_2015-12-01 18-54-11", "name": "Root: coil_above_plate.mph (root)" },
+    { "modelId": "inductive_heating_2015-12-01 18-54-49", "name": "Root: inductive_heating.mph (root)" }
+]
