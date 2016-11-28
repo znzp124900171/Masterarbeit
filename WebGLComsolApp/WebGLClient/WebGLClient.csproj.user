@@ -3,6 +3,8 @@
   <PropertyGroup>
     <ReferencePath>
     </ReferencePath>
+    <ToolsVersionPromptShown>2.0</ToolsVersionPromptShown>
+    <UseIISExpress>true</UseIISExpress>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>

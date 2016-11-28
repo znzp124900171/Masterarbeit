@@ -3,7 +3,8 @@
         "target": "ES5",
         "module": "amd",
         "removeComments": true,
-        "listFiles":  true
+      "listFiles": true,
+      "outDir": "../WebGL_Nan"
     },
     "files": [
         "./javascripts/main.ts",

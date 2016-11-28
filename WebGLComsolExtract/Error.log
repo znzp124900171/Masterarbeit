@@ -33,3 +33,33 @@ Stack trace:
 	at java.lang.Thread.run(Unknown Source)
 
 
+
+2016.11.28 15:34:42  Error Stack Trace: 
+
+java.lang.Exception: java.lang.NoClassDefFoundError: com/comsol/model/util/ModelUtil
+	at visual.TreeFrame$GuiThread$1.uncaughtException(TreeFrame.java:47)
+	at java.lang.Thread.dispatchUncaughtException(Unknown Source)
+Caused by: java.lang.NoClassDefFoundError: com/comsol/model/util/ModelUtil
+	at visual.ComsolData.connectToComsol(ComsolData.java:377)
+	at visual.TreeFrame$32.run(TreeFrame.java:678)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.ClassNotFoundException: com.comsol.model.util.ModelUtil
+	at java.net.URLClassLoader.findClass(Unknown Source)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Unknown Source)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	... 3 more
+
+
+
+2016.11.28 15:34:50  Error Stack Trace: 
+
+java.lang.Exception: java.lang.NoClassDefFoundError: com/comsol/model/util/ModelUtil
+	at visual.TreeFrame$GuiThread$1.uncaughtException(TreeFrame.java:47)
+	at java.lang.Thread.dispatchUncaughtException(Unknown Source)
+Caused by: java.lang.NoClassDefFoundError: com/comsol/model/util/ModelUtil
+	at visual.ComsolData.connectToComsol(ComsolData.java:377)
+	at visual.TreeFrame$23.run(TreeFrame.java:543)
+	at java.lang.Thread.run(Unknown Source)
+
+
