@@ -1,0 +1,35 @@
+
+2015.11.26 16:40:55  Error Stack Trace: 
+
+java.text.ParseException: Unparseable date: "Mar 27, 2015 9:27:34 PM"
+	at java.text.DateFormat.parse(Unknown Source)
+	at visual.StringLib.stringToDate(StringLib.java:30)
+	at visual.ComsolModel.<init>(ComsolModel.java:46)
+	at visual.ComsolData.loadModel(ComsolData.java:262)
+	at visual.TreeFrame.loadModelFromComsol(TreeFrame.java:872)
+	at visual.TreeFrame.access$27(TreeFrame.java:862)
+	at visual.TreeFrame$27.run(TreeFrame.java:601)
+	at java.lang.Thread.run(Unknown Source)
+
+
+
+2015.12.01 09:09:36  Error Stack Trace: 
+
+Exception:
+	java.net.ConnectException: Connection refused: no further information
+	(rethrown as com.comsol.util.exceptions.FlException)
+Messages:
+	Failed to connect to server
+
+	Connection refused: no further information
+
+Stack trace:
+	at sun.nio.ch.SocketChannelImpl.checkConnect(Native Method)
+	at sun.nio.ch.SocketChannelImpl.finishConnect(Unknown Source)
+	at org.eclipse.jetty.io.nio.SelectorManager$SelectSet.doSelect(SelectorManager.java:628)
+	at org.eclipse.jetty.io.nio.SelectorManager$1.run(SelectorManager.java:290)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:608)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:543)
+	at java.lang.Thread.run(Unknown Source)
+
+

@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{65E44894-567B-4D14-A430-14E4B248777E}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <OutputPath>bin</OutputPath>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TypeScriptToolsVersion>1.0</TypeScriptToolsVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+    <Content Include="index.html" />
+    <TypeScriptCompile Include="javascripts\Geometries.ts" />
+    <Content Include="javascripts\libs\gl-matrix-min.js" />
+    <Content Include="javascripts\libs\gl-matrix.js" />
+    <Content Include="javascripts\libs\hand.minified-1.3.8.js" />
+    <Content Include="javascripts\libs\jquery-2.1.1.min.js" />
+    <Content Include="javascripts\libs\jquery.mobile-1.4.3.min.js" />
+    <Content Include="stylesheets\images\ajax-loader.gif" />
+    <Content Include="stylesheets\jquery.mobile-1.4.3.min.css" />
+    <Content Include="web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="javascripts\libs\jquery-2.1.1.min.map" />
+    <Content Include="javascripts\libs\jquery.mobile-1.4.3.min.map" />
+    <Content Include="tsconfig.json" />
+    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04.json" />
+    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg1.0.0.bin" />
+    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg1\arwv1.0.0.bin" />
+    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg1\slc1.0.0.bin" />
+    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg1\surf1.0.0.bin" />
+    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg2.0.0.bin" />
+    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg2\str1.0.0.bin" />
+    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg2\str2.0.0.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56.json" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg1.0.0.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg1\mslc1.0.0.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg1\mslc1.0.1.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg1\mslc1.0.2.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg2.0.0.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg2\vol1.0.0.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg2\vol2.0.0.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg3.0.0.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg3\mslc1.0.0.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg3\mslc1.0.1.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg3\mslc1.0.2.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg4.0.0.bin" />
+    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg4\surf1.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55.json" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg1.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg1\mslc1.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg1\mslc1.0.1.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg1\mslc1.0.2.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg2.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg2\vol1.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg2\vol2.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg3.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg3\mslc1.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg3\mslc1.0.1.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg3\mslc1.0.2.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg4.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg4\surf1.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg7.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg7\arwv1.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg8.0.0.bin" />
+    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg8\str1.0.0.bin" />
+    <Content Include="visual\list.json" />
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="javascripts\Gui.ts" />
+    <TypeScriptCompile Include="javascripts\initWebGL.ts" />
+    <TypeScriptCompile Include="javascripts\Interfaces.ts" />
+    <TypeScriptCompile Include="javascripts\libs\gl-matrix.d.ts" />
+    <TypeScriptCompile Include="javascripts\libs\jquery.d.ts" />
+    <TypeScriptCompile Include="javascripts\main.ts" />
+    <TypeScriptCompile Include="javascripts\modelCmds.ts" />
+    <TypeScriptCompile Include="javascripts\PostProcessor.ts" />
+    <TypeScriptCompile Include="javascripts\Renderer.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>WebGLClient</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets')" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>63807</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:63807/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <FilesToIncludeForPublish>AllFilesInTheProject</FilesToIncludeForPublish>
+    <ExcludeGeneratedDebugSymbol>false</ExcludeGeneratedDebugSymbol>
+    <PublishDatabases>false</PublishDatabases>
+    <IncludeIisSettings>false</IncludeIisSettings>
+    <TypeScriptModuleKind>amd</TypeScriptModuleKind>
+    <TypeScriptGeneratesDeclarations>True</TypeScriptGeneratesDeclarations>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+</Project>

@@ -1,0 +1,12 @@
+\\ITEPC115\Benutzerdaten\Datenaustausch\hiwi Sebastian\Visual Studio 2013\WebGLClient\WebGLClient\bin\WebGLClient.dll.config
+\\ITEPC115\Benutzerdaten\Datenaustausch\hiwi Sebastian\Visual Studio 2013\WebGLClient\WebGLClient\bin\WebGLClient.dll
+\\ITEPC115\Benutzerdaten\Datenaustausch\hiwi Sebastian\Visual Studio 2013\WebGLClient\WebGLClient\bin\WebGLClient.pdb
+\\ITEPC115\Benutzerdaten\Datenaustausch\hiwi Sebastian\Visual Studio 2013\WebGLClient\WebGLClient\obj\Debug\WebGLClient.csprojResolveAssemblyReference.cache
+\\ITEPC115\Benutzerdaten\Datenaustausch\hiwi Sebastian\Visual Studio 2013\WebGLClient\WebGLClient\obj\Debug\WebGLClient.dll
+\\ITEPC115\Benutzerdaten\Datenaustausch\hiwi Sebastian\Visual Studio 2013\WebGLClient\WebGLClient\obj\Debug\WebGLClient.pdb
+C:\Users\itesegr\Documents\Visual Studio 2013\Projects\WebGLClient_gekoProAg\WebGLClient\obj\Debug\WebGLClient.dll
+C:\Users\itesegr\Documents\Visual Studio 2013\Projects\WebGLClient_gekoProAg\WebGLClient\obj\Debug\WebGLClient.pdb
+C:\Users\itesegr\Documents\Visual Studio 2013\Projects\WebGLClient_gekoProAg\WebGLClient\bin\WebGLClient.dll.config
+C:\Users\itesegr\Documents\Visual Studio 2013\Projects\WebGLClient_gekoProAg\WebGLClient\bin\WebGLClient.dll
+C:\Users\itesegr\Documents\Visual Studio 2013\Projects\WebGLClient_gekoProAg\WebGLClient\bin\WebGLClient.pdb
+C:\Users\itesegr\Documents\Visual Studio 2013\Projects\WebGLClient_gekoProAg\WebGLClient\obj\Debug\WebGLClient.csprojResolveAssemblyReference.cache

@@ -1,0 +1,18 @@
+﻿{
+    "compilerOptions": {
+        "target": "ES5",
+        "module": "amd",
+        "removeComments": true,
+        "listFiles":  true
+    },
+    "files": [
+        "./javascripts/main.ts",
+        "./javascripts/initWebGL.ts",
+        "./javascripts/Interfaces.ts",
+        "./javascripts/modelCmds.ts",
+        "./javascripts/Gui.ts",
+        "./javascripts/Geometries.ts",
+        "./javascripts/Renderer.ts",
+        "./javascripts/PostProcessor.ts"
+    ]
+}
