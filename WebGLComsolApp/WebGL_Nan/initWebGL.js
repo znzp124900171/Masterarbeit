@@ -11,8 +11,8 @@ var GL_ATTR_POS = "position";
 var GL_ATTR_NRM = "normal";
 var GL_ATTR_COL = "color";
 var GL_ATTR_DEF_X = "deformX";
-var GL_ATTR_DEF_Y = "deformX";
-var GL_ATTR_DEF_Z = "deformX";
+var GL_ATTR_DEF_Y = "deformY";
+var GL_ATTR_DEF_Z = "deformZ";
 var ShaderProgram = (function () {
     function ShaderProgram() {
     }
