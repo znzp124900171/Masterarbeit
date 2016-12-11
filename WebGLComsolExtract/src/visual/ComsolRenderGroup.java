@@ -11,7 +11,6 @@ import JSONParser.JSONObject;
 import com.comsol.model.ResultFeature;
 import visual.RenderAttributes.Attribute;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 

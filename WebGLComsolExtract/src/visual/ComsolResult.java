@@ -16,7 +16,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  * Object with all Properties of a Comsol Result
  * should only be constructed by the Parent Classes ComsolModel.
- * Contains Childs of ComsolRenderData
+ * Contains Children of ComsolRenderData
  * 
  */
 public class ComsolResult implements ITreeNode{
@@ -33,14 +33,14 @@ public class ComsolResult implements ITreeNode{
     private String tag;             // tag from COMSOL
     
     private String infoText;     // contains all information as String
-    private String name;            // Diplay Name from Comsol
+    private String name;            // Display Name from Comsol
     
     private boolean hasData;        // has this Result binary Data in Form of ComsolRenderData
     private ComsolRenderGroup[] renderGroup; //the rendergroups containing the renderdata
 
-    private boolean isPlotGroup;    // is this Result a Plotgroup which contains Childs of ComsolResult
+    private boolean isPlotGroup;    // is this Result a Plotgroup which contains Children of ComsolResult
     private float[] boundBox;      // boundBox of the geometry
-    private ComsolResult[] feature; // Childs of ComsolResult; is null, when isPlotGroup is false
+    private ComsolResult[] feature; // Children of ComsolResult; is null, when isPlotGroup is false
 
     private boolean isExportable;   // can this Result be exported to WebGL (only 3D is allowed)
     
@@ -57,6 +57,7 @@ public class ComsolResult implements ITreeNode{
     private static final String TYPE_LINES = "Lines"; 
 
     //Points type = 1
+    private static final String TYPE_PLOTGROUP2D = "PlotGroup2D";
     private static final String TYPE_ARROW_VOLUME = "ArrowVolume";
     private static final String TYPE_ARROW_SURFACE = "ArrowSurface";
     private static final String TYPE_ARROW_LINE = "ArrowLine";    
@@ -74,6 +75,8 @@ public class ComsolResult implements ITreeNode{
         this.type = result.getType();
         this.tag = result.tag();
         
+        System.out.println("getSDim: " + result.getSDim());
+        
         if(result.getSDim() != 3){
           this.isExportable = false;
           setupInfoText();
@@ -89,6 +92,8 @@ public class ComsolResult implements ITreeNode{
         this.isExportable = false; 
         this.hasData = false;
         this.isPlotGroup = result.isPlotGroup();
+        System.out.println("isPlotGroup: " + result.isPlotGroup());
+        
 
         int nGroup = result.getRenderGroups(); // number of RenderGroups
         
@@ -130,7 +135,7 @@ public class ComsolResult implements ITreeNode{
         else if(type.equals(TYPE_PLOTGROUP3D) || type.equals(TYPE_STREAMLINES) || type.equals(TYPE_LINES))
             return 2;
             
-        else if(type.equals(TYPE_ARROW_VOLUME) || type.equals(TYPE_ARROW_SURFACE) || type.equals(TYPE_ARROW_LINE))
+        else if(type.equals(TYPE_PLOTGROUP2D) || type.equals(TYPE_ARROW_VOLUME) || type.equals(TYPE_ARROW_SURFACE) || type.equals(TYPE_ARROW_LINE))
             return 1;
         
         else

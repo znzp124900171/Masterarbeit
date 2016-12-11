@@ -67,68 +67,24 @@ public class TreeFrame extends javax.swing.JFrame implements IGuiStatusExchange{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        DialogIPSetup = new javax.swing.JDialog();
+        // Dialog of IP Setup
+        DialogIPSetup = new javax.swing.JDialog(); // init dialog window
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         ButtonIPSetupCancel = new javax.swing.JButton();
         ButtonIPSetupConnect = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jCheckBoxStandAlone = new javax.swing.JCheckBox();
-        DialogLoadModels = new javax.swing.JDialog();
-        ScrollPanelActiveModels = new javax.swing.JScrollPane();
-        ListActiveModels = new javax.swing.JList();
-        ButtonLoadModel = new javax.swing.JButton();
-        ButtonCancel = new javax.swing.JButton();
-        ButtonUnload = new javax.swing.JButton();
-        DialogNotSaved = new javax.swing.JDialog();
-        DialogProgressBar = new javax.swing.JDialog();
-        ProgressBarDialog = new javax.swing.JProgressBar();
-        LabelProgress = new javax.swing.JLabel();
-        ButtonCancelAction = new javax.swing.JButton();
-        ScrollPaneLeftTree = new javax.swing.JScrollPane();
-        LeftTree = new javax.swing.JTree();
-        ScrollPanelLeftText = new javax.swing.JScrollPane();
-        LeftTextArea = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        RightTextArea = new javax.swing.JTextArea();
-        LabelWebGL = new javax.swing.JLabel();
-        LabelComsol = new javax.swing.JLabel();
-        ScrollPanelRightTree = new javax.swing.JScrollPane();
-        RightTree = new javax.swing.JTree();
-        LabelComsolConnection = new javax.swing.JLabel();
-        LabelConfigPath = new javax.swing.JLabel();
-        LabelError = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        MenuFile = new javax.swing.JMenu();
-        MenuItemNew = new javax.swing.JMenuItem();
-        MenuItemOpenConfig = new javax.swing.JMenuItem();
-        MenuItemOpenModel = new javax.swing.JMenuItem();
-        MenuItemShowModels = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        MenuItemSave = new javax.swing.JMenuItem();
-        MenuItemSaveAs = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        MenuItemExit = new javax.swing.JMenuItem();
-        MenuEdit = new javax.swing.JMenu();
-        MenuItemAddModel = new javax.swing.JMenuItem();
-        jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        MenuItemDeleteLeft = new javax.swing.JMenuItem();
-        MenuItemDeleteRight = new javax.swing.JMenuItem();
-        jSeparator4 = new javax.swing.JPopupMenu.Separator();
-        CheckBoxStaticServer = new javax.swing.JCheckBoxMenuItem();
-        MenuConnection = new javax.swing.JMenu();
-        MenuItemQuickCon = new javax.swing.JMenuItem();
-        MenuItemCon = new javax.swing.JMenuItem();
-        MenuItemDisCon = new javax.swing.JMenuItem();
-
-        DialogIPSetup.setBounds(new java.awt.Rectangle(400, 400, 440, 200));
+        jTextField1 = new javax.swing.JTextField(); // input ip addresse
+        jTextField2 = new javax.swing.JTextField();	// input port number
+        jCheckBoxStandAlone = new javax.swing.JCheckBox(); // set to standalone
+        
+        DialogIPSetup.setBounds(new java.awt.Rectangle(400, 400, 440, 200)); // position is relative to the parent JPanel
         DialogIPSetup.setResizable(false);
 
         jLabel1.setText("IP Adress");
-
         jLabel4.setText("Port Number");
+        jTextField1.setText("LOCALHOST");
+        jTextField2.setText("2036");
+        jCheckBoxStandAlone.setText("Standalone");
 
         ButtonIPSetupCancel.setText("Cancel");
         ButtonIPSetupCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -144,11 +100,6 @@ public class TreeFrame extends javax.swing.JFrame implements IGuiStatusExchange{
             }
         });
 
-        jTextField1.setText("LOCALHOST");
-
-        jTextField2.setText("2036");
-
-        jCheckBoxStandAlone.setText("Standalone");
 
         javax.swing.GroupLayout DialogIPSetupLayout = new javax.swing.GroupLayout(DialogIPSetup.getContentPane());
         DialogIPSetup.getContentPane().setLayout(DialogIPSetupLayout);
@@ -191,14 +142,32 @@ public class TreeFrame extends javax.swing.JFrame implements IGuiStatusExchange{
                     .addComponent(ButtonIPSetupConnect))
                 .addContainerGap())
         );
-
+        
+        DialogLoadModels = new javax.swing.JDialog();
+        
+        
+        
+        LabelError = new javax.swing.JLabel();
+        jProgressBar1 = new javax.swing.JProgressBar();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        
+       
+        
+        
         DialogLoadModels.setBounds(new java.awt.Rectangle(400, 400, 400, 400));
         DialogLoadModels.setResizable(false);
-
-        ListActiveModels.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        
+        // show active COMSOL models
+        ScrollPanelActiveModels = new javax.swing.JScrollPane();
+        ListActiveModels = new javax.swing.JList();
+        ButtonLoadModel = new javax.swing.JButton();
+        ButtonCancel = new javax.swing.JButton();
+        ButtonUnload = new javax.swing.JButton();
+        
+        ListActiveModels.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); // only one list index can be selected at a time
         ListActiveModels.setToolTipText("");
         ListActiveModels.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        ScrollPanelActiveModels.setViewportView(ListActiveModels);
+        ScrollPanelActiveModels.setViewportView(ListActiveModels); // load the list to the scroll panel
 
         ButtonLoadModel.setText("Load Model");
         ButtonLoadModel.addActionListener(new java.awt.event.ActionListener() {
@@ -249,7 +218,14 @@ public class TreeFrame extends javax.swing.JFrame implements IGuiStatusExchange{
                     .addComponent(ButtonUnload))
                 .addContainerGap())
         );
-
+        
+        // dialog not saved window
+        DialogNotSaved = new javax.swing.JDialog();
+        DialogProgressBar = new javax.swing.JDialog();
+        ProgressBarDialog = new javax.swing.JProgressBar();
+        LabelProgress = new javax.swing.JLabel();
+        ButtonCancelAction = new javax.swing.JButton();
+        
         javax.swing.GroupLayout DialogNotSavedLayout = new javax.swing.GroupLayout(DialogNotSaved.getContentPane());
         DialogNotSaved.getContentPane().setLayout(DialogNotSavedLayout);
         DialogNotSavedLayout.setHorizontalGroup(
@@ -293,7 +269,21 @@ public class TreeFrame extends javax.swing.JFrame implements IGuiStatusExchange{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 640));
-
+        
+        // List windows of COMOSOL files and output WebGL files
+        ScrollPaneLeftTree = new javax.swing.JScrollPane();
+        LeftTree = new javax.swing.JTree();
+        ScrollPanelLeftText = new javax.swing.JScrollPane();
+        LeftTextArea = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        RightTextArea = new javax.swing.JTextArea();
+        LabelWebGL = new javax.swing.JLabel();
+        LabelComsol = new javax.swing.JLabel();
+        ScrollPanelRightTree = new javax.swing.JScrollPane();
+        RightTree = new javax.swing.JTree();
+        LabelComsolConnection = new javax.swing.JLabel();
+        LabelConfigPath = new javax.swing.JLabel();
+        
         LeftTree.setModel(null);
         LeftTree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
@@ -325,9 +315,33 @@ public class TreeFrame extends javax.swing.JFrame implements IGuiStatusExchange{
         ScrollPanelRightTree.setViewportView(RightTree);
 
         LabelComsolConnection.setText("no connection to Comsol Server");
-
         LabelConfigPath.setText("no File Opened");
-
+        
+        
+        // initialize menu bar 
+        MenuFile = new javax.swing.JMenu();
+        MenuItemNew = new javax.swing.JMenuItem();
+        MenuItemOpenConfig = new javax.swing.JMenuItem();
+        MenuItemOpenModel = new javax.swing.JMenuItem();
+        MenuItemShowModels = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        MenuItemSave = new javax.swing.JMenuItem();
+        MenuItemSaveAs = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        MenuItemExit = new javax.swing.JMenuItem();
+        MenuEdit = new javax.swing.JMenu();
+        MenuItemAddModel = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        MenuItemDeleteLeft = new javax.swing.JMenuItem();
+        MenuItemDeleteRight = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        CheckBoxStaticServer = new javax.swing.JCheckBoxMenuItem();
+        MenuConnection = new javax.swing.JMenu();
+        MenuItemQuickCon = new javax.swing.JMenuItem();
+        MenuItemCon = new javax.swing.JMenuItem();
+        MenuItemDisCon = new javax.swing.JMenuItem();
+        
+        // menu set of "File"
         MenuFile.setText("File");
 
         MenuItemNew.setText("New WebGL Config");
@@ -812,7 +826,7 @@ public class TreeFrame extends javax.swing.JFrame implements IGuiStatusExchange{
      * main Function
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -883,6 +897,8 @@ public class TreeFrame extends javax.swing.JFrame implements IGuiStatusExchange{
         
         int status;
         status = fileChooser.showOpenDialog(this);
+        System.out.println(status);
+        System.out.println(JFileChooser.APPROVE_OPTION);
 
         if(status == JFileChooser.APPROVE_OPTION) {
              data.openModel(fileChooser.getSelectedFile());
