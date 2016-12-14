@@ -39,6 +39,8 @@ public class ComsolRenderData implements ITreeNode{
     
     private final int index;
     
+    private int nDimension;
+    
     private int nVertex;                // total Number of Vertices, only for internal usage
     private int nElement;               // total Number of Elements, only for internal usage
      
@@ -58,19 +60,21 @@ public class ComsolRenderData implements ITreeNode{
         this.objName = "Render Data " + indexData;
         this.index = indexData;
         
+        this.nDimension = result.getSDim();
+        
         int elementType = ComsolResult.checkType(type); // 0 = unknown, 1 = point, 2 = lines, 3 = triangles
 
         
         this.bufVertex = result.getVertices(indexGroup, indexData);		//get binary data of all vertices
-        System.out.println("bufVertx[0]: "+ this.bufVertex[0]);
         this.nVertex = this.bufVertex[0].length;
+        System.out.println("length of bufVertx: "+ this.bufVertex[0].length);
         
         int nAttribs = (attribs == null) ? 0 : attribs.size();
         
         if(elementType > 1){	// only lines or triangles need indexing data
             this.bufIndex = result.getElements(indexGroup, indexData);
-            System.out.println("bufIndex[0]: "+ this.bufIndex[0]);
             this.nElement =  this.bufIndex[0].length; 
+            System.out.println("length of bufIndex: "+ this.bufIndex[0].length);
         }else{
         	this.bufIndex = null;	
             this.nElement = 0;
@@ -129,13 +133,14 @@ public class ComsolRenderData implements ITreeNode{
             } else if (tmp < yMin){
                 yMin = tmp;
             }
-            tmp = bufVertex[2][j]; // compare Z comp
-            if (tmp > zMax){
-                zMax = tmp;
-            } else if (tmp < zMin){
-                zMin = tmp;
+            if(this.nDimension > 2) {
+            	tmp = bufVertex[2][j]; // compare Z comp
+                if (tmp > zMax){
+                    zMax = tmp;
+                } else if (tmp < zMin){
+                    zMin = tmp;
+                }
             }
-
         }
 
         return new float[]{xMin, xMax, yMin, yMax, zMin, zMax};
@@ -209,8 +214,10 @@ public class ComsolRenderData implements ITreeNode{
         for (int j = 0; j < nVertex; j++){
 
             bBuf.putFloat(bufVertex[0][j]);
-            bBuf.putFloat(bufVertex[1][j]);                
-            bBuf.putFloat(bufVertex[2][j]);
+            bBuf.putFloat(bufVertex[1][j]); 
+            if(this.nDimension == 3){
+            	bBuf.putFloat(bufVertex[2][j]);
+            }
         }
 
         if (this.bufAttrib != null){

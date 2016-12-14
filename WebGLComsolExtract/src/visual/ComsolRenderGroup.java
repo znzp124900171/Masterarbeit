@@ -24,12 +24,14 @@ public class ComsolRenderGroup implements ITreeNode{
     public static final String RENDER_DATA = "renderData";
     public static final String ATTRIBUTES = "attributes";
     
+    private int nDimension;
+    
     private final int index;		//index (e.g. Slice number)
     private final String objName;	//Name of this object
     
     private String infoText;
     
-    //Childs containing the binary Data
+    //Children containing the binary Data
     private final ComsolRenderData[] renderData; 
     
     //Attributes defining how to render the data
@@ -40,6 +42,8 @@ public class ComsolRenderGroup implements ITreeNode{
         
         this.objName = "Render Group " + index;
         this.index = index;
+        
+        this.nDimension = result.getSDim();
         
         int nGroups = result.getGroups(index);	//get Number of Render Groups
         
@@ -77,7 +81,8 @@ public class ComsolRenderGroup implements ITreeNode{
     
     private void setupInfoText(){
         StringBuilder sb = new StringBuilder(100);
-        sb.append("Render Group: \nAttributes: ");
+        sb.append("Render Group: "+ this.infoText);
+        sb.append("\nAttributes: ");
         this.infoText = sb.toString();
     }
 

@@ -336,3 +336,150 @@ Messages:
 	... 1 more
 
 
+
+2016.12.12 01:12:28  Error Stack Trace: 
+
+java.lang.ArrayIndexOutOfBoundsException: 2
+	at visual.ComsolRenderData.getModelSize(ComsolRenderData.java:132)
+	at visual.ComsolRenderGroup.getModelSize(ComsolRenderGroup.java:87)
+	at visual.ComsolResult.setupModelSize(ComsolResult.java:213)
+	at visual.ComsolResult.<init>(ComsolResult.java:116)
+	at visual.ComsolResult.<init>(ComsolResult.java:110)
+	at visual.ComsolModel.<init>(ComsolModel.java:58)
+	at visual.ComsolData.loadModel(ComsolData.java:262)
+	at visual.TreeFrame.loadModelFromComsol(TreeFrame.java:886)
+	at visual.TreeFrame.access$27(TreeFrame.java:876)
+	at visual.TreeFrame$27.run(TreeFrame.java:615)
+	at java.lang.Thread.run(Unknown Source)
+
+
+
+2016.12.12 01:13:32  Error Stack Trace: 
+
+Exception:
+	java.net.ConnectException: Connection refused: no further information
+	(rethrown as com.comsol.util.exceptions.FlException)
+Messages:
+	Failed to connect to server
+
+	Connection refused: no further information
+
+Stack trace:
+	at sun.nio.ch.SocketChannelImpl.checkConnect(Native Method)
+	at sun.nio.ch.SocketChannelImpl.finishConnect(Unknown Source)
+	at org.eclipse.jetty.io.nio.SelectorManager$SelectSet.doSelect(SelectorManager.java:628)
+	at org.eclipse.jetty.io.nio.SelectorManager$1.run(SelectorManager.java:290)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:608)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:543)
+	at java.lang.Thread.run(Unknown Source)
+
+
+
+2016.12.13 15:29:41  Error Stack Trace: 
+
+java.lang.ArrayIndexOutOfBoundsException: 2
+	at visual.ComsolRenderData.getModelSize(ComsolRenderData.java:132)
+	at visual.ComsolRenderGroup.getModelSize(ComsolRenderGroup.java:88)
+	at visual.ComsolResult.setupModelSize(ComsolResult.java:218)
+	at visual.ComsolResult.<init>(ComsolResult.java:121)
+	at visual.ComsolResult.<init>(ComsolResult.java:115)
+	at visual.ComsolModel.<init>(ComsolModel.java:58)
+	at visual.ComsolData.loadModel(ComsolData.java:262)
+	at visual.TreeFrame.loadModelFromComsol(TreeFrame.java:886)
+	at visual.TreeFrame.access$27(TreeFrame.java:876)
+	at visual.TreeFrame$27.run(TreeFrame.java:615)
+	at java.lang.Thread.run(Unknown Source)
+
+
+
+2016.12.13 16:39:41  Error Stack Trace: 
+
+java.lang.Exception: JSONParser.JSONException: JSON does not allow non-finite numbers.
+	at visual.TreeFrame$GuiThread$1.uncaughtException(TreeFrame.java:47)
+	at java.lang.Thread.dispatchUncaughtException(Unknown Source)
+Caused by: JSONParser.JSONException: JSON does not allow non-finite numbers.
+	at JSONParser.JSONObject.testValidity(JSONObject.java:1353)
+	at JSONParser.JSONArray.put(JSONArray.java:612)
+	at visual.ComsolResult.toJSON(ComsolResult.java:261)
+	at visual.ComsolModel.toJSON(ComsolModel.java:75)
+	at visual.ComsolData.saveModel(ComsolData.java:466)
+	at visual.TreeFrame.saveAs(TreeFrame.java:921)
+	at visual.TreeFrame.access$29(TreeFrame.java:912)
+	at visual.TreeFrame$29.run(TreeFrame.java:639)
+	at java.lang.Thread.run(Unknown Source)
+
+
+
+2016.12.13 16:40:18  Error Stack Trace: 
+
+java.lang.Exception: JSONParser.JSONException: JSON does not allow non-finite numbers.
+	at visual.TreeFrame$GuiThread$1.uncaughtException(TreeFrame.java:47)
+	at java.lang.Thread.dispatchUncaughtException(Unknown Source)
+Caused by: JSONParser.JSONException: JSON does not allow non-finite numbers.
+	at JSONParser.JSONObject.testValidity(JSONObject.java:1353)
+	at JSONParser.JSONArray.put(JSONArray.java:612)
+	at visual.ComsolResult.toJSON(ComsolResult.java:261)
+	at visual.ComsolModel.toJSON(ComsolModel.java:75)
+	at visual.ComsolData.saveModel(ComsolData.java:466)
+	at visual.TreeFrame.saveAs(TreeFrame.java:921)
+	at visual.TreeFrame.access$29(TreeFrame.java:912)
+	at visual.TreeFrame$29.run(TreeFrame.java:639)
+	at java.lang.Thread.run(Unknown Source)
+
+
+
+2016.12.13 16:40:37  Error Stack Trace: 
+
+java.lang.Exception: JSONParser.JSONException: JSON does not allow non-finite numbers.
+	at visual.TreeFrame$GuiThread$1.uncaughtException(TreeFrame.java:47)
+	at java.lang.Thread.dispatchUncaughtException(Unknown Source)
+Caused by: JSONParser.JSONException: JSON does not allow non-finite numbers.
+	at JSONParser.JSONObject.testValidity(JSONObject.java:1353)
+	at JSONParser.JSONArray.put(JSONArray.java:612)
+	at visual.ComsolResult.toJSON(ComsolResult.java:261)
+	at visual.ComsolModel.toJSON(ComsolModel.java:75)
+	at visual.ComsolData.saveModel(ComsolData.java:466)
+	at visual.TreeFrame.saveAs(TreeFrame.java:921)
+	at visual.TreeFrame.access$29(TreeFrame.java:912)
+	at visual.TreeFrame$28.run(TreeFrame.java:628)
+	at java.lang.Thread.run(Unknown Source)
+
+
+
+2016.12.14 14:36:33  Error Stack Trace: 
+
+java.lang.Exception: JSONParser.JSONException: JSON does not allow non-finite numbers.
+	at visual.TreeFrame$GuiThread$1.uncaughtException(TreeFrame.java:47)
+	at java.lang.Thread.dispatchUncaughtException(Unknown Source)
+Caused by: JSONParser.JSONException: JSON does not allow non-finite numbers.
+	at JSONParser.JSONObject.testValidity(JSONObject.java:1353)
+	at JSONParser.JSONArray.put(JSONArray.java:612)
+	at visual.ComsolResult.toJSON(ComsolResult.java:255)
+	at visual.ComsolModel.toJSON(ComsolModel.java:75)
+	at visual.ComsolData.saveModel(ComsolData.java:466)
+	at visual.TreeFrame.saveAs(TreeFrame.java:921)
+	at visual.TreeFrame.access$29(TreeFrame.java:912)
+	at visual.TreeFrame$28.run(TreeFrame.java:628)
+	at java.lang.Thread.run(Unknown Source)
+
+
+
+2016.12.14 14:48:53  Error Stack Trace: 
+
+java.lang.Exception: java.lang.ArrayIndexOutOfBoundsException: 2
+	at visual.TreeFrame$GuiThread$1.uncaughtException(TreeFrame.java:47)
+	at java.lang.Thread.dispatchUncaughtException(Unknown Source)
+Caused by: java.lang.ArrayIndexOutOfBoundsException: 2
+	at visual.ComsolRenderData.dataToByteArray(ComsolRenderData.java:218)
+	at visual.ComsolRenderData.saveData(ComsolRenderData.java:189)
+	at visual.ComsolRenderGroup.saveData(ComsolRenderGroup.java:132)
+	at visual.ComsolResult.saveData(ComsolResult.java:313)
+	at visual.ComsolResult.saveData(ComsolResult.java:308)
+	at visual.ComsolModel.saveData(ComsolModel.java:158)
+	at visual.ComsolData.saveModel(ComsolData.java:478)
+	at visual.TreeFrame.saveAs(TreeFrame.java:921)
+	at visual.TreeFrame.access$29(TreeFrame.java:912)
+	at visual.TreeFrame$28.run(TreeFrame.java:628)
+	at java.lang.Thread.run(Unknown Source)
+
+

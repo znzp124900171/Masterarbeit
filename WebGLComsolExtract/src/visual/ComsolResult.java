@@ -34,6 +34,7 @@ public class ComsolResult implements ITreeNode{
     
     private String infoText;     // contains all information as String
     private String name;            // Display Name from Comsol
+    private int dimension;			// dimension of plots, e.g. 3 for 3D-plot, 2 for 2D-plot
     
     private boolean hasData;        // has this Result binary Data in Form of ComsolRenderData
     private ComsolRenderGroup[] renderGroup; //the rendergroups containing the renderdata
@@ -74,13 +75,14 @@ public class ComsolResult implements ITreeNode{
         this.name = result.getDisplayString();
         this.type = result.getType();
         this.tag = result.tag();
+        this.dimension = result.getSDim();
         
-        System.out.println("getSDim: " + result.getSDim());
-        
-        if(result.getSDim() != 3){
-          this.isExportable = false;
-          setupInfoText();
-          return;
+        if(this.dimension != 3){
+        	if(this.dimension != 2){
+        		this.isExportable = false;
+                setupInfoText();
+                return;
+        	}
         }
         
         if(checkType(type) == 0){
@@ -92,8 +94,6 @@ public class ComsolResult implements ITreeNode{
         this.isExportable = false; 
         this.hasData = false;
         this.isPlotGroup = result.isPlotGroup();
-        System.out.println("isPlotGroup: " + result.isPlotGroup());
-        
 
         int nGroup = result.getRenderGroups(); // number of RenderGroups
         
@@ -108,7 +108,8 @@ public class ComsolResult implements ITreeNode{
         }
       
         if(this.isPlotGroup){
-            String featureList[] = result.feature().tags();
+            String[] featureList = result.feature().tags();
+            System.out.println("featureList.length: " + featureList.length);
             this.feature = new ComsolResult[featureList.length];
             for(int i = 0; i < feature.length; i++){
               this.feature[i] = new ComsolResult(result.feature(featureList[i]));
@@ -193,13 +194,14 @@ public class ComsolResult implements ITreeNode{
        sb.append("\nIs Plotgroup: ").append(this.isPlotGroup);
        sb.append("\nTag: ").append(this.tag);
        sb.append("\nType: ").append(this.type);
+       sb.append("\nDimension: ").append(this.dimension);
        if(this.isExportable){
         if (this.isPlotGroup) {
-            sb.append("\nBounding Box: ").append('\n');
+    		sb.append("\nBounding Box: ").append('\n');
             sb.append(boundBox[0]).append(" - ").append(boundBox[1]).append('\n');
             sb.append(boundBox[2]).append(" - ").append(boundBox[3]).append('\n');
             sb.append(boundBox[4]).append(" - ").append(boundBox[5]);
-            }
+         }
        }
        this.infoText = sb.toString();
    }
@@ -248,6 +250,11 @@ public class ComsolResult implements ITreeNode{
                 jsonArr.put(feat.toJSON());   
             }
             result.put(FEATURE, jsonArr);
+            
+            if(this.dimension !=3){
+            	this.boundBox[4] = 0;
+            	this.boundBox[5] = 0;
+            }
             
             JSONArray boundBoxArr = new JSONArray();      
             for(double bound : this.boundBox)
@@ -348,7 +355,7 @@ public class ComsolResult implements ITreeNode{
             refBoundBox[2] = (refBoundBox[2] <= tmpBoundBox[2]) ? refBoundBox[2] : tmpBoundBox[2];
             refBoundBox[3] = (refBoundBox[3] >= tmpBoundBox[3]) ? refBoundBox[3] : tmpBoundBox[3];
             refBoundBox[4] = (refBoundBox[4] <= tmpBoundBox[4]) ? refBoundBox[4] : tmpBoundBox[4];
-            refBoundBox[5] = (refBoundBox[5] >= tmpBoundBox[5]) ? refBoundBox[5] : tmpBoundBox[5];;
+            refBoundBox[5] = (refBoundBox[5] >= tmpBoundBox[5]) ? refBoundBox[5] : tmpBoundBox[5];
             return refBoundBox;
         } else {
             return tmpBoundBox;
