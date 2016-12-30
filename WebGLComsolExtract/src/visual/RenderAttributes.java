@@ -20,14 +20,14 @@ import java.util.List;
  */
 public class RenderAttributes {
     
-	//Keys for Json
+	//Keys for JSON
     public static final String MIN = "min";
     public static final String MAX = "max";
     public static final String NAME = "name";
     public static final String VALUE = "value";
     public static final String INDEX = "index";
     
-    //Comsol Attributes
+    //COMSOL Attributes
     public static final String ATTR_COLOR = "Color";				// linear Mapping to the colorTable
     public static final String ATTR_VECTORX = "VectorX";			// X-Value of Vectors
     public static final String ATTR_VECTORY = "VectorY";			// Y-Value of Vectors
@@ -77,7 +77,7 @@ public class RenderAttributes {
       
     	int indexOffset = 0;
 
-    	String[] comsolAttr = result.getDataTypes(renderIndex);	//get all Attributes from Comsol
+    	String[] comsolAttr = result.getDataTypes(renderIndex);	//get all Attributes from COMSOL
       
     	for (int i = 0; i < comsolAttr.length; i++) {
       	

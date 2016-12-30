@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ReferencePath>
     </ReferencePath>
-    <ToolsVersionPromptShown>2.0</ToolsVersionPromptShown>
+    <ToolsVersionPromptShown>2.1</ToolsVersionPromptShown>
     <UseIISExpress>true</UseIISExpress>
   </PropertyGroup>
   <ProjectExtensions>

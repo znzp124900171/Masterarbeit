@@ -65,7 +65,7 @@ public class ComsolResult implements ITreeNode{
 
     /**
      * 
-     * Constructor via Comsol
+     * Constructor via COMSOL
      * 
      * @param result com.comsol.model.ResultFeature
      * @throws Exception
@@ -79,9 +79,11 @@ public class ComsolResult implements ITreeNode{
         
         if(this.dimension != 3){
         	if(this.dimension != 2){
-        		this.isExportable = false;
-                setupInfoText();
-                return;
+        		if(this.dimension !=1){
+        			this.isExportable = false;
+                    setupInfoText();
+                    return;
+        		}
         	}
         }
         
@@ -109,7 +111,6 @@ public class ComsolResult implements ITreeNode{
       
         if(this.isPlotGroup){
             String[] featureList = result.feature().tags();
-            System.out.println("featureList.length: " + featureList.length);
             this.feature = new ComsolResult[featureList.length];
             for(int i = 0; i < feature.length; i++){
               this.feature[i] = new ComsolResult(result.feature(featureList[i]));
@@ -120,7 +121,7 @@ public class ComsolResult implements ITreeNode{
         }
       setupModelSize();
       
-      setupInfoText();                    
+      setupInfoText();
     }
 
     /**
@@ -318,7 +319,7 @@ public class ComsolResult implements ITreeNode{
     }
 
     /**
-     * deletes the binary data of all ComsolRenderData Childs
+     * deletes the binary data of all ComsolRenderData Children
      * 
      * @param path path to delete the binary Data
      * @throws java.io.IOException

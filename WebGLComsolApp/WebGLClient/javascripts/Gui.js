@@ -1,54 +1,42 @@
-﻿function Gui(modelData, renderer, glContext) {
+function Gui(modelData, renderer, glContext) {
     var self = this;
     var gl = glContext.getContext();
-
     var canvas = document.getElementById('webgl');
-
     var jqModelList = $("#modelList");
     var jqResultList = $("#resultList");
     var jqPlotList = $("#plotList");
-
     var visibleInterface = $("#tmpVisible");
     var scalationInterface = $("#tmpScale");
     var textureInterface = $("#tmpTexture");
     var colorInterface = $("#tmpColor");
-
     modelData.getModelList(updateModelList);
-
     (function () {
         var fullScreenButton = $('#btnFullScreen');
         var lightButton = $('#btnLight');
         var resetButton = $('#btnReset');
-
         var rangeX = $('#xPosi');
         var rangeY = $('#yPosi');
         var rangeZ = $('#zPosi');
-
         var width;
         var height;
-
         var pointerMoved = false;
         var pointerOne = null;
         var pointerTwo = null;
         var pointerSpecial = null;
         var lastPosition = {};
-
         var pointerDown;
         var pointerUp;
         var pointerMove;
         var pointerLeave;
-
         var handleMouseWheel;
         var handleResize;
         var handleRangeX;
         var handleRangeY;
         var handleRangeZ;
-
         var toggleFullScreen;
         var handleFullScreenChange;
         var handleResetView;
         var toggleLight;
-
         pointerDown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
@@ -56,7 +44,8 @@
             if (!pointerOne || evt.pointerId === pointerOne) {
                 pointerOne = evt.pointerId;
                 lastPosition[pointerOne] = { x: evt.clientX, y: evt.clientY };
-            } else if (!pointerTwo) {
+            }
+            else if (!pointerTwo) {
                 pointerTwo = evt.pointerId;
                 lastPosition[pointerTwo] = { x: evt.clientX, y: evt.clientY };
             }
@@ -72,70 +61,66 @@
                 if (pointerTwo) {
                     var firstPosition, secondPosition;
                     var newPosition = { x: evt.clientX, y: evt.clientY };
-
                     if (evt.pointerId === pointerOne) {
                         firstPosition = lastPosition[pointerOne];
                         secondPosition = lastPosition[pointerTwo];
                         lastPosition[pointerOne] = newPosition;
-                    } else if (evt.pointerId === pointerTwo) {
+                    }
+                    else if (evt.pointerId === pointerTwo) {
                         firstPosition = lastPosition[pointerTwo];
                         secondPosition = lastPosition[pointerOne];
                         lastPosition[pointerTwo] = newPosition;
-                    } else {
+                    }
+                    else {
                         return;
                     }
                     var difX = firstPosition.x - secondPosition.x;
                     var difY = firstPosition.y - secondPosition.y;
                     var lastDist = Math.sqrt(difX * difX + difY * difY);
-
                     difX = newPosition.x - secondPosition.x;
                     difY = newPosition.y - secondPosition.y;
                     var newDist = Math.sqrt(difX * difX + difY * difY);
-
                     var zVal = renderer.getPosition()[2];
                     zVal += (lastDist - newDist) * 0.05;
                     rangeZ.val(zVal * 50);
                     rangeZ.slider('refresh');
                     renderer.setZPosition(zVal);
-                } else {
+                }
+                else {
                     if (evt.button === 0 || evt.buttons & 1) {
                         var position = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
-
                         var deltaX = (newPosition.x - position.x) * 100 / width;
                         var deltaY = (newPosition.y - position.y) * 100 / height;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.rotateObject(deltaX, deltaY);
-                    } else if (evt.button === 2 || evt.buttons & 2) {
+                    }
+                    else if (evt.button === 2 || evt.buttons & 2) {
                         var oldPosition = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
-
                         var renderPosi = renderer.getPosition();
-
                         var deltaX = (oldPosition.x - newPosition.x) * -1 / width;
                         var deltaY = (oldPosition.y - newPosition.y) / width;
                         renderPosi[0] += deltaX;
                         renderPosi[1] += deltaY;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.setPositionV(renderPosi);
-
                         rangeX.val(renderPosi[0] * 50);
                         rangeX.slider('refresh');
                         rangeY.val(renderPosi[1] * 50);
                         rangeY.slider('refresh');
-                    } else if (evt.button === 1 || evt.button & 1) {
+                    }
+                    else if (evt.button === 1 || evt.button & 1) {
                         var position = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
-
                         var deltaX = (newPosition.x - position.x) * -1 / width;
                         var deltaY = (newPosition.y - position.y) / width;
-
                         if (Math.abs(deltaX) > Math.abs(deltaY)) {
                             var dist = deltaX;
-                        } else {
+                        }
+                        else {
                             var dist = deltaY;
                         }
-
                         var eyeZ = renderer.getPosition()[2];
                         eyeZ = Math.log(-eyeZ + 1) * 50;
                         eyeZ += dist;
@@ -157,13 +142,11 @@
                 pointerTwo = null;
             }
         };
-
         handleMouseWheel = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
             }
             var delta = evt.detail ? evt.detail * (-120) : evt.wheelDelta;
-
             var eyeZ = renderer.getPosition()[2];
             eyeZ = Math.log(-eyeZ + 1) * 50;
             eyeZ += delta / 120;
@@ -172,12 +155,13 @@
             eyeZ = -Math.exp(eyeZ / 50) + 1;
             renderer.setZPosition(eyeZ);
         };
-
         handleResize = function () {
-            width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-
-            height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-
+            width = window.innerWidth
+                || document.documentElement.clientWidth
+                || document.body.clientWidth;
+            height = window.innerHeight
+                || document.documentElement.clientHeight
+                || document.body.clientHeight;
             canvas.width = width;
             canvas.height = height;
             renderer.resizeCanvas(width, height);
@@ -195,17 +179,17 @@
             eyeZ = -Math.exp(eyeZ / 50) + 1;
             renderer.setZPosition(eyeZ);
         };
-
         toggleFullScreen = function () {
             var docElement, request;
-            if ((document.fullScreenElement && document.fullScreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+                (!document.mozFullScreen && !document.webkitIsFullScreen)) {
                 docElement = document.documentElement;
                 request = docElement.requestFullScreen || docElement.webkitRequestFullScreen || docElement.mozRequestFullScreen || docElement.msRequestFullScreen;
-
                 if (typeof request != "undefined" && request) {
                     request.call(docElement);
                 }
-            } else {
+            }
+            else {
                 docElement = document;
                 request = docElement.cancelFullScreen || docElement.webkitCancelFullScreen || docElement.mozCancelFullScreen || docElement.msCancelFullScreen || docElement.exitFullscreen;
                 if (typeof request != "undefined" && request) {
@@ -214,9 +198,11 @@
             }
         };
         handleFullScreenChange = function () {
-            if ((document.fullScreenElement && document.fullScreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement)) {
+            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+                (!document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement)) {
                 fullScreenButton.removeClass("ui-btn-active");
-            } else {
+            }
+            else {
                 fullScreenButton.addClass("ui-btn-active");
             }
         };
@@ -234,46 +220,38 @@
             var lightOn = renderer.toggleLight();
             if (lightOn) {
                 lightButton.addClass('ui-btn-active');
-            } else {
+            }
+            else {
                 lightButton.removeClass('ui-btn-active');
             }
         };
-
         canvas.addEventListener("contextmenu", function (e) {
             e.preventDefault();
         }, false);
-
         var mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel";
-
         document.addEventListener(mousewheelevt, handleMouseWheel, false);
         document.addEventListener('pointerleave', pointerLeave, false);
         canvas.addEventListener('pointerdown', pointerDown, false);
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
-
         window.onresize = handleResize;
         resetButton.click(handleResetView);
         fullScreenButton.click(toggleFullScreen);
         var onFullscreenChange = "webkitfullscreenchange mozfullscreenchange fullscreenchange msfullscreenchange";
         $(document).on(onFullscreenChange, handleFullScreenChange);
-
         rangeX.click(handleRangeX);
         rangeY.click(handleRangeY);
         rangeZ.click(handleRangeZ);
         lightButton.click(toggleLight);
-
         handleResize();
     }());
-
     jqModelList.change(function (event) {
         var newModelId = event.currentTarget.value;
         if (newModelId === "start") {
             return;
         }
         console.log("modelId: " + newModelId);
-
         var oldModelID = renderer.getActiveModelId();
-
         if (newModelId !== oldModelID) {
             renderer.setActiveModelById(newModelId, function () {
                 console.log("New modelId: " + newModelId);
@@ -281,7 +259,6 @@
             });
         }
     });
-
     jqResultList.change(function (event) {
         var newPlotGroupID = event.currentTarget.value;
         if (newPlotGroupID === "start") {
@@ -289,7 +266,6 @@
         }
         console.log("plotGroupId: " + newPlotGroupID);
         var oldPlotGroupID = renderer.getActivePlotGroupId();
-
         if (newPlotGroupID !== oldPlotGroupID) {
             renderer.setActivePlotGroupById(newPlotGroupID, function () {
                 var modelId = renderer.getActiveModelId();
@@ -298,10 +274,8 @@
             });
         }
     });
-
     setColors(glContext.getColorNames());
     setTextures(glContext.getTextureName());
-
     function setColors(colorList) {
         var select = $("#tmpColor").find("select");
         select.find("option").remove();
@@ -312,7 +286,6 @@
         }
         select.select().select('refresh');
     }
-
     function setTextures(colTable) {
         var select = $("#tmpTexture").find("select");
         select.find("option").remove();
@@ -323,7 +296,6 @@
         }
         select.select().select('refresh');
     }
-
     function updateModelList(modelList) {
         removeAllPlots();
         jqModelList.children().remove(".selItem");
@@ -335,7 +307,6 @@
             jqModelList.append(option);
         }
     }
-
     function updatePlotGroupList(plotGroupList) {
         removeAllPlots();
         jqResultList.children().remove(".selItem");
@@ -347,11 +318,9 @@
             jqResultList.append(option);
         }
     }
-
     function removeAllPlots() {
         jqPlotList.find(".plotItem").unbind().remove();
     }
-
     function updatePlotList(plotList) {
         removeAllPlots();
         plotList.forEach(function (plot) {
@@ -364,56 +333,47 @@
         });
         jqPlotList.listview().listview('refresh');
     }
-
     function clickPlotItem(plotTag) {
         var modelId = renderer.getActiveModelId();
         var plotGroupId = renderer.getActivePlotGroupId();
         console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
         var result = modelData.getPlot(modelId, plotGroupId, plotTag, setupPlotPanel);
     }
-
     function setupPlotPanel(result) {
         var panel = $("#panelPlotConfig");
-
         resetPlotPanel();
-
         visibleInterface.find("label").text("Set " + result.name + " visible");
-
         visibleInterface.find("input").click(function (evt) {
             if (renderer.getActivePlots().indexOf(result) >= 0) {
                 renderer.removePlot(result);
-            } else {
+            }
+            else {
                 renderer.addPlot(result);
             }
         });
-
         if (renderer.getActivePlots().indexOf(result) !== -1) {
             visibleInterface.find("input").prop("checked", true);
-        } else {
+        }
+        else {
             visibleInterface.find("input").prop("checked", false);
         }
-
         scalationInterface.find("input").change(function (evt) {
             var val = evt.currentTarget.value;
             result.usrScale = val / 100;
             renderer.renderScene();
         });
-
         colorInterface.find("select").change(function (evt) {
             var val = evt.currentTarget.selectedIndex;
             result.usrColor = evt.currentTarget[val].text;
             renderer.renderScene();
         });
-
         textureInterface.find("select").change(function (evt) {
             var val = evt.currentTarget.selectedIndex;
             result.usrText = evt.currentTarget[val].text;
             renderer.renderScene();
         });
-
         panel.panel('open');
     }
-
     function resetPlotPanel() {
         visibleInterface.find("label").text(null);
         visibleInterface.find("input").unbind("click");
@@ -422,4 +382,3 @@
         textureInterface.find("select").unbind("change");
     }
 }
-//# sourceMappingURL=Gui.js.map

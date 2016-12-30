@@ -1,11 +1,9 @@
 ﻿{
-    "compilerOptions": {
-        "target": "ES5",
-        "module": "amd",
-        "removeComments": true,
-      "listFiles": true,
-      "outDir": "../WebGL_Nan"
-    },
+  "compilerOptions": {
+    "module": "amd",
+    "removeComments": true,
+    "target": "ES5"
+  },
     "files": [
         "./javascripts/main.ts",
         "./javascripts/initWebGL.ts",

@@ -44,14 +44,14 @@ public class ComsolRenderData implements ITreeNode{
     private int nVertex;                // total Number of Vertices, only for internal usage
     private int nElement;               // total Number of Elements, only for internal usage
      
-    private String infoText;        //Text For the Gui
+    private String infoText;        //Text For the GUI
   
     // Binary Data
     private float[][] bufVertex;     //		[3][Number of Vertex]
     private float[][] bufAttrib;     //		[Number of Attributes][Number of Vertex]
     private int[][] bufIndex;      		//		[Number of Triangles][3:Tri, 2:Lines]
     
-   /* Constructor by Comsol Model Object
+   /* Constructor by COMSOL Model Object
     **  
     **
     */
@@ -67,14 +67,13 @@ public class ComsolRenderData implements ITreeNode{
         
         this.bufVertex = result.getVertices(indexGroup, indexData);		//get binary data of all vertices
         this.nVertex = this.bufVertex[0].length;
-        System.out.println("length of bufVertx: "+ this.bufVertex[0].length);
+        System.out.println("length of bufVertx: "+ this.bufVertex.length);
         
         int nAttribs = (attribs == null) ? 0 : attribs.size();
         
         if(elementType > 1){	// only lines or triangles need indexing data
             this.bufIndex = result.getElements(indexGroup, indexData);
             this.nElement =  this.bufIndex[0].length; 
-            System.out.println("length of bufIndex: "+ this.bufIndex[0].length);
         }else{
         	this.bufIndex = null;	
             this.nElement = 0;
