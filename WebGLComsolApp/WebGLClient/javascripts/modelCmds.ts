@@ -1,4 +1,5 @@
-﻿/// <refernce path="libs/gl-matrix.d.ts"/>
+﻿/// <reference path="./Interfaces.ts"/>
+/// <refernce path="libs/gl-matrix.d.ts"/>
 /// <refernce path="libs/jquery.d.ts"/>
 var MODEL_PATH = "visual";
 var MODEL_LIST = "list.json";
@@ -24,8 +25,8 @@ function ModelCmds() {
         guiType.radiusScale = false;
         guiType.deformationScale = false;
 
-        for (var group in result.renderGroup) {
-            for (var attr in group.attributes) {
+        for (let group in result.renderGroup) {
+            for (let attr in group.attributes) {
                 switch (attr) {
                     case ATTR_VECTORX:
                         guiType.arrowScale = true;

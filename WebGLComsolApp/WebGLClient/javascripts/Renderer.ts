@@ -38,7 +38,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     // Viewing Angle
     var viewAngle = 45 * degToRad;
 
-    //Render Items:
+    // Render Items:
     // active Model, only one Model is selected at one time
     var activeModel: Model = null;
     // active Plotgroup, only one Plotgroup is selected at one time
@@ -85,7 +85,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     initMatrices();
     initStaticData();
 
-    /*  This function creates the initial Matricex, Quaternions and Vectors
+    /*  This function creates the initial Matrices, Quaternions and Vectors
     **  it is called by initializiation of the RenderQueue
     */
     function initMatrices() {

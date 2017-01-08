@@ -1,6 +1,13 @@
 ﻿/// <refernce path="libs/gl-matrix.d.ts"/>
 /// <refernce path="libs/jquery.d.ts"/>
 
+interface Uint32Array {
+    get?(any?: any): any;
+}
+
+interface Float32Array {
+    get?(any?: any): any;
+}
 
 var EPSILON = 1E-7;
 
@@ -12,6 +19,7 @@ var MAX_DATA = 0x10000;
 //the third are triple of Points connected to a triangle
 function getGeoType(type: string): number {
     switch (type) {
+        case TYPE_PLOTGROUP2D:
         case TYPE_ARROW_VOLUME:
         case TYPE_ARROW_SURFACE:
         case TYPE_ARROW_LINE:

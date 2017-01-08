@@ -493,7 +493,7 @@ function Web3DContext(canvas: HTMLElement) {
             { name: 'grey light', value: [0.6, 0.6, 0.6] }];
 
 
-        colorTables = [
+    colorTables = [
             {
                 name: "Cyclic",
                 size: 7,
@@ -545,7 +545,6 @@ function Web3DContext(canvas: HTMLElement) {
                 tex: new Uint8Array(
                     [130, 130, 130,
                     242, 242, 242]),
-                scale: 1
             },
 
             {

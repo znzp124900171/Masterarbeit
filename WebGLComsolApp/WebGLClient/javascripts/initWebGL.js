@@ -468,7 +468,6 @@ function Web3DContext(canvas) {
                 size: 2,
                 tex: new Uint8Array([130, 130, 130,
                     242, 242, 242]),
-                scale: 1
             },
             {
                 name: 'GrayScale',

@@ -35,8 +35,8 @@ public class ComsolModel implements ITreeNode {
     private String modelIdentifier;  //unique Tag for this model
     
     private final String name;            // Model Name from Comsol    
-    private String infoText;     // Description of this Object fot tree Interface
-    private ComsolResult result[];  // Childs of results
+    private String infoText;     // Description of this Object for tree Interface
+    private ComsolResult result[];  // Children of results
     private boolean isExported;     // Shows if the Object is already exported
     
     /**

@@ -9,7 +9,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
     var jqModelList = $("#modelList");
     var jqResultList = $("#resultList");
-    var jqPlotList = $("#plotList");
+    var jqPlotList = <any>$("#plotList");
 
     var visibleInterface = $("#tmpVisible");
     var scalationInterface = $("#tmpScale");
@@ -234,7 +234,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         };
         handleFullScreenChange = function () {
             if (((<any>document).fullScreenElement && (<any>document).fullScreenElement !== null) ||                            // cast it to any so typescript ignores error "property not available"
-                (!(<any>document).mozFullScreen && !(<any>document).webkitIsFullScreen && !document.msFullscreenElement)) {
+                (!(<any>document).mozFullScreen && !(<any>document).webkitIsFullScreen && !(<any>document).msFullscreenElement)) {
 
                 fullScreenButton.removeClass("ui-btn-active");
             } else {
@@ -332,7 +332,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     setTextures(glContext.getTextureName());
 
     function setColors(colorList: string[]) {
-        var select = $("#tmpColor").find("select");
+        var select = <any>$("#tmpColor").find("select");
         select.find("option").remove();
         var option;
         for (var i in colorList) {
@@ -343,7 +343,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     }
 
     function setTextures(colTable: string[]) {
-        var select = $("#tmpTexture").find("select");
+        var select = <any>$("#tmpTexture").find("select");
         select.find("option").remove();
         var option;
         for (var i in colTable) {

@@ -36,48 +36,9 @@
   <ItemGroup>
     <Content Include="javascripts\libs\jquery-2.1.1.min.map" />
     <Content Include="tsconfig.json" />
-    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04.json" />
-    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg1.0.0.bin" />
-    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg1\arwv1.0.0.bin" />
-    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg1\slc1.0.0.bin" />
-    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg1\surf1.0.0.bin" />
-    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg2.0.0.bin" />
-    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg2\str1.0.0.bin" />
-    <Content Include="visual\helmholtz_coil_2015-11-26 17-07-04\pg2\str2.0.0.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56.json" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg1.0.0.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg1\mslc1.0.0.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg1\mslc1.0.1.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg1\mslc1.0.2.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg2.0.0.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg2\vol1.0.0.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg2\vol2.0.0.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg3.0.0.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg3\mslc1.0.0.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg3\mslc1.0.1.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg3\mslc1.0.2.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg4.0.0.bin" />
-    <Content Include="visual\inductor_3d_2015-11-26 17-04-56\pg4\surf1.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55.json" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg1.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg1\mslc1.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg1\mslc1.0.1.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg1\mslc1.0.2.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg2.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg2\vol1.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg2\vol2.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg3.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg3\mslc1.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg3\mslc1.0.1.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg3\mslc1.0.2.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg4.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg4\surf1.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg7.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg7\arwv1.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg8.0.0.bin" />
-    <Content Include="visual\inductor_3d_test_2015-12-01 12-07-55\pg8\str1.0.0.bin" />
-    <Content Include="visual\list.json" />
     <Content Include="javascripts\libs\jquery.mobile-1.4.5.min.map" />
+    <Content Include="visual\list.json" />
+    <Content Include="visual\piezoacoustic_transducer_2017-01-01 18-11-00.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -98,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+    <Folder Include="visual\piezoacoustic_transducer_2017-01-01 18-11-00\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
