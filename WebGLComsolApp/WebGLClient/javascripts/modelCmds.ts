@@ -25,7 +25,7 @@ function ModelCmds() {
         guiType.radiusScale = false;
         guiType.deformationScale = false;
 
-        for (let group in result.renderGroup) {
+        for (let group of result.renderGroup) {
             for (let attr in group.attributes) {
                 switch (attr) {
                     case ATTR_VECTORX:

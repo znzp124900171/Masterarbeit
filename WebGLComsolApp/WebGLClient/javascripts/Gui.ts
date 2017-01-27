@@ -384,7 +384,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         jqPlotList.find(".plotItem").unbind().remove();
     }
 
-    //updates Plot List
+    //updates Plot List //???
     function updatePlotList(plotList: { name: string; id: string }[]): void {
         removeAllPlots();
         plotList.forEach(function (plot) {
@@ -399,7 +399,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
     }
 
-    //updates Plot List
+    //updates Plot List //???
     function clickPlotItem(plotTag: string) {
         var modelId = renderer.getActiveModelId();
         var plotGroupId = renderer.getActivePlotGroupId();
@@ -407,7 +407,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var result = modelData.getPlot(modelId, plotGroupId, plotTag, setupPlotPanel);
     }
 
-
+    //???
     function setupPlotPanel(result: Result) {
         var panel: any = $("#panelPlotConfig");
 

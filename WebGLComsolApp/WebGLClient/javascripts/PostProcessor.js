@@ -1,4 +1,3 @@
-var EPSILON = 1E-7;
 var MAX_DATA = 0x10000;
 function getGeoType(type) {
     switch (type) {
@@ -177,12 +176,6 @@ function PostProcessor(glContext) {
             console.log("Byte sizes differ");
         }
         if (attributes[ATTR_RAD]) {
-            var attrRadius = attributes[ATTR_RAD];
-            var scalation = diameter / attrRadius.max / 100;
-            var geomData = calcTube(renderData.numVert, renderData.numEle, vertexData, attribData[attrRadius.index], elementData, scalation);
-            for (var i = 0; i < geomData.length; i++) {
-                webGLData[i] = createWebGLGeom(geomData[i]);
-            }
         }
         else {
             webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);

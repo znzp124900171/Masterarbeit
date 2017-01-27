@@ -9,7 +9,7 @@ interface Float32Array {
     get?(any?: any): any;
 }
 
-var EPSILON = 1E-7;
+// var EPSILON = 1E-7;
 
 var MAX_DATA = 0x10000;
 
@@ -40,6 +40,7 @@ function getGeoType(type: string): number {
 function getShaderType(type: String, lightOn: boolean, attributes: RenderAttribute[]) {
     switch (type) {
         case TYPE_PLOTGROUP3D:
+        case TYPE_PLOTGROUP2D:
             return 1;
 
         case TYPE_VOLUME:
@@ -236,16 +237,16 @@ function PostProcessor(glContext: Web3DContext) {
 
         //check special Attributes
         if (attributes[ATTR_RAD]) { // Render Tubes
-            var attrRadius: RenderAttribute = attributes[ATTR_RAD];
+            //var attrRadius: RenderAttribute = attributes[ATTR_RAD];
 
-            var scalation = diameter / attrRadius.max / 100 // Thickest tube is 1 %Percent of Model size, Default Thickness (can manually changed by User)
+            //var scalation = diameter / attrRadius.max / 100 // Thickest tube is 1 %Percent of Model size, Default Thickness (can manually changed by User)
 
-            var geomData = calcTube(renderData.numVert, renderData.numEle, vertexData, attribData[attrRadius.index], elementData, scalation);
+            //var geomData = calcTube(renderData.numVert, renderData.numEle, vertexData, attribData[attrRadius.index], elementData, scalation);
 
 
-            for (var i = 0; i < geomData.length; i++) {
-                webGLData[i] = createWebGLGeom(geomData[i]);
-            }
+            //for (var i = 0; i < geomData.length; i++) {
+            //    webGLData[i] = createWebGLGeom(geomData[i]);
+            //}
 
         } else {    // If no Tube then this here is a default Plot
             webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);

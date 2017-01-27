@@ -26,21 +26,21 @@ interface WebGLGeom {
 } 
 
 // chain are necessary to extract Tubes out of the raw Data
-interface Chain {
-    start: number;
-    end: number;
-    startIdx: number;
-    endIdx: number;
-    closed: boolean;
-}
+//interface Chain {
+//    start: number;
+//    end: number;
+//    startIdx: number;
+//    endIdx: number;
+//    closed: boolean;
+//}
 
-function Chain(start: number, end: number, startIdx: number, endIdx: number) {
-    this.start = start;
-    this.end = end;
-    this.startIdx = startIdx;
-    this.endIdx = endIdx;
-    this.closed = closed;
-} 
+//function Chain(start: number, end: number, startIdx: number, endIdx: number) {
+//    this.start = start;
+//    this.end = end;
+//    this.startIdx = startIdx;
+//    this.endIdx = endIdx;
+//    this.closed = closed;
+//} 
 
 //This Function creates a 3D Sphere
 function createSphere(widthSegments: number, heightSegments: number, phiStart: number, phiLength: number, thetaStart: number, thetaLength: number): Geometry {

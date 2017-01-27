@@ -14,3 +14,8 @@ C:\Users\NanZ\Documents\GitHub\Masterarbeit\WebGLComsolApp\WebGLClient\obj\Debug
 C:\Users\NanZ\Documents\GitHub\Masterarbeit\WebGLComsolApp\WebGLClient\obj\Debug\WebGLClient.dll
 C:\Users\NanZ\Documents\GitHub\Masterarbeit\WebGLComsolApp\WebGLClient\obj\Debug\WebGLClient.pdb
 C:\Users\Nan\Documents\GitHub\Masterarbeit\WebGLComsolApp\WebGLClient\obj\Debug\WebGLClient.csprojResolveAssemblyReference.cache
+C:\Users\Nan\Documents\GitHub\Masterarbeit\WebGLComsolApp\WebGLClient\bin\WebGLClient.dll.config
+C:\Users\Nan\Documents\GitHub\Masterarbeit\WebGLComsolApp\WebGLClient\bin\WebGLClient.dll
+C:\Users\Nan\Documents\GitHub\Masterarbeit\WebGLComsolApp\WebGLClient\bin\WebGLClient.pdb
+C:\Users\Nan\Documents\GitHub\Masterarbeit\WebGLComsolApp\WebGLClient\obj\Debug\WebGLClient.dll
+C:\Users\Nan\Documents\GitHub\Masterarbeit\WebGLComsolApp\WebGLClient\obj\Debug\WebGLClient.pdb

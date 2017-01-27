@@ -1,11 +1,4 @@
 var EPSILON = 1E-7;
-function Chain(start, end, startIdx, endIdx) {
-    this.start = start;
-    this.end = end;
-    this.startIdx = startIdx;
-    this.endIdx = endIdx;
-    this.closed = closed;
-}
 function createSphere(widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength) {
     var thetaEnd = thetaStart + thetaLength;
     var vertexCount = ((widthSegments + 1) * (heightSegments + 1));
