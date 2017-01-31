@@ -1,6 +1,7 @@
 var MAX_DATA = 0x10000;
 function getGeoType(type) {
     switch (type) {
+        case TYPE_PLOTGROUP1D:
         case TYPE_PLOTGROUP2D:
         case TYPE_ARROW_VOLUME:
         case TYPE_ARROW_SURFACE:
@@ -19,6 +20,8 @@ function getGeoType(type) {
 }
 function getShaderType(type, lightOn, attributes) {
     switch (type) {
+        case TYPE_PLOTGROUP1D:
+        case TYPE_PLOTGROUP2D:
         case TYPE_PLOTGROUP3D:
             return 1;
         case TYPE_VOLUME:
@@ -99,6 +102,7 @@ function PostProcessor(glContext) {
         return webGLGeom;
     }
     var prepareDefaultPlot = function (nVertices, nElements, geomType, attributes, vertexData, elementData, attribData) {
+        console.log('prepareDefaultPlot is excuted');
         var geomData = [];
         var webGLData = [];
         if (nVertices > MAX_DATA) {
@@ -128,6 +132,7 @@ function PostProcessor(glContext) {
         return webGLData;
     };
     var prepareTypeOnePlot = function (model, plotGroup, result, renderGroup, renderData) {
+        console.log('prepareTypeOnePlot is excuted');
         var byteOffset = 4;
         var binData = renderData.rawData;
         var geomType = 1;
@@ -139,6 +144,7 @@ function PostProcessor(glContext) {
         var attribData = [];
         for (var name in attributes) {
             attribData[attributes[name].index] = new Float32Array(binData, byteOffset + (attributes[name].index * renderData.numVert * 4), renderData.numVert);
+            console.log('Step 2');
         }
         if (attributes[ATTR_VECTORX]) {
             var attrVX = attributes[ATTR_VECTORX];
@@ -157,6 +163,7 @@ function PostProcessor(glContext) {
         renderData.geomData = webGLData;
     };
     var prepareTypeTwoPlot = function (model, plotGroup, result, renderGroup, renderData) {
+        console.log('prepareTypeTwoPlot is excuted');
         var byteOffset = 4;
         var binData = renderData.rawData;
         var geomType = 2;
@@ -183,6 +190,7 @@ function PostProcessor(glContext) {
         renderData.geomData = webGLData;
     };
     var prepareTypeThreePlot = function (model, plotGroup, result, renderGroup, renderData) {
+        console.log('prepareTypeThreePlot is excuted');
         var byteOffset = 4;
         var binData = renderData.rawData;
         var webGLData;
@@ -207,9 +215,10 @@ function PostProcessor(glContext) {
         this.preparePlot(model, plotGroup, result, renderGroup, renderData);
     };
     this.preparePlot = function (model, plotGroup, result, renderGroup, renderData) {
-        console.log("Preparation of Plotgroup: " + model.name + " / " + plotGroup.name + " / " + result.name);
+        console.log("Preparation of Plot: " + model.name + " / " + plotGroup.name + " / " + result.name + " (" + result.type + ")");
         if (!result.noData && renderData.rawData) {
             renderGroup.geoType = getGeoType(result.type);
+            console.log('result type = ' + renderGroup.geoType);
             switch (renderGroup.geoType) {
                 case 1:
                     prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
@@ -230,8 +239,16 @@ function PostProcessor(glContext) {
         }
     };
     this.preparePlotGroup = function (model, plotGroup, groupId, dataId) {
-        console.log("Preparation of Plotgroup: " + model.name + " / " + plotGroup.name);
+        console.log("Preparation of Plotgroup: " + model.name + " / " + plotGroup.name + " (" + plotGroup.type + ")");
         if (plotGroup.type === TYPE_PLOTGROUP3D) {
+            if (plotGroup.renderGroup[groupId] && plotGroup.renderGroup[groupId].renderData[dataId]) {
+                this.preparePlotByNumber(model, plotGroup, plotGroup, groupId, dataId);
+            }
+            else {
+                plotGroup.noData = true;
+            }
+        }
+        else if (plotGroup.type === TYPE_PLOTGROUP2D) {
             if (plotGroup.renderGroup[groupId] && plotGroup.renderGroup[groupId].renderData[dataId]) {
                 this.preparePlotByNumber(model, plotGroup, plotGroup, groupId, dataId);
             }

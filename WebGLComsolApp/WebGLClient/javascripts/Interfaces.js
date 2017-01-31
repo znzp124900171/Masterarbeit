@@ -5,6 +5,7 @@ var TYPE_MULTISLICE = "Multislice";
 var TYPE_SURFACE = "Surface";
 var TYPE_PLOTGROUP3D = "PlotGroup3D";
 var TYPE_PLOTGROUP2D = "PlotGroup2D";
+var TYPE_PLOTGROUP1D = "PlotGroup1D";
 var TYPE_STREAMLINES = "Streamline";
 var TYPE_LINES = "Lines";
 var TYPE_ARROW_VOLUME = "ArrowVolume";

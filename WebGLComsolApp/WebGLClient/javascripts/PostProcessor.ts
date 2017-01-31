@@ -11,6 +11,7 @@ interface Float32Array {
 
 // var EPSILON = 1E-7;
 
+// The maximal Indices size is 65536 binary ( unsigned short integer
 var MAX_DATA = 0x10000;
 
 //These are the 3D Types from COMSOL
@@ -19,6 +20,7 @@ var MAX_DATA = 0x10000;
 //the third are triple of Points connected to a triangle
 function getGeoType(type: string): number {
     switch (type) {
+        case TYPE_PLOTGROUP1D:
         case TYPE_PLOTGROUP2D:
         case TYPE_ARROW_VOLUME:
         case TYPE_ARROW_SURFACE:
@@ -39,8 +41,9 @@ function getGeoType(type: string): number {
 //get the number of the Shader
 function getShaderType(type: String, lightOn: boolean, attributes: RenderAttribute[]) {
     switch (type) {
-        case TYPE_PLOTGROUP3D:
+        case TYPE_PLOTGROUP1D:
         case TYPE_PLOTGROUP2D:
+        case TYPE_PLOTGROUP3D:
             return 1;
 
         case TYPE_VOLUME:
@@ -128,11 +131,11 @@ function PostProcessor(glContext: Web3DContext) {
     // This function is for the preparation of Default Plots
     // The can be rendered directly as the are exported by COMSOL
     var prepareDefaultPlot = function (nVertices: number, nElements: number, geomType: number, attributes: RenderAttribute[], vertexData: Float32Array, elementData: Uint32Array, attribData: Float32Array[]): WebGLGeom[] {
-
+        console.log('prepareDefaultPlot is excuted');
         var geomData: Geometry[] = [];
         var webGLData: WebGLGeom[] = [];
-
         //TODO: As soon as WebGL supports 32 Bit Indexing, this here can be neglected
+        // additional annotation by Nan: WebGL 2.0 has supported the 32 Bit Indexing 
         if (nVertices > MAX_DATA) {
             geomData = splitGeometry(nVertices, nElements, vertexData, elementData, attribData, geomType);
         } else {
@@ -164,11 +167,10 @@ function PostProcessor(glContext: Web3DContext) {
 
     // Prepare Plots based on Point data
     var prepareTypeOnePlot = function (model: Model, plotGroup: Result, result: Result, renderGroup: RenderGroup, renderData: RenderData): void {
-
+        console.log('prepareTypeOnePlot is excuted');
         var byteOffset = 4;  //4 Bytes Offset for Magic Number
         var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
         var geomType = 1;       //singelPoints
-
         var webGLData: WebGLGeom[] = [];
 
         var diameter = calcModelDiameter(plotGroup);   //Diameter of the Model
@@ -176,11 +178,13 @@ function PostProcessor(glContext: Web3DContext) {
         var attributes = renderGroup.attributes;    //Description of the Attributes
 
         var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * 3); //Offset always in Byte and Length in Float32 (4 Byte)
-        byteOffset += renderData.numVert * 3 * 4; // Offset in Bytes
 
+        byteOffset += renderData.numVert * 3 * 4; // Offset in Bytes
+        
         var attribData = [];
         for (var name in attributes) {
             attribData[attributes[name].index] = new Float32Array(binData, byteOffset + (attributes[name].index * renderData.numVert * 4), renderData.numVert);
+            console.log('Step 2');
         }
 
         if (attributes[ATTR_VECTORX]) { //ARROW Data
@@ -207,7 +211,7 @@ function PostProcessor(glContext: Web3DContext) {
 
     // Prepare Plots based on Line data
     var prepareTypeTwoPlot = function (model: Model, plotGroup: Result, result: Result, renderGroup: RenderGroup, renderData: RenderData): void {
-
+        console.log('prepareTypeTwoPlot is excuted');
         var byteOffset = 4;  //4 Bytes Offset for Magic Number
         var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
         var geomType = 2;     //Lines have 2 points
@@ -257,7 +261,7 @@ function PostProcessor(glContext: Web3DContext) {
 
     // Prepare Plots based on Triangle data
     var prepareTypeThreePlot = function (model: Model, plotGroup: Result, result: Result, renderGroup: RenderGroup, renderData: RenderData): void {
-
+        console.log('prepareTypeThreePlot is excuted');
         var byteOffset = 4;  //4 Bytes Offset for Magic Number
         var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
 
@@ -301,11 +305,10 @@ function PostProcessor(glContext: Web3DContext) {
     * Calculate normals, arrows, bindBuffer
     */
     this.preparePlot = function (model: Model, plotGroup: Result, result: Result, renderGroup: RenderGroup, renderData: RenderData) {
-        console.log("Preparation of Plotgroup: " + model.name + " / " + plotGroup.name + " / " + result.name );
-
+        console.log("Preparation of Plot: " + model.name + " / " + plotGroup.name + " / " + result.name + " (" + result.type + ")");
         if (!result.noData && renderData.rawData) { //rawData exists
             renderGroup.geoType = getGeoType(result.type);  //1 = Points, 2 = Lines, 3 = Triangles
-
+            console.log('result type = ' + renderGroup.geoType);
             switch (renderGroup.geoType) {
                 case 1: prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
                     break;
@@ -325,14 +328,20 @@ function PostProcessor(glContext: Web3DContext) {
 
     //Must be called before a plot from this plotGroup can be rendered
     this.preparePlotGroup = function (model: Model, plotGroup: Result, groupId: number, dataId: number) {
-        console.log("Preparation of Plotgroup: " + model.name + " / " + plotGroup.name);
+        console.log("Preparation of Plotgroup: " + model.name + " / " + plotGroup.name + " (" + plotGroup.type + ")");
         if (plotGroup.type === TYPE_PLOTGROUP3D) {  //check if Type is of PlotGroup3D
             if (plotGroup.renderGroup[groupId] && plotGroup.renderGroup[groupId].renderData[dataId]) {
                 this.preparePlotByNumber(model, plotGroup, plotGroup, groupId, dataId);
             } else {
                 plotGroup.noData = true;
             }
-        } else {
+        } else if (plotGroup.type === TYPE_PLOTGROUP2D) {
+            if (plotGroup.renderGroup[groupId] && plotGroup.renderGroup[groupId].renderData[dataId]) {
+                this.preparePlotByNumber(model, plotGroup, plotGroup, groupId, dataId);
+            } else {
+                plotGroup.noData = true;
+            }
+        }else {
             throw plotGroup.name + "is not of type Plotgroup";
         }
     }
@@ -712,17 +721,17 @@ function splitGeometry(nVertex: number, nElements: number, vertexData: Float32Ar
         return geoms;
     }
 
-    //Converting Int to Short
-    function ConvertIntToShort(int32Array: Uint32Array): Uint16Array {
-        var length = int32Array.length;
-        var outShort = new Uint16Array(length);
+//Converting Int to Short
+function ConvertIntToShort(int32Array: Uint32Array): Uint16Array {
+    var length = int32Array.length;
+    var outShort = new Uint16Array(length);
 
-        for (var i = 0; i < length; i++) {
-            outShort[i] = int32Array[i];
-            //console.log(i + ":  " + int32Array[i] + "   :   " + outShort[i]);
-        }
-        return outShort;
+    for (var i = 0; i < length; i++) {
+        outShort[i] = int32Array[i];
+        //console.log(i + ":  " + int32Array[i] + "   :   " + outShort[i]);
     }
+    return outShort;
+}
 
 
     ////This Function creates an 3D Arrow for each vertex

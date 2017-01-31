@@ -14,6 +14,7 @@ var TYPE_SURFACE = "Surface";
 
 var TYPE_PLOTGROUP3D = "PlotGroup3D";
 var TYPE_PLOTGROUP2D = "PlotGroup2D";
+var TYPE_PLOTGROUP1D = "PlotGroup1D";
 var TYPE_STREAMLINES = "Streamline";
 var TYPE_LINES = "Lines";
 
@@ -123,7 +124,7 @@ interface RenderAttribute {
 
 interface RenderGroup {
     shaderId?: number;  //id of the shader to use for this render Group, is set by the Postprocessor
-    geoType?: number;   //geometry Type, dimensions, lines, triangles or Points
+    geoType?: number;   //geometry Type, lines, triangles or Points
 
     renderData: Array<RenderData>;                      // the binary data is splitted into single render Data objects, all can be rendered by the same shader Program
     attributes?: Array<RenderAttribute>                 // the RenderAttributes to be defined rot this renderGroup
@@ -140,8 +141,6 @@ interface Result {
     boundBox: number[]; //boundary Box [minX, maxX, minY, maxY, minZ, maxZ]
 
     noData?: boolean;   //renderGroup = null;
-
-    dimension?: number; // dimension of result, 1 for spreadsheet, 2 for 2D plot, 3 for 3D plot
 
     offset: Float32Array;   // x,y,z Offset to place the model in the middle of the screen
     scale: Float32Array;    // x=y=z to scale the mode to a box of 1,1,1
