@@ -117,7 +117,7 @@
     <IncludeIisSettings>false</IncludeIisSettings>
     <TypeScriptModuleKind>amd</TypeScriptModuleKind>
     <TypeScriptGeneratesDeclarations>True</TypeScriptGeneratesDeclarations>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

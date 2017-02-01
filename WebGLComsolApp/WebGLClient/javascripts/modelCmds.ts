@@ -1,8 +1,8 @@
 ﻿/// <reference path="./Interfaces.ts"/>
 /// <refernce path="libs/gl-matrix.d.ts"/>
 /// <refernce path="libs/jquery.d.ts"/>
-var MODEL_PATH = "visual";
-var MODEL_LIST = "list.json";
+var MODEL_PATH: string = "visual";
+var MODEL_LIST: string = "list.json";
 
 function ModelCmds() {
     var self: ModelCmds = this;
@@ -72,7 +72,6 @@ function ModelCmds() {
     // The Callback gets the PlotGrop
     this.getPlotGroup = function(modelId: string, plotGroupTag: string, callback: (result: Result) => void) {
         self.getModel(modelId, function (model: Model) {    // Request model
-
             for (var i in model.results) {  // For each Plot Group in this model
 
                 if (model.results[i].tag === plotGroupTag) {   // Plot Group equals requested Plot Group

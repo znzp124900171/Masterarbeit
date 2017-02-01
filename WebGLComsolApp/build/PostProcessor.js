@@ -10,6 +10,7 @@ function getGeoType(type) {
         case TYPE_PLOTGROUP3D:
         case TYPE_STREAMLINES:
         case TYPE_LINES:
+        case TYPE_SURFACE:
             return 2;
         case TYPE_VOLUME:
         case TYPE_SLICE:
@@ -106,6 +107,7 @@ function PostProcessor(glContext) {
         var geomData = [];
         var webGLData = [];
         if (nVertices > MAX_DATA) {
+            console.log('spiltGeom is executed');
             geomData = splitGeometry(nVertices, nElements, vertexData, elementData, attribData, geomType);
         }
         else {
@@ -162,20 +164,22 @@ function PostProcessor(glContext) {
         renderData.geomData = webGLData;
     };
     var prepareTypeTwoPlot = function (model, plotGroup, result, renderGroup, renderData) {
-        console.log('prepareTypeTwoPlot is excuted');
+        console.log('prepareTypeTwoPlot is excuted 2');
         var byteOffset = 4;
         var binData = renderData.rawData;
         var geomType = 2;
+        var plotType = 0;
+        if (plotGroup.type == TYPE_PLOTGROUP3D) {
+            plotType = 3;
+        }
+        else if (plotGroup.type == TYPE_PLOTGROUP2D) {
+            plotType = 2;
+        }
         var webGLData;
         var diameter = calcModelDiameter(plotGroup);
         var attributes = renderGroup.attributes;
-        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * 3);
-        if (plotGroup.type == TYPE_PLOTGROUP3D) {
-            byteOffset += renderData.numVert * 3 * 4;
-        }
-        else if (plotGroup.type == TYPE_PLOTGROUP2D) {
-            byteOffset += renderData.numVert * 2 * 4;
-        }
+        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * plotType);
+        byteOffset += renderData.numVert * plotType * 4;
         var attribData = [];
         for (var name in attributes) {
             attribData[attributes[name].index] = new Float32Array(binData, byteOffset, renderData.numVert);
@@ -270,7 +274,8 @@ function PostProcessor(glContext) {
         var boundingBox = result.boundBox;
         result.scale = new Float32Array(3);
         result.offset = new Float32Array(3);
-        if (boundingBox.length === 6) {
+        if (boundingBox[4] !== 0 && boundingBox[5] !== 0) {
+            console.log('step 1');
             var xMin = boundingBox[0];
             var xMax = boundingBox[1];
             var yMin = boundingBox[2];
@@ -289,7 +294,8 @@ function PostProcessor(glContext) {
             result.offset[1] = -(yMax + yMin) / 2;
             result.offset[2] = -(zMax + zMin) / 2;
         }
-        else if (boundingBox.length === 4) {
+        else if (boundingBox[4] === 0 && boundingBox[5] === 0) {
+            console.log('step 2');
             var xMin = boundingBox[0];
             var xMax = boundingBox[1];
             var yMin = boundingBox[2];

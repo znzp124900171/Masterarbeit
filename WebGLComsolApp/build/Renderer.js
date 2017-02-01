@@ -266,13 +266,15 @@ function Renderer(modelData, glc) {
         drawCallRequest = true;
     };
     var drawPlotGroup = function () {
+        console.log('drawPlotGroup');
         if (!activePlotgroup.noData) {
             for (var i = 0; i < activePlotgroup.renderGroup.length; i++) {
-                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], "black");
+                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], "red");
             }
         }
     };
     var drawPlots = function () {
+        console.log('drawPlots');
         for (var i = 0; i < activePlots.length; i++) {
             var result = activePlots[i];
             if (!result.noData) {
@@ -330,6 +332,7 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader1Lines = function (renderGroup, usrColor) {
+        console.log('drawRenderGroupShader1Lines');
         var color = glContext.getColorByName(usrColor);
         var prog = programs[1];
         gl.useProgram(prog.gl);
@@ -679,6 +682,7 @@ function Renderer(modelData, glc) {
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
     var drawFront = function () {
+        alert('drawFront is executed 1');
         gl.useProgram(programs[1].gl);
         gl.uniformMatrix4fv(programs[1].uniforms[GL_UNI_MVP], false, mvpFront);
         gl.enableVertexAttribArray(programs[1].attributes[GL_ATTR_VTX]);
@@ -696,6 +700,7 @@ function Renderer(modelData, glc) {
         gl.uniform3fv(programs[1].uniforms[GL_UNI_COL], [1.0, 0.0, 0.0]);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, coordSys.idxBuf);
         gl.drawElements(gl.TRIANGLES, 114, gl.UNSIGNED_SHORT, 468);
+        alert('drawFront is executed 1');
     };
     function drawScene() {
         gl.disable(gl.DEPTH_TEST);
@@ -716,7 +721,6 @@ function Renderer(modelData, glc) {
             drawPlotGroup();
         }
         gl.disable(gl.DEPTH_TEST);
-        drawFront();
         gl.clear(gl.DEPTH_BUFFER_BIT);
     }
     function checkGLerror() {

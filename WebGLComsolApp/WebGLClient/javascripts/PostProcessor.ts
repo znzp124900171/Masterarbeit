@@ -29,6 +29,7 @@ function getGeoType(type: string): number {
         case TYPE_PLOTGROUP3D:
         case TYPE_STREAMLINES:
         case TYPE_LINES:
+        case TYPE_SURFACE:
             return 2;
         case TYPE_VOLUME:
         case TYPE_SLICE:
@@ -137,6 +138,7 @@ function PostProcessor(glContext: Web3DContext) {
         //TODO: As soon as WebGL supports 32 Bit Indexing, this here can be neglected
         // additional annotation by Nan: WebGL 2.0 has supported the 32 Bit Indexing 
         if (nVertices > MAX_DATA) {
+            console.log('spiltGeom is executed');
             geomData = splitGeometry(nVertices, nElements, vertexData, elementData, attribData, geomType);
         } else {
             var elementData16 = ConvertIntToShort(elementData);
@@ -210,10 +212,17 @@ function PostProcessor(glContext: Web3DContext) {
 
     // Prepare Plots based on Line data
     var prepareTypeTwoPlot = function (model: Model, plotGroup: Result, result: Result, renderGroup: RenderGroup, renderData: RenderData): void {
-        console.log('prepareTypeTwoPlot is excuted');
+        console.log('prepareTypeTwoPlot is excuted 2');
         var byteOffset = 4;  //4 Bytes Offset for Magic Number
         var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
         var geomType = 2;     //Lines have 2 points
+        var plotType = 0;
+
+        if (plotGroup.type == TYPE_PLOTGROUP3D) {
+            plotType = 3;
+        } else if (plotGroup.type == TYPE_PLOTGROUP2D) {
+            plotType = 2;
+        }
 
         var webGLData: WebGLGeom[];
 
@@ -221,12 +230,8 @@ function PostProcessor(glContext: Web3DContext) {
 
         var attributes = renderGroup.attributes;    //Description of the Attributes
 
-        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * 3); //Offset always in Byte and Length in Float32 (4 Byte)
-        if (plotGroup.type == TYPE_PLOTGROUP3D) {
-            byteOffset += renderData.numVert * 3 * 4; // Offset in Bytes
-        } else if (plotGroup.type == TYPE_PLOTGROUP2D) {
-            byteOffset += renderData.numVert * 2 * 4; // Offset in Bytes
-        }
+        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * plotType); //Offset always in Byte and Length in Float32 (4 Byte)
+        byteOffset += renderData.numVert * plotType * 4; // Offset in Bytes
         
 
         var attribData = [];
@@ -361,7 +366,8 @@ function PostProcessor(glContext: Web3DContext) {
         result.scale = new Float32Array(3);
         result.offset = new Float32Array(3);
 
-        if (boundingBox.length === 6) {
+        if (boundingBox[4] !== 0 && boundingBox[5] !== 0) {
+            console.log('step 1');
             var xMin = boundingBox[0];
             var xMax = boundingBox[1];
             var yMin = boundingBox[2];
@@ -382,7 +388,8 @@ function PostProcessor(glContext: Web3DContext) {
             result.offset[1] = -(yMax + yMin) / 2;
             result.offset[2] = -(zMax + zMin) / 2;
 
-        } else if (boundingBox.length === 4) {
+        } else if (boundingBox[4] === 0 && boundingBox[5] === 0) {
+            console.log('step 2');
             var xMin = boundingBox[0];
             var xMax = boundingBox[1];
             var yMin = boundingBox[2];
