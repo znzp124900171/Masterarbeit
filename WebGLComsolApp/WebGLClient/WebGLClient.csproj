@@ -38,7 +38,29 @@
     <Content Include="tsconfig.json" />
     <Content Include="javascripts\libs\jquery.mobile-1.4.5.min.map" />
     <Content Include="visual\list.json" />
-    <Content Include="visual\piezoacoustic_transducer_2017-01-31 22-51-38.json" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53.json" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg10.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg10\surf1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg11.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg11\surf1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg14.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg14\arws1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg14\surf1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg14\surf2.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg1\surf1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg2.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg2\surf1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg3.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg3\surf1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg4.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg4\surf1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg7.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg7\surf1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg8.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg8\surf1.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg9.0.0.bin" />
+    <Content Include="visual\piezoacoustic_transducer_2017-02-01 15-10-53\pg9\surf1.0.0.bin" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -59,7 +81,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="visual\piezoacoustic_transducer_2017-01-31 22-51-38\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
