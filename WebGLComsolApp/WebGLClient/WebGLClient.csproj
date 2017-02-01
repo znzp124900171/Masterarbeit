@@ -38,7 +38,7 @@
     <Content Include="tsconfig.json" />
     <Content Include="javascripts\libs\jquery.mobile-1.4.5.min.map" />
     <Content Include="visual\list.json" />
-    <Content Include="visual\piezoacoustic_transducer_2017-01-01 18-11-00.json" />
+    <Content Include="visual\piezoacoustic_transducer_2017-01-31 22-51-38.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -59,7 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="visual\piezoacoustic_transducer_2017-01-01 18-11-00\" />
+    <Folder Include="visual\piezoacoustic_transducer_2017-01-31 22-51-38\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>

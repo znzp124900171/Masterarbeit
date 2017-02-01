@@ -21,11 +21,11 @@ var MAX_DATA = 0x10000;
 function getGeoType(type: string): number {
     switch (type) {
         case TYPE_PLOTGROUP1D:
-        case TYPE_PLOTGROUP2D:
         case TYPE_ARROW_VOLUME:
         case TYPE_ARROW_SURFACE:
         case TYPE_ARROW_LINE:
             return 1;
+        case TYPE_PLOTGROUP2D:
         case TYPE_PLOTGROUP3D:
         case TYPE_STREAMLINES:
         case TYPE_LINES:
@@ -180,7 +180,7 @@ function PostProcessor(glContext: Web3DContext) {
         var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * 3); //Offset always in Byte and Length in Float32 (4 Byte)
 
         byteOffset += renderData.numVert * 3 * 4; // Offset in Bytes
-        
+               
         var attribData = [];
         for (var name in attributes) {
             attribData[attributes[name].index] = new Float32Array(binData, byteOffset + (attributes[name].index * renderData.numVert * 4), renderData.numVert);
@@ -223,7 +223,12 @@ function PostProcessor(glContext: Web3DContext) {
         var attributes = renderGroup.attributes;    //Description of the Attributes
 
         var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * 3); //Offset always in Byte and Length in Float32 (4 Byte)
-        byteOffset += renderData.numVert * 3 * 4; // Offset in Bytes
+        if (plotGroup.type == TYPE_PLOTGROUP3D) {
+            byteOffset += renderData.numVert * 3 * 4; // Offset in Bytes
+        } else if (plotGroup.type == TYPE_PLOTGROUP2D) {
+            byteOffset += renderData.numVert * 2 * 4; // Offset in Bytes
+        }
+        
 
         var attribData = [];
         for (var name in attributes) {

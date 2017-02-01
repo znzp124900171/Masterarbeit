@@ -41,8 +41,6 @@ public class ComsolRenderGroup implements ITreeNode{
         this.objName = "Render Group " + index;
         this.index = index;
         
-        result.getSDim();
-        
         int nGroups = result.getGroups(index);	//get Number of Render Groups
         
         if(nGroups > 0 ){

@@ -54,11 +54,11 @@ public class ComsolResult implements ITreeNode{
     
     //Lines type = 2
     private static final String TYPE_PLOTGROUP3D = "PlotGroup3D";
+    private static final String TYPE_PLOTGROUP2D = "PlotGroup2D";
     private static final String TYPE_STREAMLINES = "Streamline";
     private static final String TYPE_LINES = "Lines"; 
 
     //Points type = 1
-    private static final String TYPE_PLOTGROUP2D = "PlotGroup2D";
     private static final String TYPE_ARROW_VOLUME = "ArrowVolume";
     private static final String TYPE_ARROW_SURFACE = "ArrowSurface";
     private static final String TYPE_ARROW_LINE = "ArrowLine";    
@@ -134,10 +134,10 @@ public class ComsolResult implements ITreeNode{
         if(type.equals(TYPE_VOLUME) || type.equals(TYPE_SLICE) || type.equals(TYPE_MULTISLICE)|| type.equals(TYPE_SURFACE) || type.equals(TYPE_ISOSURFACE))
             return 3;
         
-        else if(type.equals(TYPE_PLOTGROUP3D) || type.equals(TYPE_STREAMLINES) || type.equals(TYPE_LINES))
+        else if(type.equals(TYPE_PLOTGROUP3D) || type.equals(TYPE_PLOTGROUP2D) || type.equals(TYPE_STREAMLINES) || type.equals(TYPE_LINES))
             return 2;
             
-        else if(type.equals(TYPE_PLOTGROUP2D) || type.equals(TYPE_ARROW_VOLUME) || type.equals(TYPE_ARROW_SURFACE) || type.equals(TYPE_ARROW_LINE))
+        else if(type.equals(TYPE_ARROW_VOLUME) || type.equals(TYPE_ARROW_SURFACE) || type.equals(TYPE_ARROW_LINE))
             return 1;
         
         else

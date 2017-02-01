@@ -64,7 +64,6 @@ public class ComsolRenderData implements ITreeNode{
         
         int elementType = ComsolResult.checkType(type); // 0 = unknown, 1 = point, 2 = lines, 3 = triangles
 
-        
         this.bufVertex = result.getVertices(indexGroup, indexData);		//get binary data of all vertices
         this.nVertex = this.bufVertex[0].length;
         System.out.println("length of bufVertx: "+ this.bufVertex.length);
