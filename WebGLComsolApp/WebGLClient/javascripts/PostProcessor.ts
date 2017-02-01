@@ -184,7 +184,6 @@ function PostProcessor(glContext: Web3DContext) {
         var attribData = [];
         for (var name in attributes) {
             attribData[attributes[name].index] = new Float32Array(binData, byteOffset + (attributes[name].index * renderData.numVert * 4), renderData.numVert);
-            console.log('Step 2');
         }
 
         if (attributes[ATTR_VECTORX]) { //ARROW Data
