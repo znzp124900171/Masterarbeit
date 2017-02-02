@@ -2,8 +2,7 @@
   "compilerOptions": {
     "module": "amd",
     "removeComments": true,
-    "target": "ES5",
-    "outDir": "../build/"
+    "target": "ES6"
   },
     "files": [
         "./javascripts/main.ts",

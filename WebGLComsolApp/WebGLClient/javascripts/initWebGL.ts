@@ -102,26 +102,45 @@ function Web3DContext(canvas: HTMLElement) {
         // 101, 102, ..., Pong Light Effects
 
         shaders = [{
-            name: "unifiedColorShader",
-            id: 1,
+            name: "unifield2DColorShader",
+            id: 99,
             vxProgram: "attribute vec3 vertex;\n\
                     uniform mat4 mvpMatrix;\n\
                     \n\
                     void main(void) {\n\
                         gl_Position = mvpMatrix * vec4(vertex, 1.0);\n\
                     }",
-
             pxProgram: "precision mediump float;\n\
-        	        \n\
+                    \n\
                     uniform vec3 color;\n\
                     \n\
-        	        void main(void) {\n\
+                    void main(void) {\n\
                         gl_FragColor = vec4(color,1.0);\n\
-                    }",
-
+            }",
             attributes: [GL_ATTR_VTX],
-            uniforms: [GL_UNI_MVP, GL_UNI_COL]
+            uniforms: [GL_UNI_MVP,GL_UNI_COL]
         },
+            {
+                name: "unifiedColorShader",
+                id: 1,
+                vxProgram: "attribute vec3 vertex;\n\
+                        uniform mat4 mvpMatrix;\n\
+                        \n\
+                        void main(void) {\n\
+                            gl_Position = mvpMatrix * vec4(vertex, 1.0);\n\
+                        }",
+
+                pxProgram: "precision mediump float;\n\
+        	            \n\
+                        uniform vec3 color;\n\
+                        \n\
+        	            void main(void) {\n\
+                            gl_FragColor = vec4(color,1.0);\n\
+                        }",
+
+                attributes: [GL_ATTR_VTX],
+                uniforms: [GL_UNI_MVP, GL_UNI_COL]
+            },
             {
                 name: "unifiedColorLightShader",
                id: 101,

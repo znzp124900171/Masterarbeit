@@ -42,8 +42,9 @@ function getGeoType(type: string): number {
 //get the number of the Shader
 function getShaderType(type: String, lightOn: boolean, attributes: RenderAttribute[]) {
     switch (type) {
-        case TYPE_PLOTGROUP1D:
         case TYPE_PLOTGROUP2D:
+            return 99;
+        case TYPE_PLOTGROUP1D:
         case TYPE_PLOTGROUP3D:
             return 1;
 
@@ -212,7 +213,7 @@ function PostProcessor(glContext: Web3DContext) {
 
     // Prepare Plots based on Line data
     var prepareTypeTwoPlot = function (model: Model, plotGroup: Result, result: Result, renderGroup: RenderGroup, renderData: RenderData): void {
-        console.log('prepareTypeTwoPlot is excuted 2');
+        console.log('prepareTypeTwoPlot is excuted');
         var byteOffset = 4;  //4 Bytes Offset for Magic Number
         var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
         var geomType = 2;     //Lines have 2 points
@@ -317,7 +318,6 @@ function PostProcessor(glContext: Web3DContext) {
         console.log("Preparation of Plot: " + model.name + " / " + plotGroup.name + " / " + result.name + " (" + result.type + ")");
         if (!result.noData && renderData.rawData) { //rawData exists
             renderGroup.geoType = getGeoType(result.type);  //1 = Points, 2 = Lines, 3 = Triangles
-            console.log('result type = ' + renderGroup.geoType);
             switch (renderGroup.geoType) {
                 case 1: prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
                     break;

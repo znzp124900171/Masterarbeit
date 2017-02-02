@@ -385,7 +385,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         console.log('drawPlotGroup');
         if (!activePlotgroup.noData) {
             for (var i = 0; i < activePlotgroup.renderGroup.length; i++) {
-                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], "red");
+                drawRender2DGroupShader1Lines(activePlotgroup.renderGroup[i], "black");
             }
         }
     }
@@ -449,6 +449,26 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                             break;
                     }                                                          
                 }
+            }
+        }
+    }
+    var drawRender2DGroupShader1Lines = function (renderGroup: RenderGroup, usrColor: string) {
+        console.log('drawRender2DGroupShader1Lines');
+        var color = glContext.getColorByName(usrColor);
+        var prog = programs[99];
+
+        gl.useProgram(prog.gl);
+        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
+        gl.uniform3fv(prog.uniforms[GL_UNI_COL], color);
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom: WebGLGeom = geomData[j];
+                gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
+                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
+                gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
             }
         }
     }
@@ -872,7 +892,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     //paint the foreground i.e coordination system
     var drawFront = function () {
-        alert('drawFront is executed 1');
         gl.useProgram(programs[1].gl);
         gl.uniformMatrix4fv(programs[1].uniforms[GL_UNI_MVP], false, mvpFront);
         gl.enableVertexAttribArray(programs[1].attributes[GL_ATTR_VTX]);
@@ -894,7 +913,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.uniform3fv(programs[1].uniforms[GL_UNI_COL], [1.0, 0.0, 0.0]);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, coordSys.idxBuf);
         gl.drawElements(gl.TRIANGLES, 114, gl.UNSIGNED_SHORT, 468);
-        alert('drawFront is executed 1');
         }
 
     //paint the complete Scene

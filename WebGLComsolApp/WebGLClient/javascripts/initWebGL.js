@@ -13,11 +13,8 @@ var GL_ATTR_COL = "color";
 var GL_ATTR_DEF_X = "deformX";
 var GL_ATTR_DEF_Y = "deformY";
 var GL_ATTR_DEF_Z = "deformZ";
-var ShaderProgram = (function () {
-    function ShaderProgram() {
-    }
-    return ShaderProgram;
-}());
+class ShaderProgram {
+}
 function Web3DContext(canvas) {
     var shaders;
     var colorList;
@@ -48,8 +45,8 @@ function Web3DContext(canvas) {
     }
     function initStaticData() {
         shaders = [{
-                name: "unifiedColorShader",
-                id: 1,
+                name: "unifield2DColorShader",
+                id: 99,
                 vxProgram: "attribute vec3 vertex;\n\
                     uniform mat4 mvpMatrix;\n\
                     \n\
@@ -57,12 +54,31 @@ function Web3DContext(canvas) {
                         gl_Position = mvpMatrix * vec4(vertex, 1.0);\n\
                     }",
                 pxProgram: "precision mediump float;\n\
-        	        \n\
+                    \n\
                     uniform vec3 color;\n\
                     \n\
-        	        void main(void) {\n\
+                    void main(void) {\n\
                         gl_FragColor = vec4(color,1.0);\n\
-                    }",
+            }",
+                attributes: [GL_ATTR_VTX],
+                uniforms: [GL_UNI_MVP, GL_UNI_COL]
+            },
+            {
+                name: "unifiedColorShader",
+                id: 1,
+                vxProgram: "attribute vec3 vertex;\n\
+                        uniform mat4 mvpMatrix;\n\
+                        \n\
+                        void main(void) {\n\
+                            gl_Position = mvpMatrix * vec4(vertex, 1.0);\n\
+                        }",
+                pxProgram: "precision mediump float;\n\
+        	            \n\
+                        uniform vec3 color;\n\
+                        \n\
+        	            void main(void) {\n\
+                            gl_FragColor = vec4(color,1.0);\n\
+                        }",
                 attributes: [GL_ATTR_VTX],
                 uniforms: [GL_UNI_MVP, GL_UNI_COL]
             },

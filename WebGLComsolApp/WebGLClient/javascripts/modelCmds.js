@@ -13,9 +13,8 @@ function ModelCmds() {
         guiType.arrowScale = false;
         guiType.radiusScale = false;
         guiType.deformationScale = false;
-        for (var _i = 0, _a = result.renderGroup; _i < _a.length; _i++) {
-            var group = _a[_i];
-            for (var attr in group.attributes) {
+        for (let group of result.renderGroup) {
+            for (let attr in group.attributes) {
                 switch (attr) {
                     case ATTR_VECTORX:
                         guiType.arrowScale = true;
