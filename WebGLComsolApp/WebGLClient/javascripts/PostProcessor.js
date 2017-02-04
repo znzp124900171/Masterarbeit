@@ -1,7 +1,6 @@
 var MAX_DATA = 0x10000;
 function getGeoType(type) {
     switch (type) {
-        case TYPE_PLOTGROUP1D:
         case TYPE_ARROW_VOLUME:
         case TYPE_ARROW_SURFACE:
         case TYPE_ARROW_LINE:
@@ -10,7 +9,6 @@ function getGeoType(type) {
         case TYPE_PLOTGROUP3D:
         case TYPE_STREAMLINES:
         case TYPE_LINES:
-        case TYPE_SURFACE:
             return 2;
         case TYPE_VOLUME:
         case TYPE_SLICE:
@@ -22,8 +20,7 @@ function getGeoType(type) {
 function getShaderType(type, lightOn, attributes) {
     switch (type) {
         case TYPE_PLOTGROUP2D:
-            return 99;
-        case TYPE_PLOTGROUP1D:
+            return 12;
         case TYPE_PLOTGROUP3D:
             return 1;
         case TYPE_VOLUME:
@@ -218,6 +215,44 @@ function PostProcessor(glContext) {
         webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);
         renderData.geomData = webGLData;
     };
+    var prepareTypeTwo2DPlot = function (model, plotGroup, result, renderGroup, renderData) {
+        console.log('prepareTypeTwo2DPlot is excuted');
+        var byteOffset = 4;
+        var binData = renderData.rawData;
+        var geomType = 2;
+        var plotType = 0;
+        if (plotGroup.type == TYPE_PLOTGROUP3D) {
+            plotType = 3;
+        }
+        else if (plotGroup.type == TYPE_PLOTGROUP2D) {
+            plotType = 2;
+        }
+        var webGLData;
+        var diameter = calcModelDiameter(plotGroup);
+        var attributes = renderGroup.attributes;
+        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * plotType);
+        byteOffset += renderData.numVert * plotType * 4;
+        console.log('ByteOffset(vertexData): ' + renderData.numVert * plotType * 4);
+        var attribData = [];
+        for (var name in attributes) {
+            attribData[attributes[name].index] = new Float32Array(binData, byteOffset, renderData.numVert);
+            byteOffset += renderData.numVert * 4;
+        }
+        console.log('ByteOffset(attribData): ' + renderData.numVert * 4);
+        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * 2);
+        byteOffset += renderData.numEle * geomType * 4;
+        console.log('ByteOffset(elementData): ' + byteOffset);
+        console.log('binData.byteLength : ' + binData.byteLength + '/nbtyeOffset' + byteOffset);
+        if (binData.byteLength !== byteOffset) {
+            console.log("Byte sizes differ");
+        }
+        if (attributes[ATTR_RAD]) {
+        }
+        else {
+            webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);
+        }
+        renderData.geomData = webGLData;
+    };
     this.preparePlotByNumber = function (model, plotGroup, result, groupId, dataId) {
         var renderGroup = result.renderGroup[groupId];
         var renderData = renderGroup.renderData[dataId];
@@ -227,16 +262,31 @@ function PostProcessor(glContext) {
         console.log("Preparation of Plot: " + model.name + " / " + plotGroup.name + " / " + result.name + " (" + result.type + ")");
         if (!result.noData && renderData.rawData) {
             renderGroup.geoType = getGeoType(result.type);
-            switch (renderGroup.geoType) {
-                case 1:
-                    prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
-                    break;
-                case 2:
-                    prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
-                    break;
-                case 3:
-                    prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
-                    break;
+            if (plotGroup.type == TYPE_PLOTGROUP3D) {
+                switch (renderGroup.geoType) {
+                    case 1:
+                        prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                    case 2:
+                        prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                    case 3:
+                        prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                }
+            }
+            else if (plotGroup.type == TYPE_PLOTGROUP2D) {
+                switch (renderGroup.geoType) {
+                    case 1:
+                        prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                    case 2:
+                        prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                    case 3:
+                        prepareTypeTwo2DPlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                }
             }
             result.usrColor = glContext.getColorNames()[0];
             result.usrText = glContext.getTextureName()[0];

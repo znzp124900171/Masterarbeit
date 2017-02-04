@@ -20,7 +20,6 @@ var MAX_DATA = 0x10000;
 //the third are triple of Points connected to a triangle
 function getGeoType(type: string): number {
     switch (type) {
-        case TYPE_PLOTGROUP1D:
         case TYPE_ARROW_VOLUME:
         case TYPE_ARROW_SURFACE:
         case TYPE_ARROW_LINE:
@@ -29,7 +28,6 @@ function getGeoType(type: string): number {
         case TYPE_PLOTGROUP3D:
         case TYPE_STREAMLINES:
         case TYPE_LINES:
-        case TYPE_SURFACE:
             return 2;
         case TYPE_VOLUME:
         case TYPE_SLICE:
@@ -43,8 +41,7 @@ function getGeoType(type: string): number {
 function getShaderType(type: String, lightOn: boolean, attributes: RenderAttribute[]) {
     switch (type) {
         case TYPE_PLOTGROUP2D:
-            return 99;
-        case TYPE_PLOTGROUP1D:
+            return 12;
         case TYPE_PLOTGROUP3D:
             return 1;
 
@@ -299,6 +296,63 @@ function PostProcessor(glContext: Web3DContext) {
         renderData.geomData = webGLData;
     }
 
+    // Prepare Plots based on Line data
+    var prepareTypeTwo2DPlot = function (model: Model, plotGroup: Result, result: Result, renderGroup: RenderGroup, renderData: RenderData): void {
+        console.log('prepareTypeTwo2DPlot is excuted');
+        var byteOffset = 4;  //4 Bytes Offset for Magic Number
+        var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
+        var geomType = 2;     //Lines have 2 points
+        var plotType = 0;
+
+        if (plotGroup.type == TYPE_PLOTGROUP3D) {
+            plotType = 3;
+        } else if (plotGroup.type == TYPE_PLOTGROUP2D) {
+            plotType = 2;
+        }
+
+        var webGLData: WebGLGeom[];
+
+        var diameter = calcModelDiameter(plotGroup);   //Diameter of the Model
+
+        var attributes = renderGroup.attributes;    //Description of the Attributes
+
+        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * plotType); //Offset always in Byte and Length in Float32 (4 Byte)
+        byteOffset += renderData.numVert * plotType * 4; // Offset in Bytes
+        console.log('ByteOffset(vertexData): ' + renderData.numVert * plotType * 4);
+
+        var attribData = [];
+        for (var name in attributes) {
+            attribData[attributes[name].index] = new Float32Array(binData, byteOffset, renderData.numVert);
+            byteOffset += renderData.numVert * 4; // Offset in Bytes
+        }
+        console.log('ByteOffset(attribData): ' + renderData.numVert * 4);
+        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * 2);
+        byteOffset += renderData.numEle * geomType * 4;  //Offset in Bytes
+        console.log('ByteOffset(elementData): ' + byteOffset);
+        console.log('binData.byteLength : ' + binData.byteLength + '/nbtyeOffset' + byteOffset);
+        if (binData.byteLength !== byteOffset) {
+            console.log("Byte sizes differ");
+        }
+
+        //check special Attributes
+        if (attributes[ATTR_RAD]) { // Render Tubes
+            //var attrRadius: RenderAttribute = attributes[ATTR_RAD];
+
+            //var scalation = diameter / attrRadius.max / 100 // Thickest tube is 1 %Percent of Model size, Default Thickness (can manually changed by User)
+
+            //var geomData = calcTube(renderData.numVert, renderData.numEle, vertexData, attribData[attrRadius.index], elementData, scalation);
+
+
+            //for (var i = 0; i < geomData.length; i++) {
+            //    webGLData[i] = createWebGLGeom(geomData[i]);
+            //}
+
+        } else {    // If no Tube then this here is a default Plot
+            webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);
+        }
+
+        renderData.geomData = webGLData;
+    }
 
     /* 
     *  Prepares the raw Data of a plot
@@ -318,14 +372,26 @@ function PostProcessor(glContext: Web3DContext) {
         console.log("Preparation of Plot: " + model.name + " / " + plotGroup.name + " / " + result.name + " (" + result.type + ")");
         if (!result.noData && renderData.rawData) { //rawData exists
             renderGroup.geoType = getGeoType(result.type);  //1 = Points, 2 = Lines, 3 = Triangles
-            switch (renderGroup.geoType) {
-                case 1: prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
-                    break;
-                case 2: prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
-                    break;
-                case 3: prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
-                    break;
+            if (plotGroup.type == TYPE_PLOTGROUP3D) {
+                switch (renderGroup.geoType) {
+                    case 1: prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                    case 2: prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                    case 3: prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                }
+            } else if (plotGroup.type == TYPE_PLOTGROUP2D) {
+                switch (renderGroup.geoType) {
+                    case 1: prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                    case 2: prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                    case 3: prepareTypeTwo2DPlot(model, plotGroup, result, renderGroup, renderData);
+                        break;
+                }
             }
+            
 
             result.usrColor = glContext.getColorNames()[0];
             result.usrText = glContext.getTextureName()[0];

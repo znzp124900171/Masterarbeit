@@ -103,7 +103,7 @@ function Web3DContext(canvas: HTMLElement) {
 
         shaders = [{
             name: "unifield2DColorShader",
-            id: 99,
+            id: 12,
             vxProgram: "attribute vec3 vertex;\n\
                     uniform mat4 mvpMatrix;\n\
                     \n\
@@ -120,6 +120,31 @@ function Web3DContext(canvas: HTMLElement) {
             attributes: [GL_ATTR_VTX],
             uniforms: [GL_UNI_MVP,GL_UNI_COL]
         },
+            {
+                name: "ColorTableShader",
+                id: 98,
+                vxProgram: "attribute vec3 vertex;\n\
+                    attribute float color;\n\
+        	        \n\
+                    uniform mat4 mvpMatrix;\n\
+        	        \n\
+        	        varying float varColor;\n\
+                    \n\
+                    void main(void ) {\n\
+                        gl_Position = mvpMatrix * vec4(vertex, 1.0);\n\
+                        varColor = color;\n\
+                    }",
+
+                pxProgram: "precision mediump float;\n\
+        	        uniform sampler2D texSampler;\n\
+                    varying float varColor;\n\
+                    \
+                    void main(void ) {\n\
+                        gl_FragColor = texture2D(texSampler, vec2(varColor, 0.0));\n\
+                    }",
+                attributes: [GL_ATTR_VTX, GL_ATTR_COL],
+                uniforms: [GL_UNI_MVP, GL_UNI_TEX]
+            },
             {
                 name: "unifiedColorShader",
                 id: 1,
