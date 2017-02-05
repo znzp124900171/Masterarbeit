@@ -13,9 +13,11 @@
 		var cubeTexture;
 
 		var shaderProgram;
+		var normalMatrix = mat4.create();
 		var mvMatrix = mat4.create();
 		var pMatrix = mat4.create();
 		var vertexPositionAttribute;
+		var vertexNormalAttribute;
 		var textureCoordAttribute;
 
 		var colorTable = new Uint8Array([
@@ -106,6 +108,8 @@
 			shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
         	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 
+        	shaderProgram.nUniform = gl.getUniformLocation(shaderProgram, "uNormalMatrix");
+
 
         	textureCoordAttribute = gl.getAttribLocation(shaderProgram, "color");
         	gl.enableVertexAttribArray(textureCoordAttribute);
@@ -115,6 +119,9 @@
 		function updateMatrixUniforms(){
 			gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 			gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+			mat4.invert(normalMatrix,mvMatrix);
+			mat4.transpose(normalMatrix,normalMatrix);
+			gl.uniformMatrix4fv(shaderProgram.nUniform, false, new Float32Array(normalMatrix));
 		}
 
 		function initBuffers(){
@@ -231,6 +238,49 @@
 			// Now send the element array to GL
 
 			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+
+			cubeVerticesNormalBuffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesNormalBuffer);
+
+			var vertexNormals = [
+			  // Front
+			   0.0,  0.0,  1.0,
+			   0.0,  0.0,  1.0,
+			   0.0,  0.0,  1.0,
+			   0.0,  0.0,  1.0,
+			  
+			  // Back
+			   0.0,  0.0, -1.0,
+			   0.0,  0.0, -1.0,
+			   0.0,  0.0, -1.0,
+			   0.0,  0.0, -1.0,
+			  
+			  // Top
+			   0.0,  1.0,  0.0,
+			   0.0,  1.0,  0.0,
+			   0.0,  1.0,  0.0,
+			   0.0,  1.0,  0.0,
+			  
+			  // Bottom
+			   0.0, -1.0,  0.0,
+			   0.0, -1.0,  0.0,
+			   0.0, -1.0,  0.0,
+			   0.0, -1.0,  0.0,
+			  
+			  // Right
+			   1.0,  0.0,  0.0,
+			   1.0,  0.0,  0.0,
+			   1.0,  0.0,  0.0,
+			   1.0,  0.0,  0.0,
+			  
+			  // Left
+			  -1.0,  0.0,  0.0,
+			  -1.0,  0.0,  0.0,
+			  -1.0,  0.0,  0.0,
+			  -1.0,  0.0,  0.0
+			];
+
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
 		}
 
 		function initTextures() {
@@ -254,7 +304,7 @@
 
 	        mat4.perspective(pMatrix, 45.0, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0);
 	        mat4.identity(mvMatrix);
-	        mat4.lookAt(mvMatrix,[0,0,2],[0,0,0],[0,1,0]);
+	        mat4.lookAt(mvMatrix,[0,0,4],[0,0,2],[0,2,0]);
 
 
 	        // set the vertex
@@ -268,6 +318,10 @@
 	        // Set the texture coordinates attribute for the vertices.
 			gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesTextureCoordBuffer);
 			gl.vertexAttribPointer(textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
+
+			//
+			gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesNormalBuffer);
+			gl.vertexAttribPointer(vertexNormalAttribute, 3, gl.FLOAT, false, 0, 0);
 
 			degree = degree + 3.14/360;
 
