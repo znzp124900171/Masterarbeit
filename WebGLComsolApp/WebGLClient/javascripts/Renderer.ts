@@ -29,6 +29,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     //light on/off
     var light: boolean = false 
 
+    // type of plot group, 3 for 3D plot, 2 for 2D plot, 1 for 1D plot
+    var plotType: number;
     // width of the 3D View
     var glWidth: number;
     // height of the 3D View
@@ -180,7 +182,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 43, 63, 63, 43, 44]))
         };
 
-
     }
 
     this.renderScene = function () {
@@ -214,6 +215,16 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 if (value.tag === plotGroupTag) {
                     modelCmd.getPlotGroup(activeModel.modelId, plotGroupTag, function (plotGroup) {
                         activePlotgroup = plotGroup;
+
+                        // set the plotType
+                        if (activePlotgroup.type == TYPE_PLOTGROUP3D) {
+                            plotType = 3;
+                        } else if (activePlotgroup.type == TYPE_PLOTGROUP2D) {
+                            plotType = 2;
+                        } else if (activePlotgroup.type == TYPE_PLOTGROUP1D) {
+                            plotType = 1;
+                        }
+
                         activePlots = [];
                         scale = plotGroup.scale;
                         offset = plotGroup.offset;
@@ -385,19 +396,14 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         var frameColor = 'black';
         if (!activePlotgroup.noData) {
             for (var i = 0; i < activePlotgroup.renderGroup.length; i++) {
-                var result = activePlotgroup;
-                if (result.type == TYPE_PLOTGROUP2D) {
-                    drawRender2DGroupShader1Lines(activePlotgroup.renderGroup[i], frameColor);
-                } else if (result.type == TYPE_PLOTGROUP3D) {
-                    drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], frameColor);
-                }
+                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], frameColor);
                 
             }
         }
     }
 
     //draw all active Plots
-    var drawPlots = function (type: string) {
+    var drawPlots = function () {
         console.log('drawPlots');
         for (var i = 0; i < activePlots.length; i++) {
             var result = activePlots[i];
@@ -407,133 +413,61 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                     var renderGroup = result.renderGroup[j];
                     var shaderId = getShaderType(result.type, light, renderGroup.attributes);
                     var geomType = getGeoType(result.type);
-                    if (type == TYPE_PLOTGROUP3D) { // cases in 3D plot
-                        switch (shaderId) {
-                            case 1:
-                                if (geomType === 2) {
-                                    drawRenderGroupShader1Lines(renderGroup, result.usrColor);
-                                } else if (geomType === 3) {
-                                    drawRenderGroupShader1Trias(renderGroup, result.usrColor);
-                                }
-                                break;
+                    switch (shaderId) {
+                        case 1:
+                            if (geomType === 2) {
+                                drawRenderGroupShader1Lines(renderGroup, result.usrColor);
+                            } else if (geomType === 3) {
+                                drawRenderGroupShader1Trias(renderGroup, result.usrColor);
+                            }
+                            break;
 
-                            case 101:
-                                if (geomType === 3) {
-                                    drawRenderGroupShader101Trias(renderGroup, result.usrColor);
-                                }
-                                break;
+                        case 101:
+                            if (geomType === 3) {
+                                drawRenderGroupShader101Trias(renderGroup, result.usrColor);
+                            }
+                            break;
 
-                            case 3:
-                                if (geomType === 2) {
-                                    drawRenderGroupShader3Lines(renderGroup, result.usrText);
-                                } else if (geomType === 3) {
-                                    drawRenderGroupShader3Trias(renderGroup, result.usrText);
-                                }
-                                break;
+                        case 3:
+                            if (geomType === 2) {
+                                drawRenderGroupShader3Lines(renderGroup, result.usrText);
+                            } else if (geomType === 3) {
+                                drawRenderGroupShader3Trias(renderGroup, result.usrText);
+                            }
+                            break;
 
-                            case 103:
-                                if (geomType === 3) {
-                                    drawRenderGroupShader103Trias(renderGroup, result.usrText);
-                                }
-                                break;
+                        case 103:
+                            if (geomType === 3) {
+                                drawRenderGroupShader103Trias(renderGroup, result.usrText);
+                            }
+                            break;
 
-                            case 4:
-                                drawRenderGroupShader4(renderGroup, result.usrScale, result.usrColor);
-                                break;
+                        case 4:
+                            drawRenderGroupShader4(renderGroup, result.usrScale, result.usrColor);
+                            break;
 
-                            case 104:
-                                drawRenderGroupShader104(renderGroup, result.usrScale, result.usrColor);
-                                break;
+                        case 104:
+                            drawRenderGroupShader104(renderGroup, result.usrScale, result.usrColor);
+                            break;
 
-                            case 5:
-                                if (geomType === 2) {
-                                    drawRenderGroupShader5Lines(renderGroup, result.usrText, result.usrScale);
-                                } else if (geomType === 3) {
-                                    drawRenderGroupShader5Trias(renderGroup, result.usrText, result.usrScale);
-                                }
-                                break;
-                            case 105:
-                                drawRenderGroupShader105Trias(renderGroup, result.usrText, result.usrScale);
-                                break;
-                        }
-                    } else if (type == TYPE_PLOTGROUP2D) {
-                        switch (shaderId) {
-                            case 1:
-                                if (geomType === 2) {
-                                    drawRenderGroupShader1Lines(renderGroup, result.usrColor);
-                                } else if (geomType === 3) {
-                                    drawRenderGroupShader1Trias(renderGroup, result.usrColor);
-                                }
-                                break;
-
-                            case 101:
-                                if (geomType === 3) {
-                                    drawRenderGroupShader101Trias(renderGroup, result.usrColor);
-                                }
-                                break;
-
-                            case 3:
-                                if (geomType === 2) {
-                                    console.log('case = 3; geomType = 2');
-                                    drawRenderGroupShader3Lines(renderGroup, result.usrText);
-                                } else if (geomType === 3) {
-                                    console.log('case = 3; geomType = 3');
-                                    drawRender2DGroupShader3Trias(renderGroup, result.usrText);
-                                }
-                                break;
-
-                            case 103:
-                                if (geomType === 3) {
-                                    drawRenderGroupShader103Trias(renderGroup, result.usrText);
-                                }
-                                break;
-
-                            case 4:
-                                drawRenderGroupShader4(renderGroup, result.usrScale, result.usrColor);
-                                break;
-
-                            case 104:
-                                drawRenderGroupShader104(renderGroup, result.usrScale, result.usrColor);
-                                break;
-
-                            case 5:
-                                if (geomType === 2) {
-                                    drawRenderGroupShader5Lines(renderGroup, result.usrText, result.usrScale);
-                                } else if (geomType === 3) {
-                                    drawRenderGroupShader5Trias(renderGroup, result.usrText, result.usrScale);
-                                }
-                                break;
-                            case 105:
-                                drawRenderGroupShader105Trias(renderGroup, result.usrText, result.usrScale);
-                                break;
-                        }
+                        case 5:
+                            if (geomType === 2) {
+                                drawRenderGroupShader5Lines(renderGroup, result.usrText, result.usrScale);
+                            } else if (geomType === 3) {
+                                drawRenderGroupShader5Trias(renderGroup, result.usrText, result.usrScale);
+                            }
+                            break;
+                        case 105:
+                            drawRenderGroupShader105Trias(renderGroup, result.usrText, result.usrScale);
+                            break;
                     }
                                                                            
                 }
             }
         }
     }
-    var drawRender2DGroupShader1Lines = function (renderGroup: RenderGroup, usrColor: string) {
-        console.log('drawRender2DGroupShader1Lines');
-        var color = glContext.getColorByName(usrColor);
-        var prog = programs[12];
 
-        gl.useProgram(prog.gl);
-        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
-        gl.uniform3fv(prog.uniforms[GL_UNI_COL], color);
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
-        for (var i = 0; i < renderGroup.renderData.length; i++) {
-            var geomData = renderGroup.renderData[i].geomData;
-            for (var j = 0; j < geomData.length; j++) {
-                var geom: WebGLGeom = geomData[j];
-                gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
-                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
-                gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
-            }
-        }
-    }
-
+    // draw the wire frame of plotGroup
     var drawRenderGroupShader1Lines = function (renderGroup: RenderGroup, usrColor: string) {
         console.log('drawRenderGroupShader1Lines');
         var color = glContext.getColorByName(usrColor);
@@ -548,7 +482,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             for (var j = 0; j < geomData.length; j++) {
                 var geom: WebGLGeom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
-                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+                // for 2D plots, the size is 2, for 3D plots, the size is 3
+                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], plotType, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
                 gl.drawElements(gl.LINES, geom.nElements * 2 , gl.UNSIGNED_SHORT, 0);
             }
@@ -716,7 +651,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 var geom: WebGLGeom = geomData[j];
 
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
-                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], plotType, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.attributes[colAttr.index]);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_COL], 1, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
@@ -1058,11 +993,10 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.multiply(mvpFront, vpFront, mvpFront);
 
         drawBackground();
-        var result = activePlotgroup;
         if (activeModel && activePlotgroup) {
             gl.enable(gl.DEPTH_TEST);
             gl.depthFunc(gl.LESS);
-            drawPlots(result.type);
+            drawPlots();
 
             drawPlotGroup();
         }

@@ -93,11 +93,6 @@ function Web3DContext(canvas: HTMLElement) {
     }
     function initStaticData() {
         // Here All Shaders will be initialized,
-        // Naming rule: the id of shaders contains at most three digit
-        // the first digit from the left means the type of shaders,
-        // the second digit from the left means the dimension of plots, 1 for 1D plot, 2 for 2D plot and 3 for 3D plot (optional)
-        // the third digit from the left means the light effect of plots, 0 is disable and 1 is enable (optional)
-        // The meaning of first digit:
         // 1: simple uniform color
         // 2: color as attribute
         // 3: color as texture Map
@@ -106,50 +101,6 @@ function Web3DContext(canvas: HTMLElement) {
         // 101, 102, ..., Pong Light Effects
 
         shaders = [{
-            name: "unifield2DColorShader",
-            id: 12,
-            vxProgram: "attribute vec3 vertex;\n\
-                    uniform mat4 mvpMatrix;\n\
-                    \n\
-                    void main(void) {\n\
-                        gl_Position = mvpMatrix * vec4(vertex, 1.0);\n\
-                    }",
-            pxProgram: "precision mediump float;\n\
-                    \n\
-                    uniform vec3 color;\n\
-                    \n\
-                    void main(void) {\n\
-                        gl_FragColor = vec4(color,1.0);\n\
-            }",
-            attributes: [GL_ATTR_VTX],
-            uniforms: [GL_UNI_MVP,GL_UNI_COL]
-        },
-            {
-                name: "ColorTableShader",
-                id: 98,
-                vxProgram: "attribute vec3 vertex;\n\
-                    attribute float color;\n\
-        	        \n\
-                    uniform mat4 mvpMatrix;\n\
-        	        \n\
-        	        varying float varColor;\n\
-                    \n\
-                    void main(void ) {\n\
-                        gl_Position = mvpMatrix * vec4(vertex, 1.0);\n\
-                        varColor = color;\n\
-                    }",
-
-                pxProgram: "precision mediump float;\n\
-        	        uniform sampler2D texSampler;\n\
-                    varying float varColor;\n\
-                    \
-                    void main(void ) {\n\
-                        gl_FragColor = texture2D(texSampler, vec2(varColor, 0.0));\n\
-                    }",
-                attributes: [GL_ATTR_VTX, GL_ATTR_COL],
-                uniforms: [GL_UNI_MVP, GL_UNI_TEX]
-            },
-            {
                 name: "unifiedColorShader",
                 id: 1,
                 vxProgram: "attribute vec3 vertex;\n\

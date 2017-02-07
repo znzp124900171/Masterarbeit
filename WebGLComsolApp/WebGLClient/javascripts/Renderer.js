@@ -14,6 +14,7 @@ function Renderer(modelData, glc) {
     var gl = glContext.getContext();
     var programs = glContext.getPrograms();
     var light = false;
+    var plotType;
     var glWidth;
     var glHeight;
     var degToRad = Math.PI / 180;
@@ -139,6 +140,15 @@ function Renderer(modelData, glc) {
                 if (value.tag === plotGroupTag) {
                     modelCmd.getPlotGroup(activeModel.modelId, plotGroupTag, function (plotGroup) {
                         activePlotgroup = plotGroup;
+                        if (activePlotgroup.type == TYPE_PLOTGROUP3D) {
+                            plotType = 3;
+                        }
+                        else if (activePlotgroup.type == TYPE_PLOTGROUP2D) {
+                            plotType = 2;
+                        }
+                        else if (activePlotgroup.type == TYPE_PLOTGROUP1D) {
+                            plotType = 1;
+                        }
                         activePlots = [];
                         scale = plotGroup.scale;
                         offset = plotGroup.offset;
@@ -269,17 +279,11 @@ function Renderer(modelData, glc) {
         var frameColor = 'black';
         if (!activePlotgroup.noData) {
             for (var i = 0; i < activePlotgroup.renderGroup.length; i++) {
-                var result = activePlotgroup;
-                if (result.type == TYPE_PLOTGROUP2D) {
-                    drawRender2DGroupShader1Lines(activePlotgroup.renderGroup[i], frameColor);
-                }
-                else if (result.type == TYPE_PLOTGROUP3D) {
-                    drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], frameColor);
-                }
+                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], frameColor);
             }
         }
     };
-    var drawPlots = function (type) {
+    var drawPlots = function () {
         console.log('drawPlots');
         for (var i = 0; i < activePlots.length; i++) {
             var result = activePlots[i];
@@ -289,122 +293,52 @@ function Renderer(modelData, glc) {
                     var renderGroup = result.renderGroup[j];
                     var shaderId = getShaderType(result.type, light, renderGroup.attributes);
                     var geomType = getGeoType(result.type);
-                    if (type == TYPE_PLOTGROUP3D) {
-                        switch (shaderId) {
-                            case 1:
-                                if (geomType === 2) {
-                                    drawRenderGroupShader1Lines(renderGroup, result.usrColor);
-                                }
-                                else if (geomType === 3) {
-                                    drawRenderGroupShader1Trias(renderGroup, result.usrColor);
-                                }
-                                break;
-                            case 101:
-                                if (geomType === 3) {
-                                    drawRenderGroupShader101Trias(renderGroup, result.usrColor);
-                                }
-                                break;
-                            case 3:
-                                if (geomType === 2) {
-                                    drawRenderGroupShader3Lines(renderGroup, result.usrText);
-                                }
-                                else if (geomType === 3) {
-                                    drawRenderGroupShader3Trias(renderGroup, result.usrText);
-                                }
-                                break;
-                            case 103:
-                                if (geomType === 3) {
-                                    drawRenderGroupShader103Trias(renderGroup, result.usrText);
-                                }
-                                break;
-                            case 4:
-                                drawRenderGroupShader4(renderGroup, result.usrScale, result.usrColor);
-                                break;
-                            case 104:
-                                drawRenderGroupShader104(renderGroup, result.usrScale, result.usrColor);
-                                break;
-                            case 5:
-                                if (geomType === 2) {
-                                    drawRenderGroupShader5Lines(renderGroup, result.usrText, result.usrScale);
-                                }
-                                else if (geomType === 3) {
-                                    drawRenderGroupShader5Trias(renderGroup, result.usrText, result.usrScale);
-                                }
-                                break;
-                            case 105:
-                                drawRenderGroupShader105Trias(renderGroup, result.usrText, result.usrScale);
-                                break;
-                        }
-                    }
-                    else if (type == TYPE_PLOTGROUP2D) {
-                        switch (shaderId) {
-                            case 1:
-                                if (geomType === 2) {
-                                    drawRenderGroupShader1Lines(renderGroup, result.usrColor);
-                                }
-                                else if (geomType === 3) {
-                                    drawRenderGroupShader1Trias(renderGroup, result.usrColor);
-                                }
-                                break;
-                            case 101:
-                                if (geomType === 3) {
-                                    drawRenderGroupShader101Trias(renderGroup, result.usrColor);
-                                }
-                                break;
-                            case 3:
-                                if (geomType === 2) {
-                                    console.log('case = 3; geomType = 2');
-                                    drawRenderGroupShader3Lines(renderGroup, result.usrText);
-                                }
-                                else if (geomType === 3) {
-                                    console.log('case = 3; geomType = 3');
-                                    drawRender2DGroupShader3Trias(renderGroup, result.usrText);
-                                }
-                                break;
-                            case 103:
-                                if (geomType === 3) {
-                                    drawRenderGroupShader103Trias(renderGroup, result.usrText);
-                                }
-                                break;
-                            case 4:
-                                drawRenderGroupShader4(renderGroup, result.usrScale, result.usrColor);
-                                break;
-                            case 104:
-                                drawRenderGroupShader104(renderGroup, result.usrScale, result.usrColor);
-                                break;
-                            case 5:
-                                if (geomType === 2) {
-                                    drawRenderGroupShader5Lines(renderGroup, result.usrText, result.usrScale);
-                                }
-                                else if (geomType === 3) {
-                                    drawRenderGroupShader5Trias(renderGroup, result.usrText, result.usrScale);
-                                }
-                                break;
-                            case 105:
-                                drawRenderGroupShader105Trias(renderGroup, result.usrText, result.usrScale);
-                                break;
-                        }
+                    switch (shaderId) {
+                        case 1:
+                            if (geomType === 2) {
+                                drawRenderGroupShader1Lines(renderGroup, result.usrColor);
+                            }
+                            else if (geomType === 3) {
+                                drawRenderGroupShader1Trias(renderGroup, result.usrColor);
+                            }
+                            break;
+                        case 101:
+                            if (geomType === 3) {
+                                drawRenderGroupShader101Trias(renderGroup, result.usrColor);
+                            }
+                            break;
+                        case 3:
+                            if (geomType === 2) {
+                                drawRenderGroupShader3Lines(renderGroup, result.usrText);
+                            }
+                            else if (geomType === 3) {
+                                drawRenderGroupShader3Trias(renderGroup, result.usrText);
+                            }
+                            break;
+                        case 103:
+                            if (geomType === 3) {
+                                drawRenderGroupShader103Trias(renderGroup, result.usrText);
+                            }
+                            break;
+                        case 4:
+                            drawRenderGroupShader4(renderGroup, result.usrScale, result.usrColor);
+                            break;
+                        case 104:
+                            drawRenderGroupShader104(renderGroup, result.usrScale, result.usrColor);
+                            break;
+                        case 5:
+                            if (geomType === 2) {
+                                drawRenderGroupShader5Lines(renderGroup, result.usrText, result.usrScale);
+                            }
+                            else if (geomType === 3) {
+                                drawRenderGroupShader5Trias(renderGroup, result.usrText, result.usrScale);
+                            }
+                            break;
+                        case 105:
+                            drawRenderGroupShader105Trias(renderGroup, result.usrText, result.usrScale);
+                            break;
                     }
                 }
-            }
-        }
-    };
-    var drawRender2DGroupShader1Lines = function (renderGroup, usrColor) {
-        console.log('drawRender2DGroupShader1Lines');
-        var color = glContext.getColorByName(usrColor);
-        var prog = programs[12];
-        gl.useProgram(prog.gl);
-        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
-        gl.uniform3fv(prog.uniforms[GL_UNI_COL], color);
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
-        for (var i = 0; i < renderGroup.renderData.length; i++) {
-            var geomData = renderGroup.renderData[i].geomData;
-            for (var j = 0; j < geomData.length; j++) {
-                var geom = geomData[j];
-                gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
-                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
-                gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
             }
         }
     };
@@ -421,7 +355,7 @@ function Renderer(modelData, glc) {
             for (var j = 0; j < geomData.length; j++) {
                 var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
-                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], plotType, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
                 gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
             }
@@ -560,7 +494,7 @@ function Renderer(modelData, glc) {
             for (var j = 0; j < geomData.length; j++) {
                 var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
-                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], plotType, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.attributes[colAttr.index]);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_COL], 1, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
@@ -842,11 +776,10 @@ function Renderer(modelData, glc) {
         mat4.multiply(mvpFront, mFront, rotScene);
         mat4.multiply(mvpFront, vpFront, mvpFront);
         drawBackground();
-        var result = activePlotgroup;
         if (activeModel && activePlotgroup) {
             gl.enable(gl.DEPTH_TEST);
             gl.depthFunc(gl.LESS);
-            drawPlots(result.type);
+            drawPlots();
             drawPlotGroup();
         }
         gl.disable(gl.DEPTH_TEST);
