@@ -457,7 +457,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                                 break;
                         }
                     } else if (type == TYPE_PLOTGROUP2D) {
-                        console.log('stop here');
                         switch (shaderId) {
                             case 1:
                                 if (geomType === 2) {
@@ -479,7 +478,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                                     drawRenderGroupShader3Lines(renderGroup, result.usrText);
                                 } else if (geomType === 3) {
                                     console.log('case = 3; geomType = 3');
-                                    drawRender2DGroupShader3Lines(renderGroup, result.usrText);
+                                    drawRender2DGroupShader3Trias(renderGroup, result.usrText);
                                 }
                                 break;
 
@@ -603,11 +602,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         }
     }
 
-    var drawRender2DGroupShader3Lines = function (renderGroup: RenderGroup, usrText: string) {
+    var drawRender2DGroupShader = function (renderGroup: RenderGroup, usrText: string, geomType: number) {
 
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
 
-        var prog = programs[98];
+        var prog = programs[3];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
         gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
@@ -626,7 +625,44 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.attributes[colAttr.index]);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_COL], 1, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
-                gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
+                switch (geomType) {
+                    case 2:
+                        gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
+                        break;
+                    case 3:
+                        gl.drawElements(gl.TRIANGLES, geom.nElements * 3, gl.UNSIGNED_SHORT, 0);
+                        break;
+                }
+                
+            }
+        }
+
+    }
+
+    var drawRender2DGroupShader3Trias = function (renderGroup: RenderGroup, usrText: string) {
+
+        var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
+
+        var prog = programs[3];
+        gl.useProgram(prog.gl);
+        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
+        gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextureByName(usrText));
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
+
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom: WebGLGeom = geomData[j];
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
+                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
+                gl.bindBuffer(gl.ARRAY_BUFFER, geom.attributes[colAttr.index]);
+                gl.vertexAttribPointer(prog.attributes[GL_ATTR_COL], 1, gl.FLOAT, false, 0, 0);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
+                gl.drawElements(gl.TRIANGLES, geom.nElements * 3, gl.UNSIGNED_SHORT, 0);
             }
         }
 

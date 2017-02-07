@@ -302,13 +302,7 @@ function PostProcessor(glContext: Web3DContext) {
         var byteOffset = 4;  //4 Bytes Offset for Magic Number
         var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
         var geomType = 2;     //Lines have 2 points
-        var plotType = 0;
-
-        if (plotGroup.type == TYPE_PLOTGROUP3D) {
-            plotType = 3;
-        } else if (plotGroup.type == TYPE_PLOTGROUP2D) {
-            plotType = 2;
-        }
+        var plotType = 2;     //2D Plots
 
         var webGLData: WebGLGeom[];
 
@@ -326,8 +320,8 @@ function PostProcessor(glContext: Web3DContext) {
             byteOffset += renderData.numVert * 4; // Offset in Bytes
         }
         console.log('ByteOffset(attribData): ' + renderData.numVert * 4);
-        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * 2);
-        byteOffset += renderData.numEle * geomType * 4;  //Offset in Bytes
+        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * 3);
+        byteOffset += renderData.numEle * 3 * 4;  //Offset in Bytes
         console.log('ByteOffset(elementData): ' + byteOffset);
         console.log('binData.byteLength : ' + binData.byteLength + '/nbtyeOffset' + byteOffset);
         if (binData.byteLength !== byteOffset) {

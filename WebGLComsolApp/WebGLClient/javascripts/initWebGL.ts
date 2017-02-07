@@ -92,8 +92,12 @@ function Web3DContext(canvas: HTMLElement) {
         return context;
     }
     function initStaticData() {
-
         // Here All Shaders will be initialized,
+        // Naming rule: the id of shaders contains at most three digit
+        // the first digit from the left means the type of shaders,
+        // the second digit from the left means the dimension of plots, 1 for 1D plot, 2 for 2D plot and 3 for 3D plot (optional)
+        // the third digit from the left means the light effect of plots, 0 is disable and 1 is enable (optional)
+        // The meaning of first digit:
         // 1: simple uniform color
         // 2: color as attribute
         // 3: color as texture Map

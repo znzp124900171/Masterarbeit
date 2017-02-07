@@ -220,13 +220,7 @@ function PostProcessor(glContext) {
         var byteOffset = 4;
         var binData = renderData.rawData;
         var geomType = 2;
-        var plotType = 0;
-        if (plotGroup.type == TYPE_PLOTGROUP3D) {
-            plotType = 3;
-        }
-        else if (plotGroup.type == TYPE_PLOTGROUP2D) {
-            plotType = 2;
-        }
+        var plotType = 2;
         var webGLData;
         var diameter = calcModelDiameter(plotGroup);
         var attributes = renderGroup.attributes;
@@ -239,8 +233,8 @@ function PostProcessor(glContext) {
             byteOffset += renderData.numVert * 4;
         }
         console.log('ByteOffset(attribData): ' + renderData.numVert * 4);
-        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * 2);
-        byteOffset += renderData.numEle * geomType * 4;
+        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * 3);
+        byteOffset += renderData.numEle * 3 * 4;
         console.log('ByteOffset(elementData): ' + byteOffset);
         console.log('binData.byteLength : ' + binData.byteLength + '/nbtyeOffset' + byteOffset);
         if (binData.byteLength !== byteOffset) {
