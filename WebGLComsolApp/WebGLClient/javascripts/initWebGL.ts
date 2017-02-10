@@ -619,10 +619,27 @@ function Web3DContext(canvas: HTMLElement) {
                         [0, 255, 0,
                         255, 255, 0,
                         0, 255, 0]),
+            },
+
+            {
+                name: 'Wave',
+                size: 5,
+                tex: new Uint8Array(
+                    [0, 0, 128,
+                    0, 0, 255,
+                    204, 204, 204,
+                    255, 0, 0,
+                    128,0,0]),
+            },
+
+            {
+                name: 'WaveLight',
+                size: 3,
+                tex: new Uint8Array(
+                    [0, 0, 255,
+                    255, 255, 255,
+                    255,0,0]),
             }
-
-
-            //TODO: add all ColorTables from Comsol
         ];
     }
 
