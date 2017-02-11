@@ -45,6 +45,24 @@ function Web3DContext(canvas) {
     }
     function initStaticData() {
         shaders = [{
+                name: "legendShader",
+                id: 9,
+                vxProgram: "attribute vec3 vertex; \n\
+                        attribute vec4 aVertexColor;\n\
+                        uniform mat4 mvpMatrix;\n\
+                        varying lowp vec4 vColor;\n\
+                        void main(void) {\n\
+                        gl_Position = uPMatrix * uMVMatrix * vec4(vertex, 1.0);\n\
+                        vColor = aVertexColor;\n\
+                        }",
+                pxProgram: "varying lowp vec4 vColor;\n\
+                        void main(void) {\n\
+                        gl_FragColor = vColor;\n\
+                        }",
+                attributes: [GL_ATTR_VTX],
+                uniforms: [GL_UNI_MVP, GL_UNI_COL]
+            },
+            {
                 name: "unifiedColorShader",
                 id: 1,
                 vxProgram: "attribute vec3 vertex;\n\
@@ -526,6 +544,22 @@ function Web3DContext(canvas) {
                 tex: new Uint8Array([0, 255, 0,
                     255, 255, 0,
                     0, 255, 0]),
+            },
+            {
+                name: 'Wave',
+                size: 5,
+                tex: new Uint8Array([0, 0, 128,
+                    0, 0, 255,
+                    204, 204, 204,
+                    255, 0, 0,
+                    128, 0, 0]),
+            },
+            {
+                name: 'WaveLight',
+                size: 3,
+                tex: new Uint8Array([0, 0, 255,
+                    255, 255, 255,
+                    255, 0, 0]),
             }
         ];
     }

@@ -467,6 +467,122 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         }
     }
 
+    // draw the spectral information if it exists.
+    var drawLegend = function () {
+        var colorTable = 'Rainbow';
+        if (colorTable == 'Rainbow') {
+            var vertex = [
+                0.05, 2.0, 0.0,
+                -0.05, 2.0, 0.0,
+                0.05, 1.6, 0.0,
+                -0.05, 1.6, 0.0,
+                0.05, 1.2, 0.0,
+                -0.05, 1.2, 0.0,
+                0.05, 0.8, 0.0,
+                -0.05, 0.8, 0.0,
+                0.05, 0.4, 0.0,
+                -0.05, 0.4, 0.0,
+                0.05, 0.0, 0.0,
+                -0.05, 0.0, 0.0,
+                0.05, -0.6, 0.0,
+                -0.05, -0.6, 0.0,
+                0.05, -1.0, 0.0,
+                -0.05, -1.0, 0.0,
+                0.05, -1.5, 0.0,
+                -0.05, -1.5, 0.0
+            ];
+
+            var indices = [
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17
+            ]
+
+            var color = [
+                0.5, 0, 0, 1.0,
+                0.5, 0, 0, 1.0,
+                1, 0, 0, 1.0,
+                1, 0, 0, 1.0,
+                1, 0.5, 0, 1.0,
+                1, 0.5, 0, 1.0,
+                1, 1, 0, 1.0,
+                1, 1, 0, 1.0,
+                0.5, 1, 0.5, 1.0,
+                0.5, 1, 0.5, 1.0,
+                0, 1, 1, 1.0,
+                0, 1, 1, 1.0,
+                0, 0.5, 1, 1.0,
+                0, 0.5, 1, 1.0,
+                0, 0, 1, 1.0,
+                0, 0, 1, 1.0,
+                0, 0, 0.5, 1.0,
+                0, 0, 0.5, 1.0,
+            ];
+        }
+
+        var shaderProg = [{
+            vxProgram: "attribute vec3 vertex; \n\
+                        attribute vec4 aVertexColor;\n\
+                        uniform mat4 mvpMatrix;\n\
+                        varying lowp vec4 vColor;\n\
+                        void main(void) {\n\
+                        gl_Position = mvpMatrix * vec4(vertex, 1.0);\n\
+                        vColor = aVertexColor;\n\
+                        }",
+
+            pxProgram: "varying lowp vec4 vColor;\n\
+                        void main(void) {\n\
+                        gl_FragColor = vColor;\n\
+                        }"
+        }];
+
+        var prog = gl.createProgram();
+
+        // create && get && compile Vertex Shader
+        var vxShader = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vxShader, shaderProg[0].vxProgram);
+        gl.compileShader(vxShader);
+
+        // create && get && compile Fragment Shader
+        var pxShader = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(pxShader, shaderProg[0].pxProgram);
+        gl.compileShader(pxShader);
+
+        // link Shader
+        gl.attachShader(prog, vxShader);
+        gl.attachShader(prog, pxShader);
+        gl.linkProgram(prog);
+
+        gl.useProgram(prog.gl);
+        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
+        gl.uniform3fv(prog.uniforms[GL_UNI_COL], color);
+
+        gl.useProgram(prog.gl);
+        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
+
+        var legendVerticesBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, legendVerticesBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(prog.attributes[GL_ATTR_VTX]), gl.STATIC_DRAW);
+
+        var indexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+        var legendVerticesColorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, legendVerticesColorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);
+
+        //var vertexPositionAttribte = gl.getAttribLocation(prog, 'aVertexPosition');
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, legendVerticesBuffer);
+        gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+
+        var vertexColorAttribute = gl.getAttribLocation(prog, 'aVertexColor');
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, legendVerticesColorBuffer);
+        gl.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
+
+        gl.drawElements(gl.TRIANGLE_STRIP, 18, gl.UNSIGNED_SHORT, 0);
+    }
+
     // draw the wire frame of plotGroup
     var drawRenderGroupShader1Lines = function (renderGroup: RenderGroup, usrColor: string) {
         console.log('drawRenderGroupShader1Lines');
@@ -977,6 +1093,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.drawElements(gl.TRIANGLES, 114, gl.UNSIGNED_SHORT, 468);
         }
 
+    
+
     //paint the complete Scene
     function drawScene() {
         gl.disable(gl.DEPTH_TEST);
@@ -992,6 +1110,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.multiply(mvpFront, mFront, rotScene);
         mat4.multiply(mvpFront, vpFront, mvpFront);
 
+        drawLegend();
         drawBackground();
         if (activeModel && activePlotgroup) {
             gl.enable(gl.DEPTH_TEST);
