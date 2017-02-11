@@ -49,6 +49,11 @@ interface Background {
     colorBuf: WebGLBuffer;
 }
 
+interface colorLegend {
+    vertexBuf: WebGLBuffer;
+    colorBuf: WebGLBuffer;
+}
+
 interface CoordSys {
     vertexBuf: WebGLBuffer;
     idxBuf: WebGLBuffer;

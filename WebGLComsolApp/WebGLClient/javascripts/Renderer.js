@@ -42,7 +42,9 @@ function Renderer(modelData, glc) {
     var mFront;
     var vpFront;
     var mvpFront;
+    var mvpColorLegend;
     var background;
+    var colorLegend;
     var coordSys;
     initMatrices();
     initStaticData();
@@ -63,6 +65,8 @@ function Renderer(modelData, glc) {
         vec3.set(transVec, 0, 0, 0);
         mvpBackground = mat4.create();
         mat4.ortho(mvpBackground, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+        mvpColorLegend = mat4.create();
+        mat4.ortho(mvpColorLegend, -0.5, 0.5, -0, 5, 0.5, -1.0, 1.0);
         quatTmp = quat.create();
         quatRot = quat.create();
         rotScene = mat4.create();
@@ -89,6 +93,44 @@ function Renderer(modelData, glc) {
                 0.5, 0.5, 0.5,
                 1.0, 1.0, 1.0,
                 1.0, 1.0, 1.0]))
+        };
+        colorLegend = {
+            vertexBuf: glc.setupArrayBuffer(new Float32Array([0.05, 2.0, 0.0,
+                -0.05, 2.0, 0.0,
+                0.05, 1.6, 0.0,
+                -0.05, 1.6, 0.0,
+                0.05, 1.2, 0.0,
+                -0.05, 1.2, 0.0,
+                0.05, 0.8, 0.0,
+                -0.05, 0.8, 0.0,
+                0.05, 0.4, 0.0,
+                -0.05, 0.4, 0.0,
+                0.05, 0.0, 0.0,
+                -0.05, 0.0, 0.0,
+                0.05, -0.6, 0.0,
+                -0.05, -0.6, 0.0,
+                0.05, -1.0, 0.0,
+                -0.05, -1.0, 0.0,
+                0.05, -1.5, 0.0,
+                -0.05, -1.5, 0.0])),
+            colorBuf: glc.setupArrayBuffer(new Float32Array([0.5, 0, 0, 1.0,
+                0.5, 0, 0, 1.0,
+                1, 0, 0, 1.0,
+                1, 0, 0, 1.0,
+                1, 0.5, 0, 1.0,
+                1, 0.5, 0, 1.0,
+                1, 1, 0, 1.0,
+                1, 1, 0, 1.0,
+                0.5, 1, 0.5, 1.0,
+                0.5, 1, 0.5, 1.0,
+                0, 1, 1, 1.0,
+                0, 1, 1, 1.0,
+                0, 0.5, 1, 1.0,
+                0, 0.5, 1, 1.0,
+                0, 0, 1, 1.0,
+                0, 0, 1, 1.0,
+                0, 0, 0.5, 1.0,
+                0, 0, 0.5, 1.0,]))
         };
         coordSys = {
             vertexBuf: glc.setupArrayBuffer(new Float32Array([0, 0, 0, 0.1, 0, 0, 0.09, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085,
@@ -341,77 +383,6 @@ function Renderer(modelData, glc) {
                 }
             }
         }
-    };
-    var drawLegend = function () {
-        var colorTable = 'Rainbow';
-        if (colorTable == 'Rainbow') {
-            prog.attributes[GL_ATTR_VTX] = [
-                0.05, 2.0, 0.0,
-                -0.05, 2.0, 0.0,
-                0.05, 1.6, 0.0,
-                -0.05, 1.6, 0.0,
-                0.05, 1.2, 0.0,
-                -0.05, 1.2, 0.0,
-                0.05, 0.8, 0.0,
-                -0.05, 0.8, 0.0,
-                0.05, 0.4, 0.0,
-                -0.05, 0.4, 0.0,
-                0.05, 0.0, 0.0,
-                -0.05, 0.0, 0.0,
-                0.05, -0.6, 0.0,
-                -0.05, -0.6, 0.0,
-                0.05, -1.0, 0.0,
-                -0.05, -1.0, 0.0,
-                0.05, -1.5, 0.0,
-                -0.05, -1.5, 0.0
-            ];
-            var indices = [
-                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17
-            ];
-            prog.attributes[GL_ATTR_COL];
-            color = [
-                0.5, 0, 0, 1.0,
-                0.5, 0, 0, 1.0,
-                1, 0, 0, 1.0,
-                1, 0, 0, 1.0,
-                1, 0.5, 0, 1.0,
-                1, 0.5, 0, 1.0,
-                1, 1, 0, 1.0,
-                1, 1, 0, 1.0,
-                0.5, 1, 0.5, 1.0,
-                0.5, 1, 0.5, 1.0,
-                0, 1, 1, 1.0,
-                0, 1, 1, 1.0,
-                0, 0.5, 1, 1.0,
-                0, 0.5, 1, 1.0,
-                0, 0, 1, 1.0,
-                0, 0, 1, 1.0,
-                0, 0, 0.5, 1.0,
-                0, 0, 0.5, 1.0,
-            ];
-        }
-        var prog = programs[9];
-        gl.useProgram(prog.gl);
-        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
-        gl.uniform3fv(prog.uniforms[GL_UNI_COL], color);
-        gl.useProgram(prog.gl);
-        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
-        var legendVerticesBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, legendVerticesBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(prog.attributes[GL_ATTR_VTX]), gl.STATIC_DRAW);
-        var indexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
-        var legendVerticesColorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, legendVerticesColorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
-        gl.bindBuffer(gl.ARRAY_BUFFER, legendVerticesBuffer);
-        gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
-        gl.bindBuffer(gl.ARRAY_BUFFER, legendVerticesColorBuffer);
-        gl.vertexAttribPointer(prog.attributes[GL_ATTR_COL], 4, gl.FLOAT, false, 0, 0);
-        gl.drawElements(gl.TRIANGLE_STRIP, 18, gl.UNSIGNED_SHORT, 0);
     };
     var drawRenderGroupShader1Lines = function (renderGroup, usrColor) {
         console.log('drawRenderGroupShader1Lines');
@@ -816,6 +787,17 @@ function Renderer(modelData, glc) {
         gl.vertexAttribPointer(programs[2].attributes[GL_ATTR_COL], 3, gl.FLOAT, false, 0, 0);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
+    var drawLegend = function () {
+        gl.useProgram(programs[2].gl);
+        gl.uniformMatrix4fv(programs[2].uniforms[GL_UNI_MVP], false, mvpColorLegend);
+        gl.enableVertexAttribArray(programs[2].attributes[GL_ATTR_VTX]);
+        gl.enableVertexAttribArray(programs[2].attributes[GL_ATTR_COL]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.vertexBuf);
+        gl.vertexAttribPointer(programs[2].attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.colorBuf);
+        gl.vertexAttribPointer(programs[2].attributes[GL_ATTR_COL], 3, gl.FLOAT, false, 0, 0);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 18);
+    };
     var drawFront = function () {
         gl.useProgram(programs[1].gl);
         gl.uniformMatrix4fv(programs[1].uniforms[GL_UNI_MVP], false, mvpFront);
@@ -846,7 +828,6 @@ function Renderer(modelData, glc) {
         mat4.multiply(mvpScene, pScene, mvScene);
         mat4.multiply(mvpFront, mFront, rotScene);
         mat4.multiply(mvpFront, vpFront, mvpFront);
-        drawLegend();
         drawBackground();
         if (activeModel && activePlotgroup) {
             gl.enable(gl.DEPTH_TEST);
@@ -855,6 +836,7 @@ function Renderer(modelData, glc) {
             drawPlotGroup();
         }
         gl.disable(gl.DEPTH_TEST);
+        drawLegend();
         gl.clear(gl.DEPTH_BUFFER_BIT);
     }
     function checkGLerror() {
