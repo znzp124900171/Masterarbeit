@@ -51,6 +51,7 @@ interface Background {
 
 interface colorLegend {
     vertexBuf: WebGLBuffer;
+    indexBuf?: WebGLBuffer;
     colorBuf: WebGLBuffer;
 }
 

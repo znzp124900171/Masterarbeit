@@ -165,24 +165,26 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         };
 
         colorLegend = {
-            vertexBuf: glc.setupArrayBuffer(new Float32Array([0.05, 2.0, 0.0,
-                -0.05, 2.0, 0.0,
-                0.05, 1.6, 0.0,
-                -0.05, 1.6, 0.0,
-                0.05, 1.2, 0.0,
-                -0.05, 1.2, 0.0,
-                0.05, 0.8, 0.0,
-                -0.05, 0.8, 0.0,
-                0.05, 0.4, 0.0,
-                -0.05, 0.4, 0.0,
-                0.05, 0.0, 0.0,
-                -0.05, 0.0, 0.0,
-                0.05, -0.6, 0.0,
-                -0.05, -0.6, 0.0,
-                0.05, -1.0, 0.0,
-                -0.05, -1.0, 0.0,
-                0.05, -1.5, 0.0,
-                -0.05, -1.5, 0.0])),
+            vertexBuf: glc.setupArrayBuffer(new Float32Array([-0.85, 0.8, 0.0,
+                -0.82, 0.8, 0.0,
+                -0.85, 0.75, 0.0,
+                -0.82, 0.75, 0.0,
+                -0.85, 0.7, 0.0,
+                -0.82, 0.7, 0.0,
+                -0.85, 0.65, 0.0,
+                -0.82, 0.65, 0.0,
+                -0.85, 0.6, 0.0,
+                -0.82, 0.6, 0.0,
+                -0.85, 0.55, 0.0,
+                -0.82, 0.55, 0.0,
+                -0.85, 0.5, 0.0,
+                -0.82, 0.5, 0.0,
+                -0.85, 0.45, 0.0,
+                -0.82, 0.45, 0.0,
+                -0.85, 0.4, 0.0,
+                -0.82, 0.4, 0.0])),
+
+            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17])),
 
             colorBuf: glc.setupArrayBuffer(new Float32Array([0.5, 0, 0, 1.0,
                 0.5, 0, 0, 1.0,
@@ -1012,14 +1014,15 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.enableVertexAttribArray(programs[2].attributes[GL_ATTR_VTX]);
         gl.enableVertexAttribArray(programs[2].attributes[GL_ATTR_COL]);
 
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorLegend.indexBuf);
+
         gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.vertexBuf);
         gl.vertexAttribPointer(programs[2].attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.colorBuf);
-        gl.vertexAttribPointer(programs[2].attributes[GL_ATTR_COL], 3, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(programs[2].attributes[GL_ATTR_COL], 4, gl.FLOAT, false, 0, 0);
 
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 18);
-        //gl.drawElements(gl.TRIANGLE_STRIP, 18, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLE_STRIP, 18, gl.UNSIGNED_SHORT,0);
     }
 
     //paint the foreground i.e coordination system
@@ -1075,7 +1078,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         }
         gl.disable(gl.DEPTH_TEST);
         drawLegend();
-        //drawFront();
+        drawFront();
         gl.clear(gl.DEPTH_BUFFER_BIT);
     }
 
