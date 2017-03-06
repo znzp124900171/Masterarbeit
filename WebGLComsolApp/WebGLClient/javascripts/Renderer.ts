@@ -82,7 +82,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var background: Background;
 
     //ColorLegend
-    var colorLegend: colorLegend;
+    var colorLegend: ColorLegend;
 
     //x,y,z Axis
     var coordSys: CoordSys;
@@ -165,48 +165,13 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         };
 
         colorLegend = {
-            vertexBuf: glc.setupArrayBuffer(new Float32Array([-0.85, 0.8, 0.0,
-                -0.82, 0.8, 0.0,
-                -0.85, 0.75, 0.0,
-                -0.82, 0.75, 0.0,
-                -0.85, 0.7, 0.0,
-                -0.82, 0.7, 0.0,
-                -0.85, 0.65, 0.0,
-                -0.82, 0.65, 0.0,
-                -0.85, 0.6, 0.0,
-                -0.82, 0.6, 0.0,
-                -0.85, 0.55, 0.0,
-                -0.82, 0.55, 0.0,
-                -0.85, 0.5, 0.0,
-                -0.82, 0.5, 0.0,
-                -0.85, 0.45, 0.0,
-                -0.82, 0.45, 0.0,
-                -0.85, 0.4, 0.0,
-                -0.82, 0.4, 0.0])),
+            vertexBuf: glc.setupArrayBuffer(new Float32Array([-0.85, 0.8,
+            -0.82, 0.8,
+            -0.85, 0.0,
+            -0.82, 0.0,])),
 
-            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17])),
-
-            colorBuf: glc.setupArrayBuffer(new Float32Array([0.5, 0, 0, 1.0,
-                0.5, 0, 0, 1.0,
-                1, 0, 0, 1.0,
-                1, 0, 0, 1.0,
-                1, 0.5, 0, 1.0,
-                1, 0.5, 0, 1.0,
-                1, 1, 0, 1.0,
-                1, 1, 0, 1.0,
-                0.5, 1, 0.5, 1.0,
-                0.5, 1, 0.5, 1.0,
-                0, 1, 1, 1.0,
-                0, 1, 1, 1.0,
-                0, 0.5, 1, 1.0,
-                0, 0.5, 1, 1.0,
-                0, 0, 1, 1.0,
-                0, 0, 1, 1.0,
-                0, 0, 0.5, 1.0,
-                0, 0, 0.5, 1.0,]))
-
-
-        }
+            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3]))
+        };
 
         coordSys = {
             vertexBuf: glc.setupArrayBuffer(new Float32Array([0, 0, 0, 0.1, 0, 0, 0.09, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085,
@@ -590,72 +555,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         }
     }
 
-    var drawRender2DGroupShader = function (renderGroup: RenderGroup, usrText: string, geomType: number) {
-
-        var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
-
-        var prog = programs[3];
-        gl.useProgram(prog.gl);
-        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
-        gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextureByName(usrText));
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
-
-        for (var i = 0; i < renderGroup.renderData.length; i++) {
-            var geomData = renderGroup.renderData[i].geomData;
-            for (var j = 0; j < geomData.length; j++) {
-                var geom: WebGLGeom = geomData[j];
-
-                gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
-                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
-                gl.bindBuffer(gl.ARRAY_BUFFER, geom.attributes[colAttr.index]);
-                gl.vertexAttribPointer(prog.attributes[GL_ATTR_COL], 1, gl.FLOAT, false, 0, 0);
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
-                switch (geomType) {
-                    case 2:
-                        gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
-                        break;
-                    case 3:
-                        gl.drawElements(gl.TRIANGLES, geom.nElements * 3, gl.UNSIGNED_SHORT, 0);
-                        break;
-                }
-                
-            }
-        }
-
-    }
-
-    var drawRender2DGroupShader3Trias = function (renderGroup: RenderGroup, usrText: string) {
-
-        var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
-
-        var prog = programs[3];
-        gl.useProgram(prog.gl);
-        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
-        gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextureByName(usrText));
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
-
-        for (var i = 0; i < renderGroup.renderData.length; i++) {
-            var geomData = renderGroup.renderData[i].geomData;
-            for (var j = 0; j < geomData.length; j++) {
-                var geom: WebGLGeom = geomData[j];
-
-                gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
-                gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
-                gl.bindBuffer(gl.ARRAY_BUFFER, geom.attributes[colAttr.index]);
-                gl.vertexAttribPointer(prog.attributes[GL_ATTR_COL], 1, gl.FLOAT, false, 0, 0);
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
-                gl.drawElements(gl.TRIANGLES, geom.nElements * 3, gl.UNSIGNED_SHORT, 0);
-            }
-        }
-
-    }
-
     var drawRenderGroupShader3Lines = function (renderGroup: RenderGroup, usrText: string) {
 
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
@@ -686,7 +585,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader3Trias = function (renderGroup: RenderGroup, usrText: string) {
-
+        drawLegend(renderGroup, usrText);
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
 
         var prog = programs[3];
@@ -1005,24 +904,26 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     }
 
-    var drawLegend = function () {
-
+    var drawLegend = function (renderGroup: RenderGroup, usrText: string) {
+        var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         //reset View
-        gl.useProgram(programs[2].gl);
-        gl.uniformMatrix4fv(programs[2].uniforms[GL_UNI_MVP], false, mvpColorLegend);
+        var prog = programs[3];
+        gl.useProgram(prog.gl);
+        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
+        gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextureByName(usrText));
 
-        gl.enableVertexAttribArray(programs[2].attributes[GL_ATTR_VTX]);
-        gl.enableVertexAttribArray(programs[2].attributes[GL_ATTR_COL]);
-
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorLegend.indexBuf);
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.vertexBuf);
-        gl.vertexAttribPointer(programs[2].attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.colorBuf);
-        gl.vertexAttribPointer(programs[2].attributes[GL_ATTR_COL], 4, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorLegend.indexBuf);
+        gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
 
-        gl.drawElements(gl.TRIANGLE_STRIP, 18, gl.UNSIGNED_SHORT,0);
     }
 
     //paint the foreground i.e coordination system
@@ -1056,7 +957,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     function drawScene() {
         gl.disable(gl.DEPTH_TEST);
         mat4.identity(mScene);          //Setup Model Matrix
-        mat4.translate(mScene, mScene, transVec);   //Translate according to the user (first rotate than translate)
+        mat4.translate(mScene, mScene, transVec);   //Translate according to the user (first rotate then translate)
         mat4.scale(mScene, mScene, scale);          //Scale to unit Box -1,1,   (scalation is cummutativ)
         mat4.multiply(mScene, mScene, rotScene);    //Rotate Model
         mat4.translate(mScene, mScene, offset);     //Translate to the middlepoint
@@ -1077,7 +978,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             drawPlotGroup();
         }
         gl.disable(gl.DEPTH_TEST);
-        drawLegend();
         drawFront();
         gl.clear(gl.DEPTH_BUFFER_BIT);
     }
