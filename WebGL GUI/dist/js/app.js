@@ -1,8 +1,8 @@
-/*! AdminLTE app.js
+/*! GUI app.js
  * ================
- * Main JS application file for AdminLTE v2. This file
+ * Main JS application file for GUI v2. This file
  * should be included in all pages. It controls some layout
- * options and implements exclusive AdminLTE plugins.
+ * options and implements exclusive GUI plugins.
  *
  * @Author  Almsaeed Studio
  * @Support <http://www.almsaeedstudio.com>
@@ -13,26 +13,26 @@
 
 //Make sure jQuery has been loaded before app.js
 if (typeof jQuery === "undefined") {
-  throw new Error("AdminLTE requires jQuery");
+  throw new Error("GUI requires jQuery");
 }
 
-/* AdminLTE
+/* GUI
  *
  * @type Object
- * @description $.AdminLTE is the main object for the template's app.
+ * @description $.GUI is the main object for the template's app.
  *              It's used for implementing functions and options related
  *              to the template. Keeping everything wrapped in an object
  *              prevents conflict with other plugins and is a better
  *              way to organize our code.
  */
-$.AdminLTE = {};
+$.GUI = {};
 
 /* --------------------
- * - AdminLTE Options -
+ * - GUI Options -
  * --------------------
  * Modify these options to suit your implementation
  */
-$.AdminLTE.options = {
+$.GUI.options = {
   //Add slimscroll to navbar menus
   //This requires you to load the slimscroll plugin
   //in every page before app.js
@@ -61,7 +61,7 @@ $.AdminLTE.options = {
   //Enable Fast Click. Fastclick.js creates a more
   //native touch experience with touch devices. If you
   //choose to enable the plugin, make sure you load the script
-  //before AdminLTE's app.js
+  //before GUI's app.js
   enableFastclick: false,
   //Control Sidebar Tree views
   enableControlTreeView: true,
@@ -135,7 +135,7 @@ $.AdminLTE.options = {
 /* ------------------
  * - Implementation -
  * ------------------
- * The next block of code implements AdminLTE's
+ * The next block of code implements GUI's
  * functions and plugins as specified by the
  * options above.
  */
@@ -146,29 +146,29 @@ $(function () {
   $("body").removeClass("hold-transition");
 
   //Extend options if external options exist
-  if (typeof AdminLTEOptions !== "undefined") {
+  if (typeof GUIOptions !== "undefined") {
     $.extend(true,
-      $.AdminLTE.options,
-      AdminLTEOptions);
+      $.GUI.options,
+      GUIOptions);
   }
 
   //Easy access to options
-  var o = $.AdminLTE.options;
+  var o = $.GUI.options;
 
   //Set up the object
   _init();
 
   //Activate the layout maker
-  $.AdminLTE.layout.activate();
+  $.GUI.layout.activate();
 
   //Enable sidebar tree view controls
   if (o.enableControlTreeView) {
-    $.AdminLTE.tree('.sidebar');
+    $.GUI.tree('.sidebar');
   }
 
   //Enable control sidebar
   if (o.enableControlSidebar) {
-    $.AdminLTE.controlSidebar.activate();
+    $.GUI.controlSidebar.activate();
   }
 
   //Add slimscroll to navbar dropdown
@@ -182,7 +182,7 @@ $(function () {
 
   //Activate sidebar push menu
   if (o.sidebarPushMenu) {
-    $.AdminLTE.pushMenu.activate(o.sidebarToggleSelector);
+    $.GUI.pushMenu.activate(o.sidebarToggleSelector);
   }
 
   //Activate Bootstrap tooltip
@@ -195,7 +195,7 @@ $(function () {
 
   //Activate box widget
   if (o.enableBoxWidget) {
-    $.AdminLTE.boxWidget.activate();
+    $.GUI.boxWidget.activate();
   }
 
   //Activate fast click
@@ -227,9 +227,9 @@ $(function () {
 });
 
 /* ----------------------------------
- * - Initialize the AdminLTE Object -
+ * - Initialize the GUI Object -
  * ----------------------------------
- * All AdminLTE functions are implemented below.
+ * All GUI functions are implemented below.
  */
 function _init() {
   'use strict';
@@ -238,11 +238,11 @@ function _init() {
    * Fixes the layout height in case min-height fails.
    *
    * @type Object
-   * @usage $.AdminLTE.layout.activate()
-   *        $.AdminLTE.layout.fix()
-   *        $.AdminLTE.layout.fixSidebar()
+   * @usage $.GUI.layout.activate()
+   *        $.GUI.layout.fix()
+   *        $.GUI.layout.fixSidebar()
    */
-  $.AdminLTE.layout = {
+  $.GUI.layout = {
     activate: function () {
       var _this = this;
       _this.fix();
@@ -276,7 +276,7 @@ function _init() {
         }
 
         //Fix for the control sidebar height
-        var controlSidebar = $($.AdminLTE.options.controlSidebarOptions.selector);
+        var controlSidebar = $($.GUI.options.controlSidebarOptions.selector);
         if (typeof controlSidebar !== "undefined") {
           if (controlSidebar.height() > postSetWidth)
             $(".content-wrapper, .right-side").css('min-height', controlSidebar.height());
@@ -295,7 +295,7 @@ function _init() {
         window.console.error("Error: the fixed layout requires the slimscroll plugin!");
       }
       //Enable slimscroll for fixed layout
-      if ($.AdminLTE.options.sidebarSlimScroll) {
+      if ($.GUI.options.sidebarSlimScroll) {
         if (typeof $.fn.slimScroll != 'undefined') {
           //Destroy if it exists
           $(".sidebar").slimScroll({destroy: true}).height("auto");
@@ -315,12 +315,12 @@ function _init() {
    * Adds the push menu functionality to the sidebar.
    *
    * @type Function
-   * @usage: $.AdminLTE.pushMenu("[data-toggle='offcanvas']")
+   * @usage: $.GUI.pushMenu("[data-toggle='offcanvas']")
    */
-  $.AdminLTE.pushMenu = {
+  $.GUI.pushMenu = {
     activate: function (toggleBtn) {
       //Get the screen sizes
-      var screenSizes = $.AdminLTE.options.screenSizes;
+      var screenSizes = $.GUI.options.screenSizes;
 
       //Enable sidebar toggle
       $(document).on('click', toggleBtn, function (e) {
@@ -352,7 +352,7 @@ function _init() {
       });
 
       //Enable expand on hover for sidebar mini
-      if ($.AdminLTE.options.sidebarExpandOnHover
+      if ($.GUI.options.sidebarExpandOnHover
         || ($('body').hasClass('fixed')
         && $('body').hasClass('sidebar-mini'))) {
         this.expandOnHover();
@@ -360,7 +360,7 @@ function _init() {
     },
     expandOnHover: function () {
       var _this = this;
-      var screenWidth = $.AdminLTE.options.screenSizes.sm - 1;
+      var screenWidth = $.GUI.options.screenSizes.sm - 1;
       //Expand sidebar on hover
       $('.main-sidebar').hover(function () {
         if ($('body').hasClass('sidebar-mini')
@@ -392,11 +392,11 @@ function _init() {
    * tree view menu.
    *
    * @type Function
-   * @Usage: $.AdminLTE.tree('.sidebar')
+   * @Usage: $.GUI.tree('.sidebar')
    */
-  $.AdminLTE.tree = function (menu) {
+  $.GUI.tree = function (menu) {
     var _this = this;
-    var animationSpeed = $.AdminLTE.options.animationSpeed;
+    var animationSpeed = $.GUI.options.animationSpeed;
     $(document).off('click', menu + ' li a')
       .on('click', menu + ' li a', function (e) {
         //Get the clicked link and the next element
@@ -446,15 +446,15 @@ function _init() {
    * Adds functionality to the right sidebar
    *
    * @type Object
-   * @usage $.AdminLTE.controlSidebar.activate(options)
+   * @usage $.GUI.controlSidebar.activate(options)
    */
-  $.AdminLTE.controlSidebar = {
+  $.GUI.controlSidebar = {
     //instantiate the object
     activate: function () {
       //Get the object
       var _this = this;
       //Update options
-      var o = $.AdminLTE.options.controlSidebarOptions;
+      var o = $.GUI.options.controlSidebarOptions;
       //Get the sidebar
       var sidebar = $(o.selector);
       //The toggle button
@@ -544,13 +544,13 @@ function _init() {
    * removing boxes from the screen.
    *
    * @type Object
-   * @usage $.AdminLTE.boxWidget.activate()
-   *        Set all your options in the main $.AdminLTE.options object
+   * @usage $.GUI.boxWidget.activate()
+   *        Set all your options in the main $.GUI.options object
    */
-  $.AdminLTE.boxWidget = {
-    selectors: $.AdminLTE.options.boxWidgetOptions.boxWidgetSelectors,
-    icons: $.AdminLTE.options.boxWidgetOptions.boxWidgetIcons,
-    animationSpeed: $.AdminLTE.options.animationSpeed,
+  $.GUI.boxWidget = {
+    selectors: $.GUI.options.boxWidgetOptions.boxWidgetSelectors,
+    icons: $.GUI.options.boxWidgetOptions.boxWidgetIcons,
+    animationSpeed: $.GUI.options.animationSpeed,
     activate: function (_box) {
       var _this = this;
       if (!_box) {
@@ -702,17 +702,17 @@ function _init() {
   'use strict';
 
   $.fn.activateBox = function () {
-    $.AdminLTE.boxWidget.activate(this);
+    $.GUI.boxWidget.activate(this);
   };
 
   $.fn.toggleBox = function () {
-    var button = $($.AdminLTE.boxWidget.selectors.collapse, this);
-    $.AdminLTE.boxWidget.collapse(button);
+    var button = $($.GUI.boxWidget.selectors.collapse, this);
+    $.GUI.boxWidget.collapse(button);
   };
 
   $.fn.removeBox = function () {
-    var button = $($.AdminLTE.boxWidget.selectors.remove, this);
-    $.AdminLTE.boxWidget.remove(button);
+    var button = $($.GUI.boxWidget.selectors.remove, this);
+    $.GUI.boxWidget.remove(button);
   };
 
 })(jQuery);
@@ -770,3 +770,21 @@ function _init() {
     });
   };
 }(jQuery));
+
+// slider of x-axis
+$("#xAxis").slider();
+$("#xAxis").on("slide", function(slideEvt) {
+    $("#xPosition").text(slideEvt.value);
+});
+
+// slider of x-axis
+$("#yAxis").slider();
+$("#yAxis").on("slide", function(slideEvt) {
+    $("#yPosition").text(slideEvt.value);
+});
+
+// slider of x-axis
+$("#zAxis").slider();
+$("#zAxis").on("slide", function(slideEvt) {
+    $("#zPosition").text(slideEvt.value);
+});
