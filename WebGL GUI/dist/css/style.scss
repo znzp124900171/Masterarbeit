@@ -566,9 +566,12 @@ a {
         &.control-sidebar-tabs {
             border-bottom: #1c2529;
             >li {
+                color: #fff;
                 >a {
                     background: #181f23;
                     color: #b8c7ce;
+                    display: inline-block;
+                    width: 30%;
                     &,
                     &:hover,
                     &:focus {
@@ -592,6 +595,16 @@ a {
                         background: #222d32;
                         color: #fff;
                     }
+                }
+                p {
+                    height: 40px;
+                    width: 70%;
+                    float: right;
+                    background-color: rgb(24, 31, 35);
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                    padding-left: 30px;
+                    margin-bottom: 0;
                 }
             }
         }
