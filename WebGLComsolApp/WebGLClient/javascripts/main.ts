@@ -90,6 +90,7 @@ function main() {
     console.log("Renderer init OK");
 
     //Initalize the Gui
+    //gui = new Gui(modelCmds, renderer, glContext);
     gui = new Gui(modelCmds, renderer, glContext);
     console.log("Gui init OK");
 }

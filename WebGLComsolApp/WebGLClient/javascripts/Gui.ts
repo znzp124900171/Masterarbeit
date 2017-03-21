@@ -2,29 +2,29 @@
 /// <reference path="libs/jquery.d.ts"/>
 
 function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) {
+
     var self = this;
     var gl = glContext.getContext();
 
     var canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('webgl');
 
-    var jqModelList = $("#modelList");
-    var jqResultList = $("#resultList");
-    var jqPlotList = <any>$("#plotList");
+    var jqModelList = $('#modelList');
+    var jqResultList = $('#resultList');
+    var jqPlotList = $('#plotList');
 
-    var visibleInterface = $("#tmpVisible");
-    var scalationInterface = $("#tmpScale");
-    var textureInterface = $("#tmpTexture");
-    var colorInterface = $("#tmpColor");
+    var visibleInterface = false;
+    var scalationInterface = false;
+    var textureInterface = false;
+    var colorInterface = false;
 
-    //request ModelList
+    // request ModelList
     modelData.getModelList(updateModelList);
 
-
-    //Input Handler
+    // Input Handler
     (function () {
-        var fullScreenButton = $('#btnFullScreen');
-        var lightButton = $('#btnLight');
-        var resetButton = $('#btnReset');
+        var fullScreen = $('#fullScreen');
+        var reset = $('#reset');
+        var light = $('#light');
 
         var rangeX = <any>$('#xPosi');
         var rangeY = <any>$('#yPosi');
@@ -200,15 +200,15 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         }
         handleRangeX = function (evt) {
             var eyeX = parseFloat(evt.currentTarget.value);
-            renderer.setXPosition(eyeX/50);
+            renderer.setXPosition(eyeX / 50);
         };
         handleRangeY = function (evt) {
             var eyeY = parseFloat(evt.currentTarget.value);
-            renderer.setYPosition(eyeY/50);
+            renderer.setYPosition(eyeY / 50);
         };
         handleRangeZ = function (evt) {
             var eyeZ = parseFloat(evt.currentTarget.value);
-            eyeZ = - Math.exp(eyeZ/50) + 1;
+            eyeZ = - Math.exp(eyeZ / 50) + 1;
             renderer.setZPosition(eyeZ);
         };
 
@@ -236,9 +236,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             if (((<any>document).fullScreenElement && (<any>document).fullScreenElement !== null) ||                            // cast it to any so typescript ignores error "property not available"
                 (!(<any>document).mozFullScreen && !(<any>document).webkitIsFullScreen && !(<any>document).msFullscreenElement)) {
 
-                fullScreenButton.removeClass("ui-btn-active");
+                //fullScreenButton.removeClass("ui-btn-active");
             } else {
-                fullScreenButton.addClass("ui-btn-active");
+                //fullScreenButton.addClass("ui-btn-active");
             }
         };
         handleResetView = function () {
@@ -255,9 +255,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         toggleLight = function () {
             var lightOn = renderer.toggleLight();
             if (lightOn) {
-                lightButton.addClass('ui-btn-active');
+                //lightButton.addClass('ui-btn-active');
             } else {
-                lightButton.removeClass('ui-btn-active');
+                //lightButton.removeClass('ui-btn-active');
             }
         }
 
@@ -275,107 +275,88 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         document.addEventListener('pointermove', pointerMove, false);
 
         window.onresize = handleResize;
-        resetButton.click(handleResetView);
-        fullScreenButton.click(toggleFullScreen);
+        //resetButton.click(handleResetView);
+        //fullScreenButton.click(toggleFullScreen);
         var onFullscreenChange = "webkitfullscreenchange mozfullscreenchange fullscreenchange msfullscreenchange";
         $(document).on(onFullscreenChange, handleFullScreenChange);
 
         rangeX.click(handleRangeX);
         rangeY.click(handleRangeY);
         rangeZ.click(handleRangeZ);
-        lightButton.click(toggleLight);
+        //lightButton.click(toggleLight);
 
 
         //initial canvas size
         handleResize();
-    } ());
+    }());
 
-    //change Model
-    jqModelList.change(function (event) {
-        var newModelId = (<any>event).currentTarget.value;    // ID of the new Model
-        if (newModelId === "start") {                  // if start no Model selected 
-            return;
-        }
-        console.log("modelId: " + newModelId);      
-
-        var oldModelID = renderer.getActiveModelId();  //get old Model Id from Renderer
-
-        if (newModelId !== oldModelID) {                                //if id changed
-            renderer.setActiveModelById(newModelId, function () {       //reset the rendering scene, and request Model from server if not exists
-                console.log("New modelId: " + newModelId);
-                modelData.getPlotGroupMap(newModelId, updatePlotGroupList);     
+    // change Model
+    jqModelList.delegate('a[class="active"]', 'click', function () {
+        var newModelID = $(this).attr('data-model');
+        var oldModelID = renderer.getActiveModelId(); //get old Model Id from Renderer
+        if (newModelID !== oldModelID) {    //if id changed
+            renderer.setActiveModelById(newModelID, function () {       //reset the rendering scene, and request Model from server if not exists
+                console.log("New modelId: " + newModelID);
+                modelData.getPlotGroupMap(newModelID, updatePlotGroupList);
             });
         }
-    });
+    })
 
-    //change PlotGroup
-    jqResultList.change(function (event) {
-        var newPlotGroupID = (<any>event).currentTarget.value;   // ID of the new PlotGroup
-        if (newPlotGroupID === "start") {                 // if start no PlotGroup selected
-            return;
-        }
-        console.log("plotGroupId: " + newPlotGroupID);              
+    // change PlotGroup
+    jqResultList.delegate('a[class="active"]', 'click', function () {
+        var newPlotGroupID = $(this).attr('data-plot');
         var oldPlotGroupID = renderer.getActivePlotGroupId();   //get old PlotGroup Id from Renderer
 
         if (newPlotGroupID !== oldPlotGroupID) {                //if id changed
             renderer.setActivePlotGroupById(newPlotGroupID, function () {       //resets the current PlotGroup, and request PlotGroup Data from server
-                var modelId = renderer.getActiveModelId();
-                console.log("modelId: " + modelId + " \nNew plotGroupId: " + newPlotGroupID);
-                modelData.getPlotMap(modelId, newPlotGroupID, updatePlotList);
+                var modelID = renderer.getActiveModelId();
+                console.log("modelId: " + modelID + " \nNew plotGroupId: " + newPlotGroupID);
+                modelData.getPlotMap(modelID, newPlotGroupID, updatePlotList);
             });
 
         }
-    });
+    })
 
     // initialize all Color Names and Texture Names as definid in initWebGL
     setColors(glContext.getColorNames());
     setTextures(glContext.getTextureName());
 
-    function setColors(colorList: string[]) {
-        var select = <any>$("#tmpColor").find("select");
-        select.find("option").remove();
-        var option;
-        for (var i in colorList) {
-            option = $("<option></option>").text(colorList[i]);
-            option.appendTo(select);
-        }
-        select.select().select('refresh');
+    function setTextures(colorTable: string[]) {
+
     }
 
-    function setTextures(colTable: string[]) {
-        var select = <any>$("#tmpTexture").find("select");
-        select.find("option").remove();
-        var option;
-        for (var i in colTable) {
-            option = $("<option></option>").text(colTable[i]);
-            option.appendTo(select);
-        }
-        select.select().select('refresh');
+    function setColors(colorList: string[]) {
+
     }
 
     // updates Model Selector is called when model List is received
     function updateModelList(modelList: { modelId: string; name: string }[]): void {
         removeAllPlots();
-        jqModelList.children().remove(".selItem");
+        jqModelList.find('.treeview-menu').children().filter('li').remove();
         for (var i in modelList) {
-            var option = $("<option></option>");
-            option.addClass('selItem');
-            option.val(modelList[i].modelId);
-            option.text(modelList[i].name);
-            jqModelList.append(option);
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
+            selectItem.attr('href', '#');
+            selectItem.attr('data-model', modelList[i].modelId);
+            selectItem.text(modelList[i].name);
+            list.append(selectItem);
+            jqModelList.find('.treeview-menu').append(list);
+
         }
     }
 
     //updates PlotGroup Selector
     function updatePlotGroupList(plotGroupList: { name: string; id: string }[]): void {
         removeAllPlots();
-        jqResultList.children().remove(".selItem");
+        jqResultList.find('.treeview-menu').children().remove('li');
         for (var i in plotGroupList) {
-            var option = $("<option></option>");
-            option.addClass('selItem');
-            option.val(plotGroupList[i].id);
-            option.text(plotGroupList[i].name);
-            jqResultList.append(option);
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
+            selectItem.attr('href', '#');
+            selectItem.attr('data-plotGroup', plotGroupList[i].id);
+            selectItem.text(plotGroupList[i].name);
+            list.append(selectItem);
+            jqResultList.find('.treeview-menu').append(list);
         }
     }
 
@@ -384,81 +365,18 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         jqPlotList.find(".plotItem").unbind().remove();
     }
 
-    //updates Plot List //???
+    // updates Plot Selector
     function updatePlotList(plotList: { name: string; id: string }[]): void {
         removeAllPlots();
-        plotList.forEach(function (plot) {
-            var listItem = $("#tmpListItem").clone(false).addClass("plotItem");
-            listItem.find("a").text(plot.name);
-            listItem.click(function () {
-                clickPlotItem(plot.id)
-            });
-            listItem.appendTo(jqPlotList);
-        });
-        jqPlotList.listview().listview('refresh');
-
-    }
-
-    //updates Plot List //???
-    function clickPlotItem(plotTag: string) {
-        var modelId = renderer.getActiveModelId();
-        var plotGroupId = renderer.getActivePlotGroupId();
-        console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
-        var result = modelData.getPlot(modelId, plotGroupId, plotTag, setupPlotPanel);
-    }
-
-    //???
-    function setupPlotPanel(result: Result) {
-        var panel: any = $("#panelPlotConfig");
-
-        resetPlotPanel();
-
-        visibleInterface.find("label").text("Set " + result.name + " visible");
-
-        visibleInterface.find("input").click(function (evt) {
-            if (renderer.getActivePlots().indexOf(result) >= 0) {
-                renderer.removePlot(result);
-            } else {
-                renderer.addPlot(result);
-            }
-        });
-
-        // check if result is visible or nor
-        if (renderer.getActivePlots().indexOf(result) !== -1) {
-            visibleInterface.find("input").prop("checked", true);
-        } else {
-            visibleInterface.find("input").prop("checked", false);
+        jqPlotList.find('.treeview-menu').children().remove('li');
+        for (var i in plotList) {
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
+            selectItem.attr('href', '#');
+            selectItem.attr('data-plot', plotList[i].id);
+            selectItem.text(plotList[i].name);
+            list.append(selectItem);
+            jqResultList.find('.treeview-menu').append(list);
         }
-
-
-        scalationInterface.find("input").change(function (evt) {
-            var val = (<any>evt).currentTarget.value;
-            result.usrScale = val / 100;     //100 is normal
-            renderer.renderScene();
-        });
-
-        colorInterface.find("select").change(function (evt) {
-            var val = (<any>evt).currentTarget.selectedIndex;
-            result.usrColor = (<any>evt).currentTarget[val].text;
-            renderer.renderScene();
-        });
-
-
-        textureInterface.find("select").change(function (evt) {
-            var val = (<any>evt).currentTarget.selectedIndex;
-            result.usrText = (<any>evt).currentTarget[val].text;
-            renderer.renderScene();
-       });
-
-        panel.panel('open');
-    }
-
-    function resetPlotPanel() {
-        visibleInterface.find("label").text(null);
-        visibleInterface.find("input").unbind("click");
-        scalationInterface.find("input").unbind("change");
-        colorInterface.find("select").unbind("change");
-        textureInterface.find("select").unbind("change");
     }
 }
-

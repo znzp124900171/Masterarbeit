@@ -1,17 +1,28 @@
 ﻿<!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>ITE WebGL</title>
     <link rel="SHORTCUT ICON" href="favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="stylesheets/jquery.mobile-1.4.5.min.css">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="stylesheets/libs/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="stylesheets/libs/font-awesome.min.css">
 
-    <script src="javascripts/libs/jquery-2.1.1.min.js"></script>
-    <script src="javascripts/libs/jquery.mobile-1.4.5.min.js"></script>
+    <link rel="stylesheet" href="stylesheets/plugins/bootstrap-slider.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="stylesheets/libs/skin-blue.min.css">
+
     <script src="javascripts/libs/gl-matrix-min.js"></script>
-    <script src="javascripts/libs/hand.minified-1.3.8.js"></script>
+    <!-- jQuery 2.1.1 -->
+    <script src="javascripts/libs/jquery-2.1.1.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="javascripts/libs/bootstrap.min.js"></script>
+    <script src="javascripts/plugins/bootstrap-slider.min.js"></script>
 
     <script src="javascripts/initWebGL.js"></script>
     <script src="javascripts/modelCmds.js"></script>
@@ -21,139 +32,321 @@
     <script src="javascripts/Renderer.js"></script>
     <script src="javascripts/Gui.js"></script>
     <script src="javascripts/Geometries.js"></script>
-
+    <script src="javascripts/plugins/app.js"></script>
 </head>
-<body style="margin:0; padding:0; width:100%; height:100%; overflow:hidden">
+
+
+<body class="hold-transition skin-blue sidebar-mini">
     <script>
         $(window).ready(function () {
             main();
         });
     </script>
+    <div class="wrapper">
+        <!-- Main Header -->
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="#" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>ITE</b></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>ITE</b> WebGL</span>
+            </a>
 
-    <div data-role="page" id="mainPage">
-        <div data-role="header" data-position="right" data-fullscreen="true" id="header">
-            <h1 id="plotTitle">ITE WebGL</h1>
-            <a href="#leftPanel" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Open Panel</a>
-            <a href="#rightPanel" class="ui-btn ui-icon-arrow-r ui-btn-icon-right">Open Panel</a>
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- User Account Menu -->
+                        <li class="dropdown user user-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <!-- The user image in the navbar-->
+                                <img src="dist/img/Matthias.jpg" class="user-image" alt="User Image">
+                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                <span class="hidden-xs">Matthias Jüttner</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" id="fullScreen">
+                                <i class="fa fa-arrows-alt"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" id="reset">
+                                <i class="fa fa-refresh"></i>
+                            </a>
+                        </li>
+                        <!-- Control Sidebar Toggle Button -->
+                        <li>
+                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+
+                <!-- Sidebar Menu -->
+                <ul class="sidebar-menu">
+                    <li class="header">Model File</li>
+                    <li class="treeview"  id="modelList">
+                        <a href="#">
+                            <i class="fa fa-folder-o"></i> <span>Select Model File</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu" >
+                            <li><a href="#" data-model="start" class="active">model.mph</a></li>
+                        </ul>
+                    </li>
+                    <li class="header">PlotGroup</li>
+                    <li class="treeview"  id="resultList">
+                        <a href="#">
+                            <i class="fa fa-file-o"></i> <span>Select PlotGroup</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#" data-plotGroup="start" class="active">plot_file</a></li>
+                        </ul>
+                    </li>
+                    <li class="header">Plot Configuration</li>
+                    <li class="treeview" id="plotList">
+                        <a href="#">
+                            <i class="fa fa-file-o"></i> <span>Select Configuration</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#" data-plot="start">Plot name</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- /.sidebar-menu -->
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <div class="content-wrapper" style="min-height:546px;">
+            <canvas style="margin:0; padding:0;" id="webgl"></canvas>
         </div>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Main content -->
+            <section class="content">
 
+                <canvas style="margin: 0; padding: 0;" id='webgl'></canvas>
 
-        <canvas style="margin:0; padding:0;" id="webgl"></canvas>
-
-
-        <div data-role="panel" data-swipe-close="false" data-display="overlay" data-dismissible="false" id="leftPanel">
-            <a href="#mainPage" data-rel="close" class="ui-btn ui-shadow ui-corner-all ui-btn-a ui-btn-icon-left ui-icon-back">Close panel</a>
-
-            <button class="ui-btn ui-corner-all" id="btnFullScreen">FullScreen</button>
-
-            <div data-role="controlgroup" data-type="horizontal">
-                <button id="btnReset" data-role="ui-btn">Reset View</button>
-                <button id="btnLight" data-role="ui-btn">Light on/off</button>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <!-- To the right -->
+            <div class="pull-right hidden-xs">
+                Make Germany great again.
             </div>
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2016 <a href="#">ITE</a>.</strong> All rights reserved.
+        </footer>
 
-                <label for="xPosi">x Position</label>
-                <input type="range" name="points" id="xPosi" value="0" min="-100" max="100" step="0.1" data-highlight="true" />
-
-                <label for="yPosi">y Position</label>
-                <input type="range" name="points" id="yPosi" value="0" min="-100" max="100" step="0.1" data-highlight="true" />
-
-                <label for="zPosi">z Position</label>
-                <input type="range" name="points" id="zPosi" value="0" min="-100" max="100" step="0.1" data-highlight="true" />
-
-        </div>
-
-        <div data-role="panel" data-swipe-close="false" data-display="overlay" data-dismissible="false" data-position="right" id="rightPanel">
-
-            <a href="#mainPage" data-rel="close" class="ui-btn  ui-shadow ui-corner-all ui-btn-a ui-btn-icon-right ui-icon-back">Close panel</a>
-
-            <label for="modelList">Select Model File</label>
-            <select name="modelSelector" id="modelList">
-                <option value="start">Select Model</option>
-            </select>
-
-            <label for="PlotGroup">Select PlotGroup</label>
-            <select name="PlotGroupSelecter" id="resultList">
-                <option value="start">Select PlotGroup</option>
-            </select>
-
-            <p>Configure Plots</p>
-
-            <ul id="plotList">
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Create the tabs -->
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                <li>
+                    <a data-toggle="tab" class="active"><i class="fa fa-gears"></i></a>
+                    <p>Setting</p>
+                </li>
             </ul>
-
-
-        </div>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <!-- Home tab content -->
+                <div class="tab-pane active" id="control-sidebar-home-tab">
+                    <form method="post">
+                        <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                                Turn on light effect
+                                <input type="checkbox" class="pull-right" name="my-checkbox" data-size="small" data-off-color="warning" id="light">
+                            </label>
+                            <p>This feature works only on 3D-Plot</p>
+                        </div>
+                        <!-- /.form-group -->
+                    </form>
+                    <label class="control-sidebar-subheading">X Position: <span id="xPosition">0</span></label>
+                    <input id="xPosi" type="text" data-slider-min="-40" data-slider-max="40" data-slider-step="1" data-slider-value="0" />
+                    <label class="control-sidebar-subheading">Y Position: <span id="yPosition">0</span></label>
+                    <input id="yPosi" type="text" data-slider-min="-40" data-slider-max="40" data-slider-step="1" data-slider-value="0" />
+                    <label class="control-sidebar-subheading">Z Position: <span id="zPosition">0</span></label>
+                    <input id="zPosi" type="text" data-slider-min="-40" data-slider-max="40" data-slider-step="1" data-slider-value="0" />
+                    <p>Draw mouse left to rotate and mouse right to translate</p>
+                    <h4 class="control-sidebar-subheading">Color of frame</h4>
+                    <ul class="list-unstyled clearfix">
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="bg-black"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Black</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="bg-red"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Red</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="bg-blue"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Blue</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="bg-light-blue"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Light blue</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="bg-green"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Green</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="bg-dark-green"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Dark green</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="bg-yellow"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Yellow</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="bg-yellow-green"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Yellow green</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="bg-gray-dark"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Gray dark</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="bg-gray-light"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Gray light</p>
+                        </li>
+                    </ul>
+                    <h4 class="control-sidebar-subheading">Colortable of frame</h4>
+                    <ul class="list-unstyled clearfix">
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="cyclic"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Cyclic</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="disco"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Disco</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="discolight"></span></div>
+                            </a>
+                            <p class="text-center no-margin">DiscoLight</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="grayprint"></span></div>
+                            </a>
+                            <p class="text-center no-margin">GrayPrint</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="grayscale"></span></div>
+                            </a>
+                            <p class="text-center no-margin">GrayScale</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="rainbow"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Rainbow</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="rainbowlight"></span></div>
+                            </a>
+                            <p class="text-center no-margin">RainbowLight</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="thermal"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Thermal</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="thermalequiditant"></span></div>
+                            </a>
+                            <p class="text-center no-margin">ThermalEquiditant</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="traffic"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Traffic</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="trafficlight"></span></div>
+                            </a>
+                            <p class="text-center no-margin">TrafficLight</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="wave"></span></div>
+                            </a>
+                            <p class="text-center no-margin">Wave</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover">
+                                <div><span class="wavelight"></span></div>
+                            </a>
+                            <p class="text-center no-margin">WaveLight</p>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.tab-pane -->
+            </div>
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+    <!-- REQUIRED JS SCRIPTS -->
     
-        <div data-role="panel" data-swipe-close="false" data-display="overlay" data-dismissible="false" data-position="right" id="panelPlotConfig">
-            <a href="#rightPanel" data-rel="close" class="ui-btn  ui-shadow ui-corner-all ui-btn-a ui-btn-icon-right ui-icon-back">Back</a>
-            <p>Plot Configuration</p>
-            <p id="plotType"></p>
-            <fieldset data-role="controlgroup" class="template" id="tmpVisible">
-                <label class="template" for="check1"></label>
-                <input class="template" type="checkbox" id="check1" />
-            </fieldset>
-
-            <fieldset data-role="controlgroup" class="template" id="tmpScale">
-                <label class="template" for="scale1">Scalation</label>
-                <input class="template" type="range" id="scale1" value="100" min="0" max="200" step="0.1" data-highlight="true">
-            </fieldset>
-
-            <fieldset data-role="controlgroup" class="template" id="tmpColor">
-                <label class="template" for="selector1">Select Color</label>
-                <select class="template" name="tmpSelector" id="selector1">
-                    <option value="start">Select Color</option>
-                </select>
-            </fieldset>
-
-            <fieldset data-role="controlgroup" class="template" id="tmpTexture">
-                <label class="template" for="selector2">Select Colortable</label>
-                <select class="template" name="tmpSelector" id="selector2">
-                    <option value="start">Select Colortable</option>
-                </select>
-            </fieldset>
-
-        </div>
-
-
-        <div id="templates">
-            <ul id="plotList">
-                <li class="template" id="tmpListItem"><a></a></li>
-            </ul>
-        </div>
-
-    </div>
-
-
-
-
-    <div data-role="page" data-dialog="true" id="problemInfo">
-        <div data-role="header">
-            <h1>Some problems occur...</h1>
-        </div>
-
-        <div data-role="main" class="ui-content" id="browserSupport">
-            <p>Your Browser doesn't support:</p>
-        </div>
-        <div data-role="footer">
-            <a href="#mainPage" class="ui-btn">OK</a>
-        </div>
-    </div>
-
-    <div data-role="page" data-dialog="true" id="errorWindow">
-        <div data-role="header">
-            <h1>An Error has occured...</h1>
-        </div>
-        <div data-role="main" class="ui-content" id="errorMain">
-
-        </div>
-        <div data-role="footer">
-            <a href="#mainPage" class="ui-btn">OK</a>
-        </div>
-
-    </div>
-
-
-
 
 </body>
+
 </html>
