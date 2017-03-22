@@ -439,6 +439,11 @@ function _init() {
           e.preventDefault();
         }
       });
+
+    $('.treeview .treeview-menu').on('click', 'a', function () {
+        $('.active').removeClass('active');
+        $(this).addClass('active');
+    })
   };
 
   /* ControlSidebar
@@ -789,7 +794,8 @@ $("#zPosi").on("slide", function(slideEvt) {
     $("#zPosition").text(slideEvt.value);
 });
 
-$('.treeview-menu').delegate('a[data-model]','click',function () {
+$('#modelList').on('click', 'a', function (e) {
+    event.preventDefault();
     console.log('selected');
     $(this).addClass('active');
 })
