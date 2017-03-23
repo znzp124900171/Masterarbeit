@@ -329,17 +329,20 @@ a {
             display: none;
             list-style: none;
             padding: 0;
-            margin: 0;
-            padding-left: 5px;
+            margin-left: 0 !important;
             >li {
                 margin: 0;
                 >a {
-                    padding: 5px 5px 5px 15px;
+                    padding: 5px 15px 5px 15px;
                     display: block;
                     font-size: 14px;
-                    >.fa,
-                    >.glyphicon {
-                        width: 20px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    border-left: 3.5px solid transparent;
+                    &.active {
+                        border-left: 3.5px solid white;
+                        color: white;
                     }
                 }
             }

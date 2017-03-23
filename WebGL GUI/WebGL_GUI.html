@@ -19,30 +19,9 @@
     <link rel="stylesheet" href="dist/css/style.css">
     <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css">
 </head>
-<!--
-BODY TAG OPTIONS:
-=================
-Apply one or more of the following classes to get the
-desired effect
-|---------------------------------------------------------|
-| SKINS         | skin-blue                               |
-|               | skin-black                              |
-|               | skin-purple                             |
-|               | skin-yellow                             |
-|               | skin-red                                |
-|               | skin-green                              |
-|---------------------------------------------------------|
-|LAYOUT OPTIONS | fixed                                   |
-|               | layout-boxed                            |
-|               | layout-top-nav                          |
-|               | sidebar-collapse                        |
-|               | sidebar-mini                            |
-|---------------------------------------------------------|
--->
 
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
-
         <!-- Main Header -->
         <header class="main-header">
             <!-- Logo -->
@@ -73,12 +52,12 @@ desired effect
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="#" id="fullScreen">
                                 <i class="fa fa-arrows-alt"></i>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="#" id="refresh">
                                 <i class="fa fa-refresh"></i>
                             </a>
                         </li>
@@ -90,16 +69,15 @@ desired effect
                 </div>
             </nav>
         </header>
+
         <!-- Left side column. contains the logo and sidebar -->
         <aside class="main-sidebar">
             <!-- sidebar: style can be found in sidebar.less -->
             <section class="sidebar">
-
                 <!-- Sidebar Menu -->
                 <ul class="sidebar-menu">
                     <li class="header">Model File</li>
-                    <!-- Optionally, you can add icons to the links -->
-                    <li class="treeview">
+                    <li class="treeview" id="model">
                         <a href="#"><i class="fa fa-folder-o"></i> <span>Select Model File</span>
                             <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
@@ -110,7 +88,7 @@ desired effect
                         </ul>
                     </li>
                     <li class="header">PlotGroup</li>
-                    <li class="treeview">
+                    <li class="treeview" id="plotGroup">
                         <a href="#"><i class="fa fa-file-o"></i> <span>Select PlotGroup</span>
                             <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
@@ -123,7 +101,7 @@ desired effect
                         </ul>
                     </li>
                     <li class="header">Plot Configuration</li>
-                    <li class="treeview">
+                    <li class="treeview" id="plot">
                         <a href="#"><i class="fa fa-file-o"></i> <span>Select Configuration</span>
                             <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
@@ -178,7 +156,7 @@ desired effect
                         <div class="form-group">
                             <label class="control-sidebar-subheading">
                 Turn on light effect
-                <input type="checkbox" class="pull-right" name="my-checkbox" data-size="small" data-off-color="warning">
+                <input type="checkbox" class="pull-right" name="my-checkbox" data-size="small" data-off-color="warning" id="light">
               </label>
                             <p>This feature works only on 3D-Plot</p>
                         </div>
