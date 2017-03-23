@@ -299,9 +299,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
     // change PlotGroup
     jqResultList.on('click', 'a[class="active"]', function () {
-        var newPlotGroupID = $(this).attr('data-plot');
+        var newPlotGroupID = $(this).attr('data-result');
         var oldPlotGroupID = renderer.getActivePlotGroupId();   //get old PlotGroup Id from Renderer
-
         if (newPlotGroupID !== oldPlotGroupID) {                //if id changed
             renderer.setActivePlotGroupById(newPlotGroupID, function () {       //resets the current PlotGroup, and request PlotGroup Data from server
                 var modelID = renderer.getActiveModelId();
@@ -385,7 +384,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             selectItem.attr('data-plot', plotList[i].id);
             selectItem.text(plotList[i].name);
             list.append(selectItem);
-            jqResultList.find('.treeview-menu').append(list);
+            jqPlotList.find('.treeview-menu').append(list);
         }
     }
 

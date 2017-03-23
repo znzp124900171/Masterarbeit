@@ -252,7 +252,7 @@ function Gui(modelData, renderer, glContext) {
         }
     });
     jqResultList.on('click', 'a[class="active"]', function () {
-        var newPlotGroupID = $(this).attr('data-plot');
+        var newPlotGroupID = $(this).attr('data-result');
         var oldPlotGroupID = renderer.getActivePlotGroupId();
         if (newPlotGroupID !== oldPlotGroupID) {
             renderer.setActivePlotGroupById(newPlotGroupID, function () {
@@ -323,7 +323,7 @@ function Gui(modelData, renderer, glContext) {
             selectItem.attr('data-plot', plotList[i].id);
             selectItem.text(plotList[i].name);
             list.append(selectItem);
-            jqResultList.find('.treeview-menu').append(list);
+            jqPlotList.find('.treeview-menu').append(list);
         }
     }
 }
