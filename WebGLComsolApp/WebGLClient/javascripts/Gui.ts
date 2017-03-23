@@ -21,9 +21,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var lightButton = $('#reset');
         var resetButton = $('#light');
 
-        var rangeX = $('#xPosi');
-        var rangeY = $('#yPosi');
-        var rangeZ = $('#zPosi');
+        var rangeX = <any>$('#xPosi');
+        var rangeY = <any>$('#yPosi');
+        var rangeZ = <any>$('#zPosi');
 
         var width;
         var height;
@@ -362,7 +362,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             var list = $('<li></li>');
             var selectItem = $('<a></a>');
             selectItem.attr('href', '#');
-            selectItem.attr('data-plotGroup', plotGroupList[i].id);
+            selectItem.attr('data-result', plotGroupList[i].id);
             selectItem.text(plotGroupList[i].name);
             list.append(selectItem);
             jqResultList.find('.treeview-menu').append(list);

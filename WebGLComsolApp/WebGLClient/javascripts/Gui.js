@@ -2,18 +2,14 @@ function Gui(modelData, renderer, glContext) {
     var self = this;
     var gl = glContext.getContext();
     var canvas = document.getElementById('webgl');
-    var jqModelList = $("#modelList");
-    var jqResultList = $("#resultList");
-    var jqPlotList = $("#plotList");
-    var visibleInterface = $("#tmpVisible");
-    var scalationInterface = $("#tmpScale");
-    var textureInterface = $("#tmpTexture");
-    var colorInterface = $("#tmpColor");
+    var jqModelList = $("#model");
+    var jqResultList = $("#result");
+    var jqPlotList = $("#plot");
     modelData.getModelList(updateModelList);
     (function () {
-        var fullScreenButton = $('#btnFullScreen');
-        var lightButton = $('#btnLight');
-        var resetButton = $('#btnReset');
+        var fullScreenButton = $('#fullScreen');
+        var lightButton = $('#reset');
+        var resetButton = $('#light');
         var rangeX = $('#xPosi');
         var rangeY = $('#yPosi');
         var rangeZ = $('#zPosi');
@@ -245,32 +241,24 @@ function Gui(modelData, renderer, glContext) {
         lightButton.click(toggleLight);
         handleResize();
     }());
-    jqModelList.change(function (event) {
-        var newModelId = event.currentTarget.value;
-        if (newModelId === "start") {
-            return;
-        }
-        console.log("modelId: " + newModelId);
+    jqModelList.on('click', 'a[class="active"]', function () {
+        var newModelID = $(this).attr('data-model');
         var oldModelID = renderer.getActiveModelId();
-        if (newModelId !== oldModelID) {
-            renderer.setActiveModelById(newModelId, function () {
-                console.log("New modelId: " + newModelId);
-                modelData.getPlotGroupMap(newModelId, updatePlotGroupList);
+        if (newModelID !== oldModelID) {
+            renderer.setActiveModelById(newModelID, function () {
+                console.log("New modelId: " + newModelID);
+                modelData.getPlotGroupMap(newModelID, updatePlotGroupList);
             });
         }
     });
-    jqResultList.change(function (event) {
-        var newPlotGroupID = event.currentTarget.value;
-        if (newPlotGroupID === "start") {
-            return;
-        }
-        console.log("plotGroupId: " + newPlotGroupID);
+    jqResultList.on('click', 'a[class="active"]', function () {
+        var newPlotGroupID = $(this).attr('data-plot');
         var oldPlotGroupID = renderer.getActivePlotGroupId();
         if (newPlotGroupID !== oldPlotGroupID) {
             renderer.setActivePlotGroupById(newPlotGroupID, function () {
-                var modelId = renderer.getActiveModelId();
-                console.log("modelId: " + modelId + " \nNew plotGroupId: " + newPlotGroupID);
-                modelData.getPlotMap(modelId, newPlotGroupID, updatePlotList);
+                var modelID = renderer.getActiveModelId();
+                console.log("modelId: " + modelID + " \nNew plotGroupId: " + newPlotGroupID);
+                modelData.getPlotMap(modelID, newPlotGroupID, updatePlotList);
             });
         }
     });
@@ -298,24 +286,28 @@ function Gui(modelData, renderer, glContext) {
     }
     function updateModelList(modelList) {
         removeAllPlots();
-        jqModelList.children().remove(".selItem");
+        jqModelList.find('.treeview-menu').children().filter('li').remove();
         for (var i in modelList) {
-            var option = $("<option></option>");
-            option.addClass('selItem');
-            option.val(modelList[i].modelId);
-            option.text(modelList[i].name);
-            jqModelList.append(option);
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
+            selectItem.attr('href', '#');
+            selectItem.attr('data-model', modelList[i].modelId);
+            selectItem.text(modelList[i].name);
+            list.append(selectItem);
+            jqModelList.find('.treeview-menu').append(list);
         }
     }
     function updatePlotGroupList(plotGroupList) {
         removeAllPlots();
-        jqResultList.children().remove(".selItem");
+        jqResultList.find('.treeview-menu').children().remove('li');
         for (var i in plotGroupList) {
-            var option = $("<option></option>");
-            option.addClass('selItem');
-            option.val(plotGroupList[i].id);
-            option.text(plotGroupList[i].name);
-            jqResultList.append(option);
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
+            selectItem.attr('href', '#');
+            selectItem.attr('data-result', plotGroupList[i].id);
+            selectItem.text(plotGroupList[i].name);
+            list.append(selectItem);
+            jqResultList.find('.treeview-menu').append(list);
         }
     }
     function removeAllPlots() {
@@ -323,62 +315,15 @@ function Gui(modelData, renderer, glContext) {
     }
     function updatePlotList(plotList) {
         removeAllPlots();
-        plotList.forEach(function (plot) {
-            var listItem = $("#tmpListItem").clone(false).addClass("plotItem");
-            listItem.find("a").text(plot.name);
-            listItem.click(function () {
-                clickPlotItem(plot.id);
-            });
-            listItem.appendTo(jqPlotList);
-        });
-        jqPlotList.listview().listview('refresh');
-    }
-    function clickPlotItem(plotTag) {
-        var modelId = renderer.getActiveModelId();
-        var plotGroupId = renderer.getActivePlotGroupId();
-        console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
-        var result = modelData.getPlot(modelId, plotGroupId, plotTag, setupPlotPanel);
-    }
-    function setupPlotPanel(result) {
-        var panel = $("#panelPlotConfig");
-        resetPlotPanel();
-        visibleInterface.find("label").text("Set " + result.name + " visible");
-        visibleInterface.find("input").click(function (evt) {
-            if (renderer.getActivePlots().indexOf(result) >= 0) {
-                renderer.removePlot(result);
-            }
-            else {
-                renderer.addPlot(result);
-            }
-        });
-        if (renderer.getActivePlots().indexOf(result) !== -1) {
-            visibleInterface.find("input").prop("checked", true);
+        jqPlotList.find('.treeview-menu').children().remove('li');
+        for (var i in plotList) {
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
+            selectItem.attr('href', '#');
+            selectItem.attr('data-plot', plotList[i].id);
+            selectItem.text(plotList[i].name);
+            list.append(selectItem);
+            jqResultList.find('.treeview-menu').append(list);
         }
-        else {
-            visibleInterface.find("input").prop("checked", false);
-        }
-        scalationInterface.find("input").change(function (evt) {
-            var val = evt.currentTarget.value;
-            result.usrScale = val / 100;
-            renderer.renderScene();
-        });
-        colorInterface.find("select").change(function (evt) {
-            var val = evt.currentTarget.selectedIndex;
-            result.usrColor = evt.currentTarget[val].text;
-            renderer.renderScene();
-        });
-        textureInterface.find("select").change(function (evt) {
-            var val = evt.currentTarget.selectedIndex;
-            result.usrText = evt.currentTarget[val].text;
-            renderer.renderScene();
-        });
-        panel.panel('open');
-    }
-    function resetPlotPanel() {
-        visibleInterface.find("label").text(null);
-        visibleInterface.find("input").unbind("click");
-        scalationInterface.find("input").unbind("change");
-        colorInterface.find("select").unbind("change");
-        textureInterface.find("select").unbind("change");
     }
 }
