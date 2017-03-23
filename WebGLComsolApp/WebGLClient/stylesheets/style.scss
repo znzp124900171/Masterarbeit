@@ -199,6 +199,21 @@ a {
     }
 }
 
+.navbar-nav>.user-menu .user-image {
+    float: left;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-top: -2px;
+    @media (max-width: 767px){
+        float: none;
+        margin-right: 0;
+        margin-top: -8px;
+        line-height: 10px;
+    }
+}
+
 
 /*
  * Compnent: Main Sidebar
@@ -262,26 +277,32 @@ a {
     padding: 0;
     white-space: nowrap;
     overflow: hidden;
-    >li {
+
+    > li {
         position: relative;
         margin: 0;
         padding: 0;
-        >a {
+
+        > a {
             padding: 12px 5px 12px 15px;
             display: block;
-            >.fa,
-            >.glyphicon {
+
+            > .fa,
+            > .glyphicon {
                 width: 20px;
             }
         }
+
         .label {
             margin-right: 5px;
         }
+
         &.header {
             white-space: nowrap;
             overflow: hidden;
         }
     }
+
     li {
         &.header {
             padding: 10px 25px 10px 15px;
@@ -289,62 +310,76 @@ a {
             overflow: hidden;
             text-overflow: clip;
         }
-        >a {
+
+        > a {
             position: relative;
-            >.fa-angle-left,
-            >.pull-right-container>.fa-angle-left {
+
+            > .fa-angle-left,
+            > .pull-right-container > .fa-angle-left {
                 width: auto;
                 height: auto;
                 padding: 0;
                 margin-right: 10px;
             }
-            >.fa-angle-left {
+
+            > .fa-angle-left {
                 position: absolute;
                 top: 50%;
                 right: 10px;
                 margin-top: -8px;
             }
-            >.pull-right-container {
+
+            > .pull-right-container {
                 position: absolute;
                 right: 10px;
                 top: 50%;
                 margin-top: -7px;
             }
         }
+
         &.active {
-            >a {
+            > a {
                 .fa-angle-left,
-                .pull-right-container>.fa-angle-left {
+                .pull-right-container > .fa-angle-left {
                     -webkit-transform: rotate(-90deg);
                     -ms-transform: rotate(-90deg);
                     -o-transform: rotate(-90deg);
                     transform: rotate(-90deg);
                 }
             }
-            >.treeview-menu {
+
+            > .treeview-menu {
                 display: block;
             }
         }
+
         .treeview-menu {
             display: none;
             list-style: none;
             padding: 0;
-            margin: 0;
-            padding-left: 5px;
-            >li {
+            margin-left: 0 !important;
+
+            > li {
                 margin: 0;
-                >a {
-                    padding: 5px 5px 5px 15px;
+
+                > a {
+                    padding: 5px 15px 5px 15px;
                     display: block;
                     font-size: 14px;
-                    >.fa,
-                    >.glyphicon {
-                        width: 20px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    border-left: 3.5px solid transparent;
+
+                    &.active {
+                        border-left: 3.5px solid white;
+                        color: white;
                     }
                 }
             }
         }
     }
+
     &:hover {
         overflow: visible;
     }
@@ -557,6 +592,12 @@ a {
     }
 }
 
+.control-sidebar-subheading {
+    display: block;
+    font-weight: 400;
+    font-size: 14px;
+}
+
 .control-sidebar-dark {
     color: #b8c7ce;
     &+.control-sidebar-bg {
@@ -605,6 +646,7 @@ a {
                     padding-bottom: 10px;
                     padding-left: 30px;
                     margin-bottom: 0;
+                    border-bottom:1px solid #141a1d;
                 }
             }
         }
@@ -663,9 +705,64 @@ a {
     }
 }
 
+.nav-tabs.control-sidebar-tabs {
+    >li:first-of-type>a {
+        &,
+        &:hover,
+        &:focus {
+            border-left-width: 0;
+        }
+    }
+    >li {
+        >a {
+            border-radius: 0;
+            &,
+            &:hover {
+                border-top: none;
+                border-right: none;
+                border-left: 1px solid transparent;
+                border-bottom: 1px solid transparent;
+            }
+            .icon {
+                font-size: 16px;
+            }
+        }
+        &.active>a {
+            &,
+            &:hover,
+            &:focus,
+            &:active {
+                border-top: none;
+                border-right: none;
+                border-bottom: none;
+            }
+        }
+    }
+    @media(max-width: 768px) {
+        display: table;
+        &>li {
+            display: table-cell;
+        }
+    }
+}
 /*
  * Color
  */
+.bg-light-blue {
+    background-color: #3c8dbc !important;
+}
+.bg-green {
+    background-color: #00a65a !important;
+}
+.bg-dark-green {
+    background-color: #006400 !important;
+}
+.bg-yellow {
+    background-color: #f39c12 !important;
+}
+.bg-yellow-green {
+    background-color: #9ACD32 !important;
+}
 .bg-gray {
     color: #000;
     background-color: #d2d6de !important;

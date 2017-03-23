@@ -397,7 +397,7 @@ function _init() {
 
         $('#result .treeview-menu').on('click','a',function(e){
             e.preventDefault;
-            $('#plotGroup .active').removeClass('active');
+            $('#result .active').removeClass('active');
             $(this).addClass('active');
         })
 
