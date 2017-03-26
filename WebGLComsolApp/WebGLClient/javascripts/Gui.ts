@@ -14,12 +14,13 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     //request ModelList
     modelData.getModelList(updateModelList);
 
+    var reset = $('#reset');
 
     //Input Handler
     (function () {
         var fullScreenButton = $('#fullScreen');
-        var lightButton = $('#reset');
-        var resetButton = $('#light');
+        var lightButton = $('#light');
+        var resetButton = $('#reset');
 
         var rangeX = <any>$('#xPosi');
         var rangeY = <any>$('#yPosi');
@@ -73,6 +74,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 if (pointerTwo) {   //first and second Pointer => pitch
                     var firstPosition, secondPosition;
                     var newPosition = { x: evt.clientX, y: evt.clientY };
+                    var enableRotate: boolean = false;
+
+                    console.log(renderer.getActivePlotGroupType);
 
                     if (evt.pointerId === pointerOne) {
                         firstPosition = lastPosition[pointerOne]
@@ -100,18 +104,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                     renderer.setZPosition(zVal);
 
                 } else {    //only first Pointer
-                    if (evt.button === 0 || evt.buttons & 1) { //left Button  => rotate
-
-                        var position = lastPosition[evt.pointerId];
-                        var newPosition = { x: evt.clientX, y: evt.clientY };
-
-                        var deltaX = (newPosition.x - position.x) * 100 / width;
-                        var deltaY = (newPosition.y - position.y) * 100 / height;
-                        lastPosition[evt.pointerId] = newPosition;
-                        renderer.rotateObject(deltaX, deltaY);
-
-
-                    } else if (evt.button === 2 || evt.buttons & 2) { //right Button => move
+                    if (evt.button === 0 || evt.buttons & 1) { //left Button  => move
                         var oldPosition = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
 
@@ -128,7 +121,14 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         rangeX.slider('refresh');
                         rangeY.val(renderPosi[1] * 50);
                         rangeY.slider('refresh');
+                    } else if (evt.button === 2 || evt.buttons & 2) { //right Button => rotate
+                        var position = lastPosition[evt.pointerId];
+                        var newPosition = { x: evt.clientX, y: evt.clientY };
 
+                        var deltaX = (newPosition.x - position.x) * 100 / width;
+                        var deltaY = (newPosition.y - position.y) * 100 / height;
+                        lastPosition[evt.pointerId] = newPosition;
+                        renderer.rotateObject(deltaX, deltaY);
                     } else if (evt.button === 1 || evt.button & 1) { //middle Button => zoom
                         var position = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
@@ -377,15 +377,33 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     function updatePlotList(plotList: { name: string; id: string }[]): void {
         removeAllPlots();
         jqPlotList.find('.treeview-menu').children().remove('li');
-        for (var i in plotList) {
+        plotList.forEach(function (plot) {
             var list = $('<li></li>');
             var selectItem = $('<a></a>');
             selectItem.attr('href', '#');
-            selectItem.attr('data-plot', plotList[i].id);
-            selectItem.text(plotList[i].name);
+            selectItem.attr('data-plot', plot.id);
+            selectItem.text(plot.name);
             list.append(selectItem);
             jqPlotList.find('.treeview-menu').append(list);
-        }
+            jqPlotList.on('click', 'a', function () {
+                setPlot(plot.id,$(this).hasClass('active'));
+            })
+        })
+    }
+
+    function setPlot(plotTag: string, activeHandle: boolean) {
+        console.log('activeHandle' + activeHandle);
+        var modelId = renderer.getActiveModelId();
+        var plotGroupId = renderer.getActivePlotGroupId();
+        console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
+        var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_reuslt: Result) {
+            if (activeHandle) {
+                renderer.addPlot(_reuslt);
+            } else {
+                renderer.removePlot(_reuslt);
+                renderer.renderScene();
+            }
+        });
     }
 
 }

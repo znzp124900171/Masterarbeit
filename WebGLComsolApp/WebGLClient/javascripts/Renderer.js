@@ -136,6 +136,9 @@ function Renderer(modelData, glc) {
         activePlots = [];
         drawCallRequest = true;
     };
+    this.getActivePlotGroupType = function () {
+        return plotType;
+    };
     this.setActiveModelById = function (modelId, callback) {
         modelCmd.getModel(modelId, function (model) {
             activeModel = model;

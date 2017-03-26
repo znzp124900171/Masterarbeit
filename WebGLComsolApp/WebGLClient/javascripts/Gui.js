@@ -6,10 +6,11 @@ function Gui(modelData, renderer, glContext) {
     var jqResultList = $("#result");
     var jqPlotList = $("#plot");
     modelData.getModelList(updateModelList);
+    var reset = $('#reset');
     (function () {
         var fullScreenButton = $('#fullScreen');
-        var lightButton = $('#reset');
-        var resetButton = $('#light');
+        var lightButton = $('#light');
+        var resetButton = $('#reset');
         var rangeX = $('#xPosi');
         var rangeY = $('#yPosi');
         var rangeZ = $('#zPosi');
@@ -57,6 +58,8 @@ function Gui(modelData, renderer, glContext) {
                 if (pointerTwo) {
                     var firstPosition, secondPosition;
                     var newPosition = { x: evt.clientX, y: evt.clientY };
+                    var enableRotate = false;
+                    console.log(renderer.getActivePlotGroupType);
                     if (evt.pointerId === pointerOne) {
                         firstPosition = lastPosition[pointerOne];
                         secondPosition = lastPosition[pointerTwo];
@@ -84,14 +87,6 @@ function Gui(modelData, renderer, glContext) {
                 }
                 else {
                     if (evt.button === 0 || evt.buttons & 1) {
-                        var position = lastPosition[evt.pointerId];
-                        var newPosition = { x: evt.clientX, y: evt.clientY };
-                        var deltaX = (newPosition.x - position.x) * 100 / width;
-                        var deltaY = (newPosition.y - position.y) * 100 / height;
-                        lastPosition[evt.pointerId] = newPosition;
-                        renderer.rotateObject(deltaX, deltaY);
-                    }
-                    else if (evt.button === 2 || evt.buttons & 2) {
                         var oldPosition = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
                         var renderPosi = renderer.getPosition();
@@ -105,6 +100,14 @@ function Gui(modelData, renderer, glContext) {
                         rangeX.slider('refresh');
                         rangeY.val(renderPosi[1] * 50);
                         rangeY.slider('refresh');
+                    }
+                    else if ((evt.button === 2 || evt.buttons & 2) && enableRotate) {
+                        var position = lastPosition[evt.pointerId];
+                        var newPosition = { x: evt.clientX, y: evt.clientY };
+                        var deltaX = (newPosition.x - position.x) * 100 / width;
+                        var deltaY = (newPosition.y - position.y) * 100 / height;
+                        lastPosition[evt.pointerId] = newPosition;
+                        renderer.rotateObject(deltaX, deltaY);
                     }
                     else if (evt.button === 1 || evt.button & 1) {
                         var position = lastPosition[evt.pointerId];
@@ -316,14 +319,32 @@ function Gui(modelData, renderer, glContext) {
     function updatePlotList(plotList) {
         removeAllPlots();
         jqPlotList.find('.treeview-menu').children().remove('li');
-        for (var i in plotList) {
+        plotList.forEach(function (plot) {
             var list = $('<li></li>');
             var selectItem = $('<a></a>');
             selectItem.attr('href', '#');
-            selectItem.attr('data-plot', plotList[i].id);
-            selectItem.text(plotList[i].name);
+            selectItem.attr('data-plot', plot.id);
+            selectItem.text(plot.name);
             list.append(selectItem);
             jqPlotList.find('.treeview-menu').append(list);
-        }
+            jqPlotList.on('click', 'a', function () {
+                setPlot(plot.id, $(this).hasClass('active'));
+            });
+        });
+    }
+    function setPlot(plotTag, activeHandle) {
+        console.log('activeHandle' + activeHandle);
+        var modelId = renderer.getActiveModelId();
+        var plotGroupId = renderer.getActivePlotGroupId();
+        console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
+        var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_reuslt) {
+            if (activeHandle) {
+                renderer.addPlot(_reuslt);
+            }
+            else {
+                renderer.removePlot(_reuslt);
+                renderer.renderScene();
+            }
+        });
     }
 }

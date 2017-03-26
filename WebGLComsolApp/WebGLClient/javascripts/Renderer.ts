@@ -213,6 +213,10 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         drawCallRequest = true;
     }
 
+    this.getActivePlotGroupType = function (): number {
+        return plotType;
+    }
+
     // sets the active Model by ID (if not exist, request it from server and callback when finished )
     // set all current rendering data to null
     this.setActiveModelById = function (modelId: string, callback:() => void) {

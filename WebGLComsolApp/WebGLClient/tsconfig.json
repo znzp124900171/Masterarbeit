@@ -12,6 +12,6 @@
         "./javascripts/Gui.ts",
         "./javascripts/Geometries.ts",
         "./javascripts/Renderer.ts",
-        "./javascripts/PostProcessor.ts"
+      "./javascripts/PostProcessor.ts"
     ]
 }

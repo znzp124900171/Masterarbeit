@@ -77,6 +77,7 @@ interface Renderer {
     getActiveModelId(): string;
     getActivePlotGroup(): Result;
     getActivePlotGroupId(): string;
+    getActivePlotGroupType(): number;
     getActivePlots(): Result[];
 
     //userInteraction (rotation, zooming)
