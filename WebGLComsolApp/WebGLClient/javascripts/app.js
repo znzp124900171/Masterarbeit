@@ -309,18 +309,19 @@ function _init() {
     $.GUI.tree = function (menu) {
         var _this = this;
         var animationSpeed = $.GUI.options.animationSpeed;
+        var isFirstClickModel = true;
+        var isFirstClickPlotGroup = true;
         $(document).off('click', menu + ' li a')
             .on('click', menu + ' li a', function (e) {
             //Get the clicked link and the next element
             var $this = $(this);
             var checkElement = $this.next();
+
             //Check if the next element is a menu and is visible
             if ((checkElement.is('.treeview-menu')) && (checkElement.is(':visible')) && (!$('body').hasClass('sidebar-collapse'))) {
                 //Close the menu
                 checkElement.slideUp(animationSpeed, function () {
                     checkElement.removeClass('menu-open');
-                    //Fix the layout in case the sidebar stretches over the height of the window
-                    //_this.layout.fix();
                 });
                 checkElement.parent("li").removeClass("active");
             }
@@ -339,40 +340,75 @@ function _init() {
                     checkElement.addClass('menu-open');
                     parent.find('li.active').removeClass('active');
                     parent_li.addClass('active');
-                    //Fix the layout in case the sidebar stretches over the height of the window
-                    _this.layout.fix();
                 });
             }
             //if this isn't a link, prevent the page from being redirected
             if (checkElement.is('.treeview-menu')) {
                 e.preventDefault();
             }
-        });
-        $('#model .treeview-menu').on('click', 'a', function (e) {
-            e.preventDefault;
-            $('#model .active').removeClass('active');
-            $(this).addClass('active');
-        });
-        $('#result .treeview-menu').on('click', 'a', function (e) {
-            e.preventDefault;
-            if ($(this).hasClass('active')) {
-                $('#result .active').removeClass('active');
+
+            });
+
+        // load the files and data
+        $('.treeview-menu').on('click','a', function () {
+            var $this = $(this);
+            var modelSeleted = $this.is('[data-model]');
+            var plotGroupSeleted = $this.is('[data-result]');
+            var plotSelected = $this.is('[data-plot]');
+            var active = $this.hasClass('active'); // true === active, false === deactive
+
+            if (modelSeleted) {
+                if ((!$('body').hasClass('sidebar-collapse'))) {
+                    if (!active) {
+                        $('#model').find('a.active').removeClass('active');
+                        $this.addClass('active');
+                    }
+                    $('#model').find('ul:visible').slideUp(animationSpeed, function () {
+                        $('#result').find('ul').slideDown(animationSpeed, function () {
+                            $('#result ul').addClass('menu-open');
+                            $('#model').removeClass('active');
+                            $('#result').addClass('active');
+                        })
+                    }).removeClass('menu-open');
+                } else {
+                    if (!active) {
+                        $('#model').find('a.active').removeClass('active');
+                        $this.addClass('active');
+                    }
+                    isFirstClickModel = false;
+                }
+            };
+
+            if (plotGroupSeleted) {
+                if ((!$('body').hasClass('sidebar-collapse'))) {
+                    if (!active) {
+                        $('#result').find('a.active').removeClass('active');
+                        $this.addClass('active');
+                    }
+                    $('#result').find('ul:visible').slideUp(animationSpeed, function () {
+                        $('#plot').find('ul').slideDown(animationSpeed, function () {
+                            $('#plot ul').addClass('menu-open');
+                            $('#result').removeClass('active');
+                            $('#plot').addClass('active');
+                        })
+                    }).removeClass('menu-open');
+                } else {
+                    $('#result').find('a.active').removeClass('active');
+                    $this.addClass('active');
+                    isFirstClickPlotGroup = false;
+                }
             }
-            else {
-                $('#result .active').removeClass('active');
-                $(this).addClass('active');
+
+            if (plotSelected) {
+                if (active) {
+                    $('#plot .active').removeClass('active');
+                } else {
+                    $('#plot .active').removeClass('active');
+                    $(this).addClass('active');
+                }
             }
         });
-        $('#plot .treeview-menu').on('click', 'a', function (e) {
-            e.preventDefault;
-            if ($(this).hasClass('active')) {
-                $('#plot .active').removeClass('active');
-            }
-            else {
-                $('#plot .active').removeClass('active');
-                $(this).addClass('active');
-            }
-        });
+        
     };
     /* ControlSidebar
      * ==============

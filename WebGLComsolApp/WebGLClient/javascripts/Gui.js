@@ -244,7 +244,7 @@ function Gui(modelData, renderer, glContext) {
         lightButton.click(toggleLight);
         handleResize();
     }());
-    jqModelList.on('click', 'a[class="active"]', function () {
+    jqModelList.on('click', 'a.active', function () {
         var newModelID = $(this).attr('data-model');
         var oldModelID = renderer.getActiveModelId();
         if (newModelID !== oldModelID) {
@@ -254,7 +254,7 @@ function Gui(modelData, renderer, glContext) {
             });
         }
     });
-    jqResultList.on('click', 'a[class="active"]', function () {
+    jqResultList.on('click', 'a.active', function () {
         var newPlotGroupID = $(this).attr('data-result');
         var oldPlotGroupID = renderer.getActivePlotGroupId();
         if (newPlotGroupID !== oldPlotGroupID) {

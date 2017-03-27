@@ -286,7 +286,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     } ());
 
     //change Model
-    jqModelList.on('click', 'a[class="active"]', function () {
+    jqModelList.on('click', 'a.active', function () {
         var newModelID = $(this).attr('data-model');
         var oldModelID = renderer.getActiveModelId(); //get old Model Id from Renderer
         if (newModelID !== oldModelID) {    //if id changed
@@ -298,7 +298,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     });
 
     // change PlotGroup
-    jqResultList.on('click', 'a[class="active"]', function () {
+    jqResultList.on('click', 'a.active', function () {
         var newPlotGroupID = $(this).attr('data-result');
         var oldPlotGroupID = renderer.getActivePlotGroupId();   //get old PlotGroup Id from Renderer
         if (newPlotGroupID !== oldPlotGroupID) {                //if id changed
