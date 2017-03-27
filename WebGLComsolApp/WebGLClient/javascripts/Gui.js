@@ -101,7 +101,7 @@ function Gui(modelData, renderer, glContext) {
                         rangeY.val(renderPosi[1] * 50);
                         rangeY.slider('refresh');
                     }
-                    else if ((evt.button === 2 || evt.buttons & 2) && enableRotate) {
+                    else if (evt.button === 2 || evt.buttons & 2) {
                         var position = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
                         var deltaX = (newPosition.x - position.x) * 100 / width;
