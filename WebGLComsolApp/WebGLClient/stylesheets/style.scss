@@ -788,52 +788,52 @@ a {
  * Colortable
  */
 
-.cyclic {
+.Cyclic {
     background: linear-gradient(to left, rgb(255, 0, 0), rgb(255, 255, 0), rgb(0, 255, 0), rgb(0, 255, 255), rgb(0, 0, 255), rgb(255, 0, 255), rgb(255, 0, 0));
     color: transparent;
 }
 
-.disco {
+.Disco {
     background: linear-gradient(to left, rgb(0, 0, 127), rgb(0, 0, 255), rgb(0, 127, 255), rgb(0, 255, 255), rgb(127, 127, 255), rgb(255, 0, 255), rgb(255, 0, 127), rgb(255, 0, 0), rgb(127, 0, 0));
     color: transparent;
 }
 
-.discolight {
+.DiscoLight {
     background: linear-gradient(to left, rgb(0, 0, 127), rgb(0, 0, 255), rgb(0, 127, 255), rgb(0, 255, 255), rgb(127, 191, 255), rgb(255, 127, 255), rgb(255, 0, 127), rgb(255, 0, 0), rgb(127, 0, 0));
     color: transparent;
 }
 
-.grayprint {
+.GrayPrint {
     background: linear-gradient(to left, rgb(0.0509804*255, 0.0509804*255, 0.0509804*255), rgb(0.94902*255, 0.94902*255, 0.94902*255));
     color: transparent;
 }
 
-.grayscale {
+.GrayScale {
     background: linear-gradient(to left, black, white);
     color: transparent;
 }
 
-.rainbow {
+.Rainbow {
     background: linear-gradient(to left, rgb(0, 0, 127), rgb(0, 0, 255), rgb(0, 127, 255), rgb(0, 255, 255), rgb(127, 255, 127), rgb(255, 255, 0), rgb(255, 127, 0), rgb(255, 0, 0), rgb(127, 0, 0));
     color: transparent;
 }
 
-.rainbowlight {
+.RainbowLight {
     background: linear-gradient(to left, blue, aqua, yellow, red);
     color: transparent;
 }
 
-.thermal {
+.Thermal {
     background: linear-gradient(to left, black, rgb(64, 0, 0), rgb(127, 0, 0), rgb(191, 0, 0), red, rgb(255, 0.145098*255, 0), rgb(255, 0.286275*255, 0), rgb(255, 0.431373*255, 0), rgb(255, 0.572549*255, 0), rgb(255, 0.717647*255, 0), rgb(255, 0.858824*255, 0), yellow, rgb(255, 255, 255*0.2), rgb(255, 255, 255*0.4), rgb(255, 255, 255*0.6), rgb(255, 255, 255*0.8), white);
     color: transparent;
 }
 
-.thermalequiditant {
+.ThermalEquiditant {
     background: linear-gradient(to left, black, red, yellow, white);
     color: transparent;
 }
 
-.traffic {
+.Traffic {
     background: linear-gradient(to left, rgb(0, 0.666667*255, 0), green, rgb(0.33333*255, 255, 0), rgb(0.66667*255, 255, 0), yellow, rgb(255, 0.666667*255, 0), rgb(255, 0.3333333*255, 0), red, rgb(0.666667*255, 0, 0));
     color: transparent;
 }
@@ -843,12 +843,12 @@ a {
     color: transparent;
 }
 
-.wave {
+.Wave {
     background: linear-gradient(to left, rgb(0, 0, 127), blue, rgb(0.8*255, 0.8*255, 0.8*255), red, rgb(127, 0, 0));
     color: transparent;
 }
 
-.wavelight {
+.Wavelight {
     background: linear-gradient(to left, blue, white, red);
     color: transparent;
 }

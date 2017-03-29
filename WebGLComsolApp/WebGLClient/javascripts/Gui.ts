@@ -316,7 +316,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     setTextures(glContext.getTextureName());
 
     function setColors(colorList: string[]) {
-        var jqColorList = $('.color');
+        var jqColorList = $('.list-unstyled');
         var li = $('<li></li>');
         var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
         var span = $('<span></span>');
@@ -326,7 +326,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         //add the responding color classes
         for (var i in colorList) {
             span.removeClass();
-            if (colorList[i] == 'dark green') {
+            if (colorList[i] === 'dark green') {
                 span.addClass('dark-green');
             } else if (colorList[i] === 'yellow green') {
                 span.addClass('yellow-green');
@@ -347,7 +347,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     }
 
     function setTextures(colTable: string[]) {
-        var jqColorTableList = $('.colorTable');
+        var jqColorTableList = $('.list-unstyled');
         var li = $('<li></li>');
         var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
         var span = $('<span></span>');
@@ -357,17 +357,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         //add the responding color classes
         for (var i in colTable) {
             span.removeClass();
-            if (colTable[i] == 'dark green') {
-                span.addClass('dark-green');
-            } else if (colTable[i] === 'yellow green') {
-                span.addClass('yellow-green');
-            } else if (colTable[i] === 'grey dark') {
-                span.addClass('gray-dark');
-            } else if (colTable[i] === 'grey light') {
-                span.addClass('gray-light');
-            } else {
-                span.addClass(colTable[i]);
-            }
+            span.addClass(colTable[i]);
             p.text(colTable[i]);
             span.appendTo(div);
             div.appendTo(a);
