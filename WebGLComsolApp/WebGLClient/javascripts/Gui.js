@@ -59,7 +59,6 @@ function Gui(modelData, renderer, glContext) {
                     var firstPosition, secondPosition;
                     var newPosition = { x: evt.clientX, y: evt.clientY };
                     var enableRotate = false;
-                    console.log(renderer.getActivePlotGroupType);
                     if (evt.pointerId === pointerOne) {
                         firstPosition = lastPosition[pointerOne];
                         secondPosition = lastPosition[pointerTwo];
@@ -86,7 +85,7 @@ function Gui(modelData, renderer, glContext) {
                     renderer.setZPosition(zVal);
                 }
                 else {
-                    if (evt.button === 0 || evt.buttons & 1) {
+                    if (evt.button === 0 || evt.buttons & 1 || (evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 2) {
                         var oldPosition = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
                         var renderPosi = renderer.getPosition();
@@ -101,7 +100,7 @@ function Gui(modelData, renderer, glContext) {
                         rangeY.val(renderPosi[1] * 50);
                         rangeY.slider('refresh');
                     }
-                    else if (evt.button === 2 || evt.buttons & 2) {
+                    else if ((evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 3) {
                         var position = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
                         var deltaX = (newPosition.x - position.x) * 100 / width;
@@ -263,6 +262,13 @@ function Gui(modelData, renderer, glContext) {
                 console.log("modelId: " + modelID + " \nNew plotGroupId: " + newPlotGroupID);
                 modelData.getPlotMap(modelID, newPlotGroupID, updatePlotList);
             });
+        }
+        console.log('plotType: ' + renderer.getActivePlotGroupType());
+        if (renderer.getActivePlotGroupType() === 2) {
+            $('#light').attr('disabled', 'disabled');
+        }
+        else if (renderer.getActivePlotGroupType() === 3) {
+            $('#light').attr('disabled', 'false');
         }
     });
     setColors(glContext.getColorNames());

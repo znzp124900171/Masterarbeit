@@ -309,8 +309,7 @@ function _init() {
     $.GUI.tree = function (menu) {
         var _this = this;
         var animationSpeed = $.GUI.options.animationSpeed;
-        var isFirstClickModel = true;
-        var isFirstClickPlotGroup = true;
+
         $(document).off('click', menu + ' li a')
             .on('click', menu + ' li a', function (e) {
             //Get the clicked link and the next element
@@ -375,7 +374,6 @@ function _init() {
                         $('#model').find('a.active').removeClass('active');
                         $this.addClass('active');
                     }
-                    isFirstClickModel = false;
                 }
             };
 
@@ -395,7 +393,6 @@ function _init() {
                 } else {
                     $('#result').find('a.active').removeClass('active');
                     $this.addClass('active');
-                    isFirstClickPlotGroup = false;
                 }
             }
 
@@ -509,19 +506,3 @@ function _init() {
         }
     };
 }
-// slider of x-axis
-$("#xPosi").slider();
-$("#xPosi").on("slide", function (slideEvt) {
-    $("#xPosition").text(slideEvt.value);
-});
-// slider of x-axis
-$("#yPosi").slider();
-$("#yPosi").on("slide", function (slideEvt) {
-    $("#yPosition").text(slideEvt.value);
-});
-// slider of x-axis
-$("#zPosi").slider();
-$("#zPosi").on("slide", function (slideEvt) {
-    $("#zPosition").text(slideEvt.value);
-});
-//# sourceMappingURL=app.js.map

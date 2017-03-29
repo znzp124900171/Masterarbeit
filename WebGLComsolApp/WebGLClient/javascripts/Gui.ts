@@ -1,6 +1,5 @@
 ﻿/// <reference path="libs/gl-matrix.d.ts"/>
 /// <reference path="libs/jquery.d.ts"/>
-
 function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) {
     var self = this;
     var gl = glContext.getContext();
@@ -76,8 +75,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                     var newPosition = { x: evt.clientX, y: evt.clientY };
                     var enableRotate: boolean = false;
 
-                    console.log(renderer.getActivePlotGroupType);
-
                     if (evt.pointerId === pointerOne) {
                         firstPosition = lastPosition[pointerOne]
                         secondPosition = lastPosition[pointerTwo];
@@ -104,7 +101,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                     renderer.setZPosition(zVal);
 
                 } else {    //only first Pointer
-                    if (evt.button === 0 || evt.buttons & 1) { //left Button  => move
+                    if (evt.button === 0 || evt.buttons & 1 || (evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 2) { //left Button  => move
                         var oldPosition = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
 
@@ -121,7 +118,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         rangeX.slider('refresh');
                         rangeY.val(renderPosi[1] * 50);
                         rangeY.slider('refresh');
-                    } else if (evt.button === 2 || evt.buttons & 2) { //right Button => rotate
+                    } else if ((evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 3) { //right Button => rotate
+
                         var position = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
 
@@ -129,6 +127,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         var deltaY = (newPosition.y - position.y) * 100 / height;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.rotateObject(deltaX, deltaY);
+                        
                     } else if (evt.button === 1 || evt.button & 1) { //middle Button => zoom
                         var position = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
@@ -163,6 +162,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 pointerTwo = null;
             }
         }
+
 
         //mouse Wheel Event => prevent default and zoom instead
         handleMouseWheel = function (evt) {
