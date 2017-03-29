@@ -414,10 +414,10 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     //draw the Plotgroup (the wire frame of the model if it exist)
     var drawPlotGroup = function () {
-        var frameColor = 'black';
         if (!activePlotgroup.noData) {
             for (var i = 0; i < activePlotgroup.renderGroup.length; i++) {
-                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], frameColor);
+                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], activePlotgroup.usrColor);
+                console.log('usrColor: ' + activePlotgroup.usrColor);
                 
             }
         }
@@ -978,11 +978,13 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             gl.enable(gl.DEPTH_TEST);
             gl.depthFunc(gl.LESS);
             drawPlots();
-
             drawPlotGroup();
         }
         gl.disable(gl.DEPTH_TEST);
-        drawFront();
+
+        if (plotType === 3) {
+            drawFront();
+        }
         gl.clear(gl.DEPTH_BUFFER_BIT);
     }
 

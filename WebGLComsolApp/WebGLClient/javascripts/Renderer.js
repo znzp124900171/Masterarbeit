@@ -290,10 +290,10 @@ function Renderer(modelData, glc) {
         drawCallRequest = true;
     };
     var drawPlotGroup = function () {
-        var frameColor = 'black';
         if (!activePlotgroup.noData) {
             for (var i = 0; i < activePlotgroup.renderGroup.length; i++) {
-                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], frameColor);
+                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], activePlotgroup.usrColor);
+                console.log('usrColor: ' + activePlotgroup.usrColor);
             }
         }
     };
@@ -761,7 +761,9 @@ function Renderer(modelData, glc) {
             drawPlotGroup();
         }
         gl.disable(gl.DEPTH_TEST);
-        drawFront();
+        if (plotType === 3) {
+            drawFront();
+        }
         gl.clear(gl.DEPTH_BUFFER_BIT);
     }
     function checkGLerror() {

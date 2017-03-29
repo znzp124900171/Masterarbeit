@@ -11,7 +11,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var jqPlotList = $("#plot");
 
     var jqColor = $('#color');
-    var jqColorTable = $('colorTable');
+    var jqColorTable = $('#colorTable');
 
     //request ModelList
     modelData.getModelList(updateModelList);
@@ -24,9 +24,11 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var lightButton = $('#light');
         var resetButton = $('#reset');
 
+        /*
         var rangeX = <any>$('#xPosi');
         var rangeY = <any>$('#yPosi');
         var rangeZ = <any>$('#zPosi');
+        */
 
         var width;
         var height;
@@ -99,8 +101,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
                     var zVal = renderer.getPosition()[2];
                     zVal += (lastDist - newDist) * 0.05;
-                    rangeZ.val(zVal * 50);
-                    rangeZ.slider('refresh');
+                    //rangeZ.val(zVal * 50);
+                    //rangeZ.slider('refresh');
                     renderer.setZPosition(zVal);
 
                 } else {    //only first Pointer
@@ -117,10 +119,10 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.setPositionV(renderPosi);
 
-                        rangeX.val(renderPosi[0] * 50);
-                        rangeX.slider('refresh');
-                        rangeY.val(renderPosi[1] * 50);
-                        rangeY.slider('refresh');
+                        //rangeX.val(renderPosi[0] * 50);
+                        //rangeX.slider('refresh');
+                        //rangeY.val(renderPosi[1] * 50);
+                        //rangeY.slider('refresh');
                     } else if ((evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 3) { //right Button => rotate
 
                         var position = lastPosition[evt.pointerId];
@@ -147,8 +149,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         var eyeZ = renderer.getPosition()[2];
                         eyeZ = Math.log(-eyeZ + 1) * 50
                         eyeZ += dist;
-                        rangeZ.val(eyeZ);
-                        rangeZ.slider('refresh');
+                        //rangeZ.val(eyeZ);
+                        //rangeZ.slider('refresh');
                         eyeZ = - Math.exp(eyeZ / 50) + 1;
                         renderer.setZPosition(eyeZ);
                     }
@@ -177,8 +179,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             var eyeZ = renderer.getPosition()[2];
             eyeZ = Math.log(-eyeZ + 1) * 50
             eyeZ += delta / 120;
-            rangeZ.val(eyeZ);
-            rangeZ.slider('refresh');
+            //rangeZ.val(eyeZ);
+            //rangeZ.slider('refresh');
             eyeZ = - Math.exp(eyeZ / 50) + 1;
             renderer.setZPosition(eyeZ);
         }
@@ -241,13 +243,15 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         };
         handleResetView = function () {
             renderer.resetView();
-            var eye = renderer.getPosition();
+            //var eye = renderer.getPosition();
+            /*
             rangeX.val(eye[0] * 50);
             rangeX.slider('refresh');
             rangeY.val(eye[1] * 50);
             rangeY.slider('refresh');
             rangeZ.val(Math.log(-eye[2] + 1) * 50);
             rangeZ.slider('refresh');
+            */
 
         }
         toggleLight = function () {
@@ -278,9 +282,11 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var onFullscreenChange = "webkitfullscreenchange mozfullscreenchange fullscreenchange msfullscreenchange";
         $(document).on(onFullscreenChange, handleFullScreenChange);
 
+        /*
         rangeX.click(handleRangeX);
         rangeY.click(handleRangeY);
         rangeZ.click(handleRangeZ);
+        */
         lightButton.click(toggleLight);
 
 
@@ -305,6 +311,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var newPlotGroupID = $(this).attr('data-result');
         var oldPlotGroupID = renderer.getActivePlotGroupId();   //get old PlotGroup Id from Renderer
         if (newPlotGroupID !== oldPlotGroupID) {                //if id changed
+            //reset view matrix at first
+            renderer.resetView();
             renderer.setActivePlotGroupById(newPlotGroupID, function () {       //resets the current PlotGroup, and request PlotGroup Data from server
                 var modelID = renderer.getActiveModelId();
                 console.log("modelId: " + modelID + " \nNew plotGroupId: " + newPlotGroupID);
@@ -427,7 +435,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     }
 
     function setPlot(plotTag: string, activeHandle: boolean) {
-        console.log('activeHandle' + activeHandle);
+        resetPlot();
         var modelId = renderer.getActiveModelId();
         var plotGroupId = renderer.getActivePlotGroupId();
         console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
@@ -435,16 +443,13 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             if (activeHandle) {
                 renderer.addPlot(_result);
                 // if color selected
-                jqColor.on('click', function () {
-                    console.log('color selected');
+                jqColor.on('click','a', function () {
                     var colorSelected = $(this).find('span').attr('class');
                     _result.usrColor = colorSelected;
                     renderer.renderScene();
                 });
-                jqColorTable.on('click', function () {
-                    console.log('color table selected');
-                    var colorSelected = $(this).find('span').attr('class');
-                    _result.usrText = colorSelected;
+                jqColorTable.on('click','a', function () {
+                    _result.usrText = $(this).find('span').attr('class');;
                     renderer.renderScene();
                 });
             } else {
@@ -452,6 +457,11 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 renderer.renderScene();
             }
         });
+    }
+
+    function resetPlot() {
+        jqColor.off('click');
+        jqColorTable.off('click');
     }
 
     

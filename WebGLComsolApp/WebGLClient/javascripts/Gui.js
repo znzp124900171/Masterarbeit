@@ -6,16 +6,13 @@ function Gui(modelData, renderer, glContext) {
     var jqResultList = $("#result");
     var jqPlotList = $("#plot");
     var jqColor = $('#color');
-    var jqColorTable = $('colorTable');
+    var jqColorTable = $('#colorTable');
     modelData.getModelList(updateModelList);
     var reset = $('#reset');
     (function () {
         var fullScreenButton = $('#fullScreen');
         var lightButton = $('#light');
         var resetButton = $('#reset');
-        var rangeX = $('#xPosi');
-        var rangeY = $('#yPosi');
-        var rangeZ = $('#zPosi');
         var width;
         var height;
         var pointerMoved = false;
@@ -82,8 +79,6 @@ function Gui(modelData, renderer, glContext) {
                     var newDist = Math.sqrt(difX * difX + difY * difY);
                     var zVal = renderer.getPosition()[2];
                     zVal += (lastDist - newDist) * 0.05;
-                    rangeZ.val(zVal * 50);
-                    rangeZ.slider('refresh');
                     renderer.setZPosition(zVal);
                 }
                 else {
@@ -97,10 +92,6 @@ function Gui(modelData, renderer, glContext) {
                         renderPosi[1] += deltaY;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.setPositionV(renderPosi);
-                        rangeX.val(renderPosi[0] * 50);
-                        rangeX.slider('refresh');
-                        rangeY.val(renderPosi[1] * 50);
-                        rangeY.slider('refresh');
                     }
                     else if ((evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 3) {
                         var position = lastPosition[evt.pointerId];
@@ -124,8 +115,6 @@ function Gui(modelData, renderer, glContext) {
                         var eyeZ = renderer.getPosition()[2];
                         eyeZ = Math.log(-eyeZ + 1) * 50;
                         eyeZ += dist;
-                        rangeZ.val(eyeZ);
-                        rangeZ.slider('refresh');
                         eyeZ = -Math.exp(eyeZ / 50) + 1;
                         renderer.setZPosition(eyeZ);
                     }
@@ -150,8 +139,6 @@ function Gui(modelData, renderer, glContext) {
             var eyeZ = renderer.getPosition()[2];
             eyeZ = Math.log(-eyeZ + 1) * 50;
             eyeZ += delta / 120;
-            rangeZ.val(eyeZ);
-            rangeZ.slider('refresh');
             eyeZ = -Math.exp(eyeZ / 50) + 1;
             renderer.setZPosition(eyeZ);
         };
@@ -208,13 +195,6 @@ function Gui(modelData, renderer, glContext) {
         };
         handleResetView = function () {
             renderer.resetView();
-            var eye = renderer.getPosition();
-            rangeX.val(eye[0] * 50);
-            rangeX.slider('refresh');
-            rangeY.val(eye[1] * 50);
-            rangeY.slider('refresh');
-            rangeZ.val(Math.log(-eye[2] + 1) * 50);
-            rangeZ.slider('refresh');
         };
         toggleLight = function () {
             var lightOn = renderer.toggleLight();
@@ -239,9 +219,6 @@ function Gui(modelData, renderer, glContext) {
         fullScreenButton.click(toggleFullScreen);
         var onFullscreenChange = "webkitfullscreenchange mozfullscreenchange fullscreenchange msfullscreenchange";
         $(document).on(onFullscreenChange, handleFullScreenChange);
-        rangeX.click(handleRangeX);
-        rangeY.click(handleRangeY);
-        rangeZ.click(handleRangeZ);
         lightButton.click(toggleLight);
         handleResize();
     }());
@@ -259,6 +236,7 @@ function Gui(modelData, renderer, glContext) {
         var newPlotGroupID = $(this).attr('data-result');
         var oldPlotGroupID = renderer.getActivePlotGroupId();
         if (newPlotGroupID !== oldPlotGroupID) {
+            renderer.resetView();
             renderer.setActivePlotGroupById(newPlotGroupID, function () {
                 var modelID = renderer.getActiveModelId();
                 console.log("modelId: " + modelID + " \nNew plotGroupId: " + newPlotGroupID);
@@ -364,23 +342,21 @@ function Gui(modelData, renderer, glContext) {
         });
     }
     function setPlot(plotTag, activeHandle) {
-        console.log('activeHandle' + activeHandle);
+        resetPlot();
         var modelId = renderer.getActiveModelId();
         var plotGroupId = renderer.getActivePlotGroupId();
         console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
         var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_result) {
             if (activeHandle) {
                 renderer.addPlot(_result);
-                jqColor.on('click', function () {
-                    console.log('color selected');
+                jqColor.on('click', 'a', function () {
                     var colorSelected = $(this).find('span').attr('class');
                     _result.usrColor = colorSelected;
                     renderer.renderScene();
                 });
-                jqColorTable.on('click', function () {
-                    console.log('color table selected');
-                    var colorSelected = $(this).find('span').attr('class');
-                    _result.usrText = colorSelected;
+                jqColorTable.on('click', 'a', function () {
+                    _result.usrText = $(this).find('span').attr('class');
+                    ;
                     renderer.renderScene();
                 });
             }
@@ -389,5 +365,9 @@ function Gui(modelData, renderer, glContext) {
                 renderer.renderScene();
             }
         });
+    }
+    function resetPlot() {
+        jqColor.off('click');
+        jqColorTable.off('click');
     }
 }
