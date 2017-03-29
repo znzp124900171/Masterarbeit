@@ -431,24 +431,24 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var modelId = renderer.getActiveModelId();
         var plotGroupId = renderer.getActivePlotGroupId();
         console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
-        var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_reuslt: Result) {
+        var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_result: Result) {
             if (activeHandle) {
-                renderer.addPlot(_reuslt);
+                renderer.addPlot(_result);
                 // if color selected
                 jqColor.on('click', function () {
                     console.log('color selected');
                     var colorSelected = $(this).find('span').attr('class');
-                    result.usrColor = colorSelected;
+                    _result.usrColor = colorSelected;
                     renderer.renderScene();
                 });
                 jqColorTable.on('click', function () {
                     console.log('color table selected');
                     var colorSelected = $(this).find('span').attr('class');
-                    result.usrColor = colorSelected;
+                    _result.usrText = colorSelected;
                     renderer.renderScene();
                 });
             } else {
-                renderer.removePlot(_reuslt);
+                renderer.removePlot(_result);
                 renderer.renderScene();
             }
         });

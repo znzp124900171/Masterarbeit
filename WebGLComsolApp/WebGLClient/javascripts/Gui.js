@@ -368,24 +368,24 @@ function Gui(modelData, renderer, glContext) {
         var modelId = renderer.getActiveModelId();
         var plotGroupId = renderer.getActivePlotGroupId();
         console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
-        var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_reuslt) {
+        var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_result) {
             if (activeHandle) {
-                renderer.addPlot(_reuslt);
+                renderer.addPlot(_result);
                 jqColor.on('click', function () {
                     console.log('color selected');
                     var colorSelected = $(this).find('span').attr('class');
-                    result.usrColor = colorSelected;
+                    _result.usrColor = colorSelected;
                     renderer.renderScene();
                 });
                 jqColorTable.on('click', function () {
                     console.log('color table selected');
                     var colorSelected = $(this).find('span').attr('class');
-                    result.usrColor = colorSelected;
+                    _result.usrText = colorSelected;
                     renderer.renderScene();
                 });
             }
             else {
-                renderer.removePlot(_reuslt);
+                renderer.removePlot(_result);
                 renderer.renderScene();
             }
         });
