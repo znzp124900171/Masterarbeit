@@ -609,7 +609,7 @@ a {
   background: linear-gradient(to left, black, #400000, #7f0000, #bf0000, red, #ff2500, #ff4900, #ff6e00, #ff9200, #ffb700, #ffdb00, yellow, #ffff33, #ffff66, #ffff99, #ffffcc, white);
   color: transparent; }
 
-.ThermalEquiditant {
+.ThermalEquidistant {
   background: linear-gradient(to left, black, red, yellow, white);
   color: transparent; }
 
@@ -617,7 +617,7 @@ a {
   background: linear-gradient(to left, #00aa00, green, #55ff00, #aaff00, yellow, #ffaa00, #ff5500, red, #aa0000);
   color: transparent; }
 
-.trafficlight {
+.TrafficLight {
   background: linear-gradient(to left, green, yellow, red);
   color: transparent; }
 
@@ -625,7 +625,7 @@ a {
   background: linear-gradient(to left, #00007f, blue, #cccccc, red, #7f0000);
   color: transparent; }
 
-.Wavelight {
+.WaveLight {
   background: linear-gradient(to left, blue, white, red);
   color: transparent; }
 

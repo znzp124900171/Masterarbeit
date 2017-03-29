@@ -5,6 +5,8 @@ function Gui(modelData, renderer, glContext) {
     var jqModelList = $("#model");
     var jqResultList = $("#result");
     var jqPlotList = $("#plot");
+    var jqColor = $('#color');
+    var jqColorTable = $('colorTable');
     modelData.getModelList(updateModelList);
     var reset = $('#reset');
     (function () {
@@ -267,13 +269,13 @@ function Gui(modelData, renderer, glContext) {
     setColors(glContext.getColorNames());
     setTextures(glContext.getTextureName());
     function setColors(colorList) {
-        var jqColorList = $('.list-unstyled');
-        var li = $('<li></li>');
-        var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
-        var span = $('<span></span>');
-        var div = $('<div></div>');
-        var p = $('<p class="text-center no-margin"></p>');
+        var jqColorList = $('#color');
         for (var i in colorList) {
+            var li = $('<li></li>');
+            var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
+            var span = $('<span></span>');
+            var div = $('<div></div>');
+            var p = $('<p class="text-center no-margin"></p>');
             span.removeClass();
             if (colorList[i] === 'dark green') {
                 span.addClass('dark-green');
@@ -299,13 +301,13 @@ function Gui(modelData, renderer, glContext) {
         }
     }
     function setTextures(colTable) {
-        var jqColorTableList = $('.list-unstyled');
-        var li = $('<li></li>');
-        var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
-        var span = $('<span></span>');
-        var div = $('<div></div>');
-        var p = $('<p class="text-center no-margin"></p>');
+        var jqColorTableList = $('#colorTable');
         for (var i in colTable) {
+            var li = $('<li></li>');
+            var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
+            var span = $('<span></span>');
+            var div = $('<div></div>');
+            var p = $('<p class="text-center no-margin"></p>');
             span.removeClass();
             span.addClass(colTable[i]);
             p.text(colTable[i]);
@@ -369,6 +371,18 @@ function Gui(modelData, renderer, glContext) {
         var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_reuslt) {
             if (activeHandle) {
                 renderer.addPlot(_reuslt);
+                jqColor.on('click', function () {
+                    console.log('color selected');
+                    var colorSelected = $(this).find('span').attr('class');
+                    result.usrColor = colorSelected;
+                    renderer.renderScene();
+                });
+                jqColorTable.on('click', function () {
+                    console.log('color table selected');
+                    var colorSelected = $(this).find('span').attr('class');
+                    result.usrColor = colorSelected;
+                    renderer.renderScene();
+                });
             }
             else {
                 renderer.removePlot(_reuslt);
