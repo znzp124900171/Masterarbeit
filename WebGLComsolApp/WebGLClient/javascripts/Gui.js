@@ -267,7 +267,7 @@ function Gui(modelData, renderer, glContext) {
     setColors(glContext.getColorNames());
     setTextures(glContext.getTextureName());
     function setColors(colorList) {
-        var jqColorList = $('.list-unstyled');
+        var jqColorList = $('#colorList');
         var li = $('<li></li>');
         var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
         var span = $('<span></span>');
@@ -275,7 +275,21 @@ function Gui(modelData, renderer, glContext) {
         var p = $('<p class="text-center no-margin"></p>');
         for (var i in colorList) {
             span.removeClass();
-            span.addClass(colorList[i]);
+            if (colorList[i] == 'dark green') {
+                span.addClass('dark-green');
+            }
+            else if (colorList[i] === 'yellow green') {
+                span.addClass('yellow-green');
+            }
+            else if (colorList[i] === 'grey dark') {
+                span.addClass('gray-dark');
+            }
+            else if (colorList[i] === 'grey light') {
+                span.addClass('gray-light');
+            }
+            else {
+                span.addClass(colorList[i]);
+            }
             p.text(colorList[i]);
             span.appendTo(div);
             div.appendTo(a);
@@ -285,14 +299,36 @@ function Gui(modelData, renderer, glContext) {
         }
     }
     function setTextures(colTable) {
-        var select = $("#tmpTexture").find("select");
-        select.find("option").remove();
-        var option;
+        var jqColorTableList = $('#colorTableList');
+        var li = $('<li></li>');
+        var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
+        var span = $('<span></span>');
+        var div = $('<div></div>');
+        var p = $('<p class="text-center no-margin"></p>');
         for (var i in colTable) {
-            option = $("<option></option>").text(colTable[i]);
-            option.appendTo(select);
+            span.removeClass();
+            if (colTable[i] == 'dark green') {
+                span.addClass('dark-green');
+            }
+            else if (colTable[i] === 'yellow green') {
+                span.addClass('yellow-green');
+            }
+            else if (colTable[i] === 'grey dark') {
+                span.addClass('gray-dark');
+            }
+            else if (colTable[i] === 'grey light') {
+                span.addClass('gray-light');
+            }
+            else {
+                span.addClass(colTable[i]);
+            }
+            p.text(colTable[i]);
+            span.appendTo(div);
+            div.appendTo(a);
+            a.appendTo(li);
+            p.appendTo(li);
+            li.appendTo(jqColorTableList);
         }
-        select.select().select('refresh');
     }
     function updateModelList(modelList) {
         removeAllPlots();
