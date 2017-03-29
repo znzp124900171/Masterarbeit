@@ -316,7 +316,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     setTextures(glContext.getTextureName());
 
     function setColors(colorList: string[]) {
-        var jqColorList = $('#colorList');
+        var jqColorList = $('.color');
         var li = $('<li></li>');
         var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
         var span = $('<span></span>');
@@ -347,7 +347,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     }
 
     function setTextures(colTable: string[]) {
-        var jqColorTableList = $('#colorTableList');
+        var jqColorTableList = $('.colorTable');
         var li = $('<li></li>');
         var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
         var span = $('<span></span>');
