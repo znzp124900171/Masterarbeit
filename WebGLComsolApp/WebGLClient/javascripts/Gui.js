@@ -263,25 +263,26 @@ function Gui(modelData, renderer, glContext) {
                 modelData.getPlotMap(modelID, newPlotGroupID, updatePlotList);
             });
         }
-        console.log('plotType: ' + renderer.getActivePlotGroupType());
-        if (renderer.getActivePlotGroupType() === 2) {
-            $('#light').attr('disabled', 'disabled');
-        }
-        else if (renderer.getActivePlotGroupType() === 3) {
-            $('#light').attr('disabled', 'false');
-        }
     });
     setColors(glContext.getColorNames());
     setTextures(glContext.getTextureName());
     function setColors(colorList) {
-        var select = $("#tmpColor").find("select");
-        select.find("option").remove();
-        var option;
+        var jqColorList = $('.list-unstyled');
+        var li = $('<li></li>');
+        var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
+        var span = $('<span></span>');
+        var div = $('<div></div>');
+        var p = $('<p class="text-center no-margin"></p>');
         for (var i in colorList) {
-            option = $("<option></option>").text(colorList[i]);
-            option.appendTo(select);
+            span.removeClass();
+            span.addClass(colorList[i]);
+            p.text(colorList[i]);
+            span.appendTo(div);
+            div.appendTo(a);
+            a.appendTo(li);
+            p.appendTo(li);
+            li.appendTo(jqColorList);
         }
-        select.select().select('refresh');
     }
     function setTextures(colTable) {
         var select = $("#tmpTexture").find("select");
