@@ -418,13 +418,13 @@ function _init() {
         //instantiate the object
         activate: function () {
             //Get the object
-            var _this = this;
+            let _this = this;
             //Update options
-            var o = $.GUI.options.controlSidebarOptions;
+            let o = $.GUI.options.controlSidebarOptions;
             //Get the sidebar
-            var sidebar = $(o.selector);
+            let sidebar = $(o.selector);
             //The toggle button
-            var btn = $(o.toggleBtnSelector);
+            let btn = $(o.toggleBtnSelector);
             //Listen to the click event
             btn.on('click', function (e) {
                 e.preventDefault();
@@ -438,9 +438,7 @@ function _init() {
                     _this.close(sidebar, o.slide);
                 }
             });
-            //If the body has a boxed layout, fix the sidebar bg position
-            var bg = $(".control-sidebar-bg");
-            _this._fix(bg);
+
             //If the body has a fixed layout, make the control sidebar fixed
             if ($('body').hasClass('fixed')) {
                 _this._fixForFixed(sidebar);
@@ -473,8 +471,9 @@ function _init() {
                 $('body').removeClass('control-sidebar-open');
             }
         },
+        /*
         _fix: function (sidebar) {
-            var _this = this;
+            let _this = this;
             if ($("body").hasClass('layout-boxed')) {
                 sidebar.css('position', 'absolute');
                 sidebar.height($(".wrapper").height());
@@ -493,6 +492,7 @@ function _init() {
                 });
             }
         },
+        */
         _fixForFixed: function (sidebar) {
             sidebar.css({
                 'position': 'fixed',

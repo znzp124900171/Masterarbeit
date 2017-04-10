@@ -5,6 +5,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var gl = glContext.getContext();
 
     var canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('webgl');
+    var canvasContainer = $(".content");
+    var navbar = $(".nav");
 
     var jqModelList = $("#model");
     var jqResultList = $("#result");

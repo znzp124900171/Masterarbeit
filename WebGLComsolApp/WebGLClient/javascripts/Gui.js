@@ -2,6 +2,8 @@ function Gui(modelData, renderer, glContext) {
     var self = this;
     var gl = glContext.getContext();
     var canvas = document.getElementById('webgl');
+    var canvasContainer = $(".content");
+    var navbar = $(".nav");
     var jqModelList = $("#model");
     var jqResultList = $("#result");
     var jqPlotList = $("#plot");
