@@ -564,7 +564,6 @@ a {
     position: fixed;
     z-index: 1000;
     bottom: 0;
-    height:100vh;
 }
 
 .control-sidebar-bg,
@@ -581,16 +580,21 @@ a {
     position: absolute;
     padding-top: 50px;
     z-index: 1010;
+    overflow-x: hidden;
+    overflow-y: auto;
     @media (max-width: 768px) {
         padding-top: 100px;
     }
-    >.tab-content {
+
+    > .tab-content {
         padding: 10px 15px;
     }
+
     &.control-sidebar-open,
-    &.control-sidebar-open+.control-sidebar-bg {
+    &.control-sidebar-open + .control-sidebar-bg {
         right: 0;
     }
+
     label[class~="control-sidebar-subheading"] {
         padding-top: 10px;
     }

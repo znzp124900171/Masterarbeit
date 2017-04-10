@@ -2,7 +2,7 @@ function Gui(modelData, renderer, glContext) {
     var self = this;
     var gl = glContext.getContext();
     var canvas = document.getElementById('webgl');
-    var canvasContainer = $(".content");
+    var canvasContainer = $(".content-wrapper");
     var navbar = $(".nav");
     var jqModelList = $("#model");
     var jqResultList = $("#result");
@@ -152,7 +152,12 @@ function Gui(modelData, renderer, glContext) {
                 || document.documentElement.clientHeight
                 || document.body.clientHeight;
             canvas.width = width;
-            canvas.height = height;
+            if (window.outerWidth < 767) {
+                canvas.height = height - 100;
+            }
+            else {
+                canvas.height = height - 50;
+            }
             renderer.resizeCanvas(width, height);
         };
         handleRangeX = function (evt) {

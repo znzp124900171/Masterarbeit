@@ -5,7 +5,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var gl = glContext.getContext();
 
     var canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('webgl');
-    var canvasContainer = $(".content");
+    var canvasContainer = $(".content-wrapper");
     var navbar = $(".nav");
 
     var jqModelList = $("#model");
@@ -197,7 +197,11 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 || document.body.clientHeight;
 
             canvas.width = width;
-            canvas.height = height;
+            if (window.outerWidth < 767) {
+                canvas.height = height - 100;
+            } else {
+                canvas.height = height - 50;
+            }
             renderer.resizeCanvas(width, height);
         }
         handleRangeX = function (evt) {

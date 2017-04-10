@@ -160,43 +160,45 @@ function _init() {
      */
     $.GUI.layout = {
         activate: function () {
-            var _this = this;
+            let _this = this;
             _this.fix();
             _this.fixSidebar();
-            $('body, html, .wrapper').css('height', 'auto');
+            $('body, html, .wrapper').css('height', '100vh');
             $(window, ".wrapper").resize(function () {
                 _this.fix();
                 _this.fixSidebar();
             });
         },
-        fix: function () {
-            // Remove overflow from .wrapper if layout-boxed exists
-            $(".layout-boxed > .wrapper").css('overflow', 'hidden');
+        fix: function () {;
             //Get window height and the wrapper height
             var footer_height = $('.main-footer').outerHeight() || 0;
             var neg = $('.main-header').outerHeight() + footer_height;
             var window_height = $(window).height();
             var sidebar_height = $(".sidebar").height() || 0;
+            console.log('footer height: ' + footer_height);
+            console.log('neg: ' + neg);
+            console.log('window height: ' + window_height);
+            console.log('sidebar height: ' + sidebar_height);
             //Set the min-height of the content and sidebar based on the
             //the height of the document.
             if ($("body").hasClass("fixed")) {
-                $(".content-wrapper, .right-side").css('min-height', window_height - footer_height);
+                $(".content-wrapper").css('min-height', window_height - footer_height);
             }
             else {
                 var postSetWidth;
                 if (window_height >= sidebar_height) {
-                    $(".content-wrapper, .right-side").css('min-height', window_height - neg);
+                    $(".content-wrapper").css('min-height', window_height - neg);
                     postSetWidth = window_height - neg;
                 }
                 else {
-                    $(".content-wrapper, .right-side").css('min-height', sidebar_height);
+                    $(".content-wrapper").css('min-height', sidebar_height);
                     postSetWidth = sidebar_height;
                 }
                 //Fix for the control sidebar height
                 var controlSidebar = $($.GUI.options.controlSidebarOptions.selector);
                 if (typeof controlSidebar !== "undefined") {
                     if (controlSidebar.height() > postSetWidth)
-                        $(".content-wrapper, .right-side").css('min-height', controlSidebar.height());
+                        $(".content-wrapper").css('min-height', controlSidebar.height());
                 }
             }
         },
@@ -438,17 +440,8 @@ function _init() {
                     _this.close(sidebar, o.slide);
                 }
             });
-
-            //If the body has a fixed layout, make the control sidebar fixed
-            if ($('body').hasClass('fixed')) {
-                _this._fixForFixed(sidebar);
-            }
-            else {
-                //If the content height is less than the sidebar's height, force max height
-                if ($('.content-wrapper, .right-side').height() < sidebar.height()) {
-                    _this._fixForContent(sidebar);
-                }
-            }
+            //force the sidebar's height equal to the height of window
+            $('.control-sidebar').outerHeight('100vh');
         },
         //Open the control sidebar
         open: function (sidebar, slide) {
@@ -470,39 +463,6 @@ function _init() {
             else {
                 $('body').removeClass('control-sidebar-open');
             }
-        },
-        /*
-        _fix: function (sidebar) {
-            let _this = this;
-            if ($("body").hasClass('layout-boxed')) {
-                sidebar.css('position', 'absolute');
-                sidebar.height($(".wrapper").height());
-                if (_this.hasBindedResize) {
-                    return;
-                }
-                $(window).resize(function () {
-                    _this._fix(sidebar);
-                });
-                _this.hasBindedResize = true;
-            }
-            else {
-                sidebar.css({
-                    'position': 'fixed',
-                    'height': 'auto'
-                });
-            }
-        },
-        */
-        _fixForFixed: function (sidebar) {
-            sidebar.css({
-                'position': 'fixed',
-                'max-height': '100%',
-                'overflow': 'auto',
-                'padding-bottom': '50px'
-            });
-        },
-        _fixForContent: function (sidebar) {
-            $(".content-wrapper, .right-side").css('min-height', sidebar.height());
         }
     };
 }
