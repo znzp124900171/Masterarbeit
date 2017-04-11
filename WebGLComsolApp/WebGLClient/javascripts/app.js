@@ -172,15 +172,16 @@ function _init() {
                 _this.fixSidebar();
             });
         },
-        fix: function () {;
+        fix: function () {
             //Get window height and the wrapper height
             let footer_height = $('.main-footer').outerHeight() || 0;
             let neg = $('.main-header').outerHeight() + footer_height;
             let window_height = $(window).height();
             let sidebar_height = $(".sidebar").height() || 0;
             
-            // set the content height
+            //Set the content height
             $(".content-wrapper").css('height', window_height - neg);
+
         },
         fixSidebar: function () {
             //Enable slimscroll
@@ -202,9 +203,9 @@ function _init() {
             if ($.GUI.options.contraolSidebarScroll) {
                 if (typeof $.fn.slimScroll !== 'undefined') {
                     //Destroy if it exists
-                    $(".control-sidebar").slimScroll({ destroy: true }).height("auto");
+                    $(".tab-content").slimScroll({ destroy: true }).height("auto");
                     //Add slimscroll
-                    $(".control-sidebar").slimScroll({
+                    $(".tab-content").slimScroll({
                         height: ($(window).height() - $(".main-header").height()) + "px",
                         color: "rgba(0,0,0,0.2)",
                         size: "3px"
@@ -253,8 +254,8 @@ function _init() {
             });
             //Enable expand on hover for sidebar mini
             if ($.GUI.options.sidebarExpandOnHover ||
-                ($('body').hasClass('fixed') &&
-                    $('body').hasClass('sidebar-mini'))) {
+                $('body').hasClass('fixed') &&
+                    $('body').hasClass('sidebar-mini')) {
                 this.expandOnHover();
             }
         },
@@ -304,14 +305,14 @@ function _init() {
             var checkElement = $this.next();
 
             //Check if the next element is a menu and is visible
-            if ((checkElement.is('.treeview-menu')) && (checkElement.is(':visible')) && (!$('body').hasClass('sidebar-collapse'))) {
+            if (checkElement.is('.treeview-menu') && checkElement.is(':visible') && !$('body').hasClass('sidebar-collapse')) {
                 //Close the menu
                 checkElement.slideUp(animationSpeed, function () {
                     checkElement.removeClass('menu-open');
                 });
                 checkElement.parent("li").removeClass("active");
             }
-            else if ((checkElement.is('.treeview-menu')) && (!checkElement.is(':visible'))) {
+            else if (checkElement.is('.treeview-menu') && !checkElement.is(':visible')) {
                 //Get the parent menu
                 var parent = $this.parents('ul').first();
                 //Close all open menus within the parent
@@ -344,7 +345,7 @@ function _init() {
             var active = $this.hasClass('active'); // true === active, false === deactive
 
             if (modelSeleted) {
-                if ((!$('body').hasClass('sidebar-collapse'))) {
+                if (!$('body').hasClass('sidebar-collapse')) {
                     if (!active) {
                         $('#model').find('a.active').removeClass('active');
                         $this.addClass('active');
@@ -354,7 +355,7 @@ function _init() {
                             $('#result ul').addClass('menu-open');
                             $('#model').removeClass('active');
                             $('#result').addClass('active');
-                        })
+                        });
                     }).removeClass('menu-open');
                 } else {
                     if (!active) {
@@ -362,10 +363,10 @@ function _init() {
                         $this.addClass('active');
                     }
                 }
-            };
+            }
 
             if (plotGroupSeleted) {
-                if ((!$('body').hasClass('sidebar-collapse'))) {
+                if (!$('body').hasClass('sidebar-collapse')) {
                     if (!active) {
                         $('#result').find('a.active').removeClass('active');
                         $this.addClass('active');
@@ -375,7 +376,7 @@ function _init() {
                             $('#plot ul').addClass('menu-open');
                             $('#result').removeClass('active');
                             $('#plot').addClass('active');
-                        })
+                        });
                     }).removeClass('menu-open');
                 } else {
                     $('#result').find('a.active').removeClass('active');

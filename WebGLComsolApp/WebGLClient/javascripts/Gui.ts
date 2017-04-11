@@ -5,8 +5,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var gl = glContext.getContext();
 
     var canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('webgl');
-    var canvasContainer = $(".content-wrapper");
-    var navbar = $(".nav");
 
     var jqModelList = $("#model");
     var jqResultList = $("#result");
@@ -188,6 +186,12 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         }
 
         handleResize = function () {
+            let headerHeight = $('.main-header').outerHeight();
+            let footerHeight = $('.main-footer').outerHeight();
+            let windowHeight = $(window).height();
+            let windowWidth = $(window).width();
+            let canvasWidth: number;
+            let canvasHeight: number;
             width = window.innerWidth
                 || document.documentElement.clientWidth
                 || document.body.clientWidth;
@@ -196,13 +200,11 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 || document.documentElement.clientHeight
                 || document.body.clientHeight;
 
-            canvas.width = width;
-            if (window.outerWidth < 767) {
-                canvas.height = height - 150;
-            } else {
-                canvas.height = height - 100;
-            }
-            renderer.resizeCanvas(width, height);
+            canvas.width = windowWidth;
+            canvas.height = windowHeight - headerHeight - footerHeight;
+            canvasWidth = windowWidth;
+            canvasHeight = windowHeight - headerHeight - footerHeight;
+            renderer.resizeCanvas(canvasWidth, canvasHeight);
         }
         handleRangeX = function (evt) {
             var eyeX = parseFloat(evt.currentTarget.value);

@@ -56,7 +56,7 @@ function Renderer(modelData, glc) {
         lightPosition = vec3.create();
         vec3.set(lightPosition, 1, 1, 1);
         eye = vec3.create();
-        vec3.set(eye, 0, 0, 1);
+        vec3.set(eye, 0, 0, 2);
         center = vec3.create();
         vec3.set(center, 0, 0, 0);
         up = vec3.create();
