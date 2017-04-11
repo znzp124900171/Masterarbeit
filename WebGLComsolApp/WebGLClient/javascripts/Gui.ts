@@ -198,9 +198,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
             canvas.width = width;
             if (window.outerWidth < 767) {
-                canvas.height = height - 100;
+                canvas.height = height - 150;
             } else {
-                canvas.height = height - 50;
+                canvas.height = height - 100;
             }
             renderer.resizeCanvas(width, height);
         }

@@ -32,8 +32,10 @@ $.GUI.options = {
     sidebarToggleSelector: "[data-toggle='offcanvas']",
     //Activate sidebar push menu
     sidebarPushMenu: true,
-    //Activate sidebar slimscroll if the fixed layout is set (requires SlimScroll Plugin)
+    //Activate sidebar slimscroll (requires SlimScroll Plugin)
     sidebarSlimScroll: true,
+    //Activate controlsidebar slimscroll
+    contraolSidebarScroll: true,
     //Enable sidebar expand on hover effect for sidebar mini
     //This option is forced to true if both the fixed layout and sidebar mini
     //are used together
@@ -163,6 +165,7 @@ function _init() {
             let _this = this;
             _this.fix();
             _this.fixSidebar();
+            _this.fixControlSidebar();
             $('body, html, .wrapper').css('height', '100vh');
             $(window, ".wrapper").resize(function () {
                 _this.fix();
@@ -171,55 +174,37 @@ function _init() {
         },
         fix: function () {;
             //Get window height and the wrapper height
-            var footer_height = $('.main-footer').outerHeight() || 0;
-            var neg = $('.main-header').outerHeight() + footer_height;
-            var window_height = $(window).height();
-            var sidebar_height = $(".sidebar").height() || 0;
-            console.log('footer height: ' + footer_height);
-            console.log('neg: ' + neg);
-            console.log('window height: ' + window_height);
-            console.log('sidebar height: ' + sidebar_height);
-            //Set the min-height of the content and sidebar based on the
-            //the height of the document.
-            if ($("body").hasClass("fixed")) {
-                $(".content-wrapper").css('min-height', window_height - footer_height);
-            }
-            else {
-                var postSetWidth;
-                if (window_height >= sidebar_height) {
-                    $(".content-wrapper").css('min-height', window_height - neg);
-                    postSetWidth = window_height - neg;
-                }
-                else {
-                    $(".content-wrapper").css('min-height', sidebar_height);
-                    postSetWidth = sidebar_height;
-                }
-                //Fix for the control sidebar height
-                var controlSidebar = $($.GUI.options.controlSidebarOptions.selector);
-                if (typeof controlSidebar !== "undefined") {
-                    if (controlSidebar.height() > postSetWidth)
-                        $(".content-wrapper").css('min-height', controlSidebar.height());
-                }
-            }
+            let footer_height = $('.main-footer').outerHeight() || 0;
+            let neg = $('.main-header').outerHeight() + footer_height;
+            let window_height = $(window).height();
+            let sidebar_height = $(".sidebar").height() || 0;
+            
+            // set the content height
+            $(".content-wrapper").css('height', window_height - neg);
         },
         fixSidebar: function () {
-            //Make sure the body tag has the .fixed class
-            if (!$("body").hasClass("fixed")) {
-                if (typeof $.fn.slimScroll !== 'undefined') {
-                    $(".sidebar").slimScroll({ destroy: true }).height("auto");
-                }
-                return;
-            }
-            else if (typeof $.fn.slimScroll === 'undefined' && window.console) {
-                window.console.error("Error: the fixed layout requires the slimscroll plugin!");
-            }
-            //Enable slimscroll for fixed layout
+            //Enable slimscroll
             if ($.GUI.options.sidebarSlimScroll) {
                 if (typeof $.fn.slimScroll !== 'undefined') {
                     //Destroy if it exists
                     $(".sidebar").slimScroll({ destroy: true }).height("auto");
                     //Add slimscroll
                     $(".sidebar").slimScroll({
+                        height: ($(window).height() - $(".main-header").height()) + "px",
+                        color: "rgba(0,0,0,0.2)",
+                        size: "3px"
+                    });
+                }
+            }
+        },
+        fixControlSidebar: function () {
+            //Enable slimscroll
+            if ($.GUI.options.contraolSidebarScroll) {
+                if (typeof $.fn.slimScroll !== 'undefined') {
+                    //Destroy if it exists
+                    $(".control-sidebar").slimScroll({ destroy: true }).height("auto");
+                    //Add slimscroll
+                    $(".control-sidebar").slimScroll({
                         height: ($(window).height() - $(".main-header").height()) + "px",
                         color: "rgba(0,0,0,0.2)",
                         size: "3px"

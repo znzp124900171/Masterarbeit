@@ -28,9 +28,11 @@
     <Content Include="javascripts\libs\gl-matrix.js" />
     <Content Include="javascripts\libs\hand.minified-1.3.8.js" />
     <Content Include="javascripts\libs\jquery-2.1.1.min.js" />
-    <Content Include="plugins\bootstrap-slider.js" />
-    <Content Include="plugins\bootstrap-slider.min.css" />
+    <Content Include="plugins\slimScroll\jquery.slimscroll.js" />
+    <Content Include="plugins\slimScroll\jquery.slimscroll.min.js" />
     <Content Include="stylesheets\bootstrap.min.css" />
+    <Content Include="stylesheets\font-awesome.min.css" />
+    <Content Include="stylesheets\fonts\fontawesome-webfont.svg" />
     <Content Include="stylesheets\images\ajax-loader.gif" />
     <Content Include="stylesheets\skin-blue.min.css" />
     <Content Include="stylesheets\style.css" />
@@ -52,6 +54,11 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <Content Include="stylesheets\fonts\fontawesome-webfont.eot" />
+    <Content Include="stylesheets\fonts\fontawesome-webfont.ttf" />
+    <Content Include="stylesheets\fonts\fontawesome-webfont.woff" />
+    <Content Include="stylesheets\fonts\fontawesome-webfont.woff2" />
+    <Content Include="stylesheets\fonts\FontAwesome.otf" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
