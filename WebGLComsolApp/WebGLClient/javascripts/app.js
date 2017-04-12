@@ -18,12 +18,8 @@ $.GUI = {};
  * Modify these options to suit your implementation
  */
 $.GUI.options = {
-    //Add slimscroll to navbar menus
-    //This requires you to load the slimscroll plugin
-    //in every page before app.js
-    navbarMenuSlimscroll: true,
-    navbarMenuSlimscrollWidth: "3px",
-    navbarMenuHeight: "200px",
+    //Hide all navigation elements and display two canvas
+    enable3DSideBySide: false,
     //General animation speed for JS animated elements such as box collapse/expand and
     //sidebar treeview slide up/down. This options accepts an integer as milliseconds,
     //'fast', 'normal', or 'slow'
@@ -36,10 +32,6 @@ $.GUI.options = {
     sidebarSlimScroll: true,
     //Activate controlsidebar slimscroll
     contraolSidebarScroll: true,
-    //Enable sidebar expand on hover effect for sidebar mini
-    //This option is forced to true if both the fixed layout and sidebar mini
-    //are used together
-    sidebarExpandOnHover: false,
     //Enable Fast Click. Fastclick.js creates a more
     //native touch experience with touch devices. If you
     //choose to enable the plugin, make sure you load the script
@@ -56,25 +48,6 @@ $.GUI.options = {
         selector: ".control-sidebar",
         //Enable slide over content
         slide: true
-    },
-    //Define the set of colors to use globally around the website
-    colors: {
-        lightBlue: "#3c8dbc",
-        red: "#f56954",
-        green: "#00a65a",
-        aqua: "#00c0ef",
-        yellow: "#f39c12",
-        blue: "#0073b7",
-        navy: "#001F3F",
-        teal: "#39CCCC",
-        olive: "#3D9970",
-        lime: "#01FF70",
-        orange: "#FF851B",
-        fuchsia: "#F012BE",
-        purple: "#8E24AA",
-        maroon: "#D81B60",
-        black: "#222222",
-        gray: "#d2d6de"
     },
     //The standard screen sizes that bootstrap uses.
     //If you change these in the variables.less file, change
@@ -95,8 +68,6 @@ $.GUI.options = {
  */
 $(function () {
     "use strict";
-    //Fix for IE page transitions
-    $("body").removeClass("hold-transition");
     //Extend options if external options exist
     if (typeof GUIOptions !== "undefined") {
         $.extend(true, $.GUI.options, GUIOptions);
@@ -131,6 +102,10 @@ $(function () {
     if (o.enableFastclick && typeof FastClick !== 'undefined') {
         FastClick.attach(document.body);
     }
+    //active 3D side by side
+    if (o.enable3DSideBySide) {
+        $.GUI.SideBySide.activate();
+    }
     /*
      * INITIALIZE BUTTON TOGGLE
      * ------------------------
@@ -164,7 +139,7 @@ function _init() {
         activate: function () {
             let _this = this;
             _this.fix();
-            _this.fixSidebar();
+            //_this.fixSidebar();
             _this.fixControlSidebar();
             $('body, html, .wrapper').css('height', '100vh');
             $(window, ".wrapper").resize(function () {
@@ -192,7 +167,7 @@ function _init() {
                     //Add slimscroll
                     $(".sidebar").slimScroll({
                         height: ($(window).height() - $(".main-header").height()) + "px",
-                        color: "rgba(0,0,0,0.2)",
+                        color: "rgba(0,0,0,0.6)",
                         size: "3px"
                     });
                 }
@@ -207,7 +182,7 @@ function _init() {
                     //Add slimscroll
                     $(".tab-content").slimScroll({
                         height: ($(window).height() - $(".main-header").height()) + "px",
-                        color: "rgba(0,0,0,0.2)",
+                        color: "rgba(0,0,0,0.6)",
                         size: "3px"
                     });
                 }
@@ -252,38 +227,6 @@ function _init() {
                     $("body").removeClass('sidebar-open');
                 }
             });
-            //Enable expand on hover for sidebar mini
-            if ($.GUI.options.sidebarExpandOnHover ||
-                $('body').hasClass('fixed') &&
-                    $('body').hasClass('sidebar-mini')) {
-                this.expandOnHover();
-            }
-        },
-        expandOnHover: function () {
-            var _this = this;
-            var screenWidth = $.GUI.options.screenSizes.sm - 1;
-            //Expand sidebar on hover
-            $('.main-sidebar').hover(function () {
-                if ($('body').hasClass('sidebar-mini') &&
-                    $("body").hasClass('sidebar-collapse') &&
-                    $(window).width() > screenWidth) {
-                    _this.expand();
-                }
-            }, function () {
-                if ($('body').hasClass('sidebar-mini') &&
-                    $('body').hasClass('sidebar-expanded-on-hover') &&
-                    $(window).width() > screenWidth) {
-                    _this.collapse();
-                }
-            });
-        },
-        expand: function () {
-            $("body").removeClass('sidebar-collapse').addClass('sidebar-expanded-on-hover');
-        },
-        collapse: function () {
-            if ($('body').hasClass('sidebar-expanded-on-hover')) {
-                $('body').removeClass('sidebar-expanded-on-hover').addClass('sidebar-collapse');
-            }
         }
     };
     /* Tree()
@@ -451,4 +394,25 @@ function _init() {
             }
         }
     };
+    /*
+     * 3DSideBySide
+     * ============
+     * enbale 3D side by side effects
+     * 
+     * @type Object
+     * @usage $.GUI.enable3DSideBySide.activate()
+     */
+    $.GUI.SideBySide = {
+        activate: function() {
+            let header = $('.main-header');
+            let footer = $('.main-footer');
+            let leftSidebar = $('.main-sidebar');
+            let rightSidebar = $('.control-sidebar');
+
+            header.css('display', 'none');
+            footer.css('display', 'none');
+            leftSidebar.css('display', 'none');
+            rightSidebar.css('display', 'none');
+        }
+    }
 }

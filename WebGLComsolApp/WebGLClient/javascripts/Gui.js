@@ -230,6 +230,8 @@ function Gui(modelData, renderer, glContext) {
         lightButton.click(toggleLight);
         handleResize();
     }());
+    function _init() {
+    }
     jqModelList.on('click', 'a.active', function () {
         var newModelID = $(this).attr('data-model');
         var oldModelID = renderer.getActiveModelId();

@@ -24,12 +24,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var lightButton = $('#light');
         var resetButton = $('#reset');
 
-        /*
-        var rangeX = <any>$('#xPosi');
-        var rangeY = <any>$('#yPosi');
-        var rangeZ = <any>$('#zPosi');
-        */
-
         var width;
         var height;
 
@@ -192,6 +186,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             let windowWidth = $(window).width();
             let canvasWidth: number;
             let canvasHeight: number;
+
             width = window.innerWidth
                 || document.documentElement.clientWidth
                 || document.body.clientWidth;
@@ -301,6 +296,10 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         //initial canvas size
         handleResize();
     } ());
+
+    function _init() {
+        
+    }
 
     //change Model
     jqModelList.on('click', 'a.active', function () {
