@@ -14,6 +14,7 @@ function Renderer(modelData, glc) {
     var gl = glContext.getContext();
     var programs = glContext.getPrograms();
     var light = false;
+    var vr = false;
     var plotType;
     var glWidth;
     var glHeight;
@@ -99,6 +100,7 @@ function Renderer(modelData, glc) {
                 -0.82, 0.8,
                 -0.85, 0.0,
                 -0.82, 0.0,])),
+            colorBuf: glc.setupArrayBuffer(new Float32Array([1.0, 1.0, 0.0, 0.0])),
             indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3]))
         };
         coordSys = {
@@ -276,6 +278,11 @@ function Renderer(modelData, glc) {
         light = !light;
         drawCallRequest = true;
         return light;
+    };
+    this.toggleVR = function () {
+        vr = !vr;
+        drawCallRequest = true;
+        return vr;
     };
     this.resizeCanvas = function (width, height) {
         glWidth = width;
@@ -714,12 +721,12 @@ function Renderer(modelData, glc) {
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
         gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
         gl.activeTexture(gl.TEXTURE0);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextureByName(usrText));
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
         gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.vertexBuf);
         gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.colorBuf);
+        gl.vertexAttribPointer(prog.attributes[GL_ATTR_COL], 1, gl.FLOAT, false, 0, 0);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorLegend.indexBuf);
         gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
     };

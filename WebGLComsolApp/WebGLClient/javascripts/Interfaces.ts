@@ -89,6 +89,7 @@ interface Renderer {
     setZPosition(eyeZ: number): void;
 
     toggleLight(): boolean;
+    toggleVR(): boolean;
     rotateObject(x: number, y: number): void;
     resetView(): void;
     resizeCanvas(width: number, height: number): void;

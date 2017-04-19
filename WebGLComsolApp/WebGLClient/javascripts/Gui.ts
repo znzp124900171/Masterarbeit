@@ -23,6 +23,10 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var fullScreenButton = $('#fullScreen');
         var lightButton = $('#light');
         var resetButton = $('#reset');
+        var vrButton = $('#vr');
+
+        let navHeader = $('header');
+        let navSidebar = $('aside');
 
         var width;
         var height;
@@ -44,10 +48,13 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var handleRangeY;
         var handleRangeZ;
 
+        var vrOn = false;
+
         var toggleFullScreen;
         var handleFullScreenChange;
         var handleResetView;
         var toggleLight;
+        var toggleVR;
 
         pointerDown = function (evt) {
             if (evt.preventDefault) {
@@ -179,14 +186,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             renderer.setZPosition(eyeZ);
         }
 
-        handleResize = function () {
-            let headerHeight = $('.main-header').outerHeight();
-            let footerHeight = $('.main-footer').outerHeight();
-            let windowHeight = $(window).height();
-            let windowWidth = $(window).width();
-            let canvasWidth: number;
-            let canvasHeight: number;
-
+        handleResize = function () {   
+            //Size of the browser
             width = window.innerWidth
                 || document.documentElement.clientWidth
                 || document.body.clientWidth;
@@ -195,11 +196,14 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 || document.documentElement.clientHeight
                 || document.body.clientHeight;
 
-            canvas.width = windowWidth;
-            canvas.height = windowHeight - headerHeight - footerHeight;
-            canvasWidth = windowWidth;
-            canvasHeight = windowHeight - headerHeight - footerHeight;
-            renderer.resizeCanvas(canvasWidth, canvasHeight);
+            //Size of the canvas
+            canvas.width = width;
+            if (vrOn) {
+                canvas.height = height;
+            } else {
+                canvas.height = height - navHeader.outerHeight();
+            }
+            renderer.resizeCanvas(canvas.width, canvas.height);
         }
         handleRangeX = function (evt) {
             var eyeX = parseFloat(evt.currentTarget.value);
@@ -227,42 +231,34 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                     request.call(docElement);
                 }
             } else {
-
                 docElement = document;
                 request = docElement.cancelFullScreen || docElement.webkitCancelFullScreen || docElement.mozCancelFullScreen || docElement.msCancelFullScreen || docElement.exitFullscreen;
+
                 if (typeof request != "undefined" && request) {
                     request.call(docElement);
                 }
             }
         };
-        handleFullScreenChange = function () {
-            if (((<any>document).fullScreenElement && (<any>document).fullScreenElement !== null) ||                            // cast it to any so typescript ignores error "property not available"
-                (!(<any>document).mozFullScreen && !(<any>document).webkitIsFullScreen && !(<any>document).msFullscreenElement)) {
-
-                fullScreenButton.removeClass("ui-btn-active");
-            } else {
-                fullScreenButton.addClass("ui-btn-active");
-            }
-        };
         handleResetView = function () {
             renderer.resetView();
-            //var eye = renderer.getPosition();
-            /*
-            rangeX.val(eye[0] * 50);
-            rangeX.slider('refresh');
-            rangeY.val(eye[1] * 50);
-            rangeY.slider('refresh');
-            rangeZ.val(Math.log(-eye[2] + 1) * 50);
-            rangeZ.slider('refresh');
-            */
-
         }
         toggleLight = function () {
-            var lightOn = renderer.toggleLight();
-            if (lightOn) {
-                lightButton.addClass('ui-btn-active');
+            let lightOn = renderer.toggleLight();
+        }
+        toggleVR = function () {
+            vrOn = renderer.toggleVR();
+
+            if (vrOn) {
+                navHeader.hide();
+                navSidebar.hide();
+                $('#content-wrapper').removeClass('content-wrapper');
+                handleResize();
+                toggleFullScreen();
             } else {
-                lightButton.removeClass('ui-btn-active');
+                $('#content-wrapper').addClass('content-wrapper');
+                navHeader.show();
+                navSidebar.show();
+                handleResize();
             }
         }
 
@@ -282,24 +278,26 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         window.onresize = handleResize;
         resetButton.click(handleResetView);
         fullScreenButton.click(toggleFullScreen);
-        var onFullscreenChange = "webkitfullscreenchange mozfullscreenchange fullscreenchange msfullscreenchange";
-        $(document).on(onFullscreenChange, handleFullScreenChange);
 
-        /*
-        rangeX.click(handleRangeX);
-        rangeY.click(handleRangeY);
-        rangeZ.click(handleRangeZ);
-        */
         lightButton.click(toggleLight);
+        vrButton.click(toggleVR);
 
+        document.onkeypress = function (event) {
+            let isEscape = false;
+            let docElement, request;
+            if ('key' in event) {
+                isEscape = (event.key == "Escape" || event.key == "Esc");
+            } else {
+                isEscape = (event.keyCode === 27);
+            }
+            if (isEscape && vrOn) {
+                vrButton.click();
+            }
+        };
 
         //initial canvas size
         handleResize();
     } ());
-
-    function _init() {
-        
-    }
 
     //change Model
     jqModelList.on('click', 'a.active', function () {
@@ -470,8 +468,5 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         jqColor.off('click');
         jqColorTable.off('click');
     }
-
-    
-
 }
 

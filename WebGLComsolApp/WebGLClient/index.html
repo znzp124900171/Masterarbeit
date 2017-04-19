@@ -14,7 +14,6 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="stylesheets/style.min.css">
     <link rel="stylesheet" href="stylesheets/skin-blue.min.css">
-    <link rel="stylesheet" href="plugins/bootstrap-slider.min.css">
 
     <script src="javascripts/libs/jquery-2.1.1.min.js"></script>
     <script src="javascripts/libs/gl-matrix-min.js"></script>
@@ -70,7 +69,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" id="3D">
+                            <a href="#" id="vr">
                                 <i class="fa fa-play-circle"></i>
                             </a>
                         </li>
@@ -140,25 +139,10 @@
         </aside>
 
         <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <!-- Main content -->
-            <section class="content">
-
-                <canvas style="margin: 0; padding: 0;" id='webgl'></canvas>
-
-            </section>
-            <!-- /.content -->
+        <div class="content-wrapper" id="content-wrapper">
+            <canvas style="margin: 0; padding: 0;" id='webgl'></canvas>
         </div>
         <!-- /.content-wrapper -->
-        <!-- Main Footer -->
-        <footer class="main-footer">
-            <!-- To the right -->
-            <div class="pull-right hidden-xs">
-                Nan Zhao
-            </div>
-            <!-- Default to the left -->
-            <strong>Copyright &copy; 2017 <a href="#">ITE</a>.</strong> All rights reserved.
-        </footer>
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">

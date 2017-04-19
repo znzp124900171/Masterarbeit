@@ -13,6 +13,9 @@ function Gui(modelData, renderer, glContext) {
         var fullScreenButton = $('#fullScreen');
         var lightButton = $('#light');
         var resetButton = $('#reset');
+        var vrButton = $('#vr');
+        let navHeader = $('header');
+        let navSidebar = $('aside');
         var width;
         var height;
         var pointerMoved = false;
@@ -29,10 +32,12 @@ function Gui(modelData, renderer, glContext) {
         var handleRangeX;
         var handleRangeY;
         var handleRangeZ;
+        var vrOn = false;
         var toggleFullScreen;
         var handleFullScreenChange;
         var handleResetView;
         var toggleLight;
+        var toggleVR;
         pointerDown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
@@ -143,23 +148,20 @@ function Gui(modelData, renderer, glContext) {
             renderer.setZPosition(eyeZ);
         };
         handleResize = function () {
-            let headerHeight = $('.main-header').outerHeight();
-            let footerHeight = $('.main-footer').outerHeight();
-            let windowHeight = $(window).height();
-            let windowWidth = $(window).width();
-            let canvasWidth;
-            let canvasHeight;
             width = window.innerWidth
                 || document.documentElement.clientWidth
                 || document.body.clientWidth;
             height = window.innerHeight
                 || document.documentElement.clientHeight
                 || document.body.clientHeight;
-            canvas.width = windowWidth;
-            canvas.height = windowHeight - headerHeight - footerHeight;
-            canvasWidth = windowWidth;
-            canvasHeight = windowHeight - headerHeight - footerHeight;
-            renderer.resizeCanvas(canvasWidth, canvasHeight);
+            canvas.width = width;
+            if (vrOn) {
+                canvas.height = height;
+            }
+            else {
+                canvas.height = height - navHeader.outerHeight();
+            }
+            renderer.resizeCanvas(canvas.width, canvas.height);
         };
         handleRangeX = function (evt) {
             var eyeX = parseFloat(evt.currentTarget.value);
@@ -192,25 +194,26 @@ function Gui(modelData, renderer, glContext) {
                 }
             }
         };
-        handleFullScreenChange = function () {
-            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-                (!document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement)) {
-                fullScreenButton.removeClass("ui-btn-active");
-            }
-            else {
-                fullScreenButton.addClass("ui-btn-active");
-            }
-        };
         handleResetView = function () {
             renderer.resetView();
         };
         toggleLight = function () {
-            var lightOn = renderer.toggleLight();
-            if (lightOn) {
-                lightButton.addClass('ui-btn-active');
+            let lightOn = renderer.toggleLight();
+        };
+        toggleVR = function () {
+            vrOn = renderer.toggleVR();
+            if (vrOn) {
+                navHeader.hide();
+                navSidebar.hide();
+                $('#content-wrapper').removeClass('content-wrapper');
+                handleResize();
+                toggleFullScreen();
             }
             else {
-                lightButton.removeClass('ui-btn-active');
+                $('#content-wrapper').addClass('content-wrapper');
+                navHeader.show();
+                navSidebar.show();
+                handleResize();
             }
         };
         canvas.addEventListener("contextmenu", function (e) {
@@ -225,13 +228,23 @@ function Gui(modelData, renderer, glContext) {
         window.onresize = handleResize;
         resetButton.click(handleResetView);
         fullScreenButton.click(toggleFullScreen);
-        var onFullscreenChange = "webkitfullscreenchange mozfullscreenchange fullscreenchange msfullscreenchange";
-        $(document).on(onFullscreenChange, handleFullScreenChange);
         lightButton.click(toggleLight);
+        vrButton.click(toggleVR);
+        document.onkeydown = function (event) {
+            let isEscape = false;
+            let docElement, request;
+            if ('key' in event) {
+                isEscape = (event.key == "Escape" || event.key == "Esc");
+            }
+            else {
+                isEscape = (event.keyCode === 27);
+            }
+            if (isEscape && vrOn) {
+                vrButton.click();
+            }
+        };
         handleResize();
     }());
-    function _init() {
-    }
     jqModelList.on('click', 'a.active', function () {
         var newModelID = $(this).attr('data-model');
         var oldModelID = renderer.getActiveModelId();
