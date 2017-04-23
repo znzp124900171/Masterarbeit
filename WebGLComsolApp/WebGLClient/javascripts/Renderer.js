@@ -49,6 +49,13 @@ function Renderer(modelData, glc) {
     var coordSys;
     initMatrices();
     initStaticData();
+    function computeStereoViewProjectionMatrices(width, height) {
+        let up = vec3.create();
+        vec3.set(up, 0, 0, 1);
+        let aspect = width / height;
+        let near = 0.05;
+        let far = 100;
+    }
     function initMatrices() {
         scale = vec3.create();
         vec3.set(scale, 1, 1, 1);
@@ -57,7 +64,7 @@ function Renderer(modelData, glc) {
         lightPosition = vec3.create();
         vec3.set(lightPosition, 1, 1, 1);
         eye = vec3.create();
-        vec3.set(eye, 0, 0, 2);
+        vec3.set(eye, 0, 0, 1);
         center = vec3.create();
         vec3.set(center, 0, 0, 0);
         up = vec3.create();
@@ -138,9 +145,6 @@ function Renderer(modelData, glc) {
         activePlots = [];
         drawCallRequest = true;
     };
-    this.getActivePlotGroupType = function () {
-        return plotType;
-    };
     this.setActiveModelById = function (modelId, callback) {
         modelCmd.getModel(modelId, function (model) {
             activeModel = model;
@@ -220,6 +224,9 @@ function Renderer(modelData, glc) {
     this.getActivePlots = function () {
         return activePlots;
     };
+    this.getActivePlotGroupType = function () {
+        return plotType;
+    };
     this.addPlot = function (plot) {
         if (activePlots.indexOf(plot) === -1) {
             activePlots.push(plot);
@@ -296,6 +303,17 @@ function Renderer(modelData, glc) {
         mat4.multiply(vpFront, pScene, vpFront);
         drawCallRequest = true;
     };
+    this.resizeVRCanvas = function (width, height) {
+        glWidth = width;
+        glHeight = height;
+        mat4.perspective(pScene, viewAngle, width / height, 0.05, 100.0);
+        mat4.identity(mFront);
+        mat4.translate(mFront, mFront, new Float32Array([-0.3 * width / height, -0.3, 0]));
+        mat4.identity(vpFront);
+        mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+        mat4.multiply(vpFront, pScene, vpFront);
+        drawCallRequest = true;
+    };
     var drawPlotGroup = function () {
         if (!activePlotgroup.noData) {
             for (var i = 0; i < activePlotgroup.renderGroup.length; i++) {
@@ -305,10 +323,8 @@ function Renderer(modelData, glc) {
         }
     };
     var drawPlots = function () {
-        console.log('drawPlots');
         for (var i = 0; i < activePlots.length; i++) {
             var result = activePlots[i];
-            console.log('result type :' + result.type);
             if (!result.noData) {
                 for (var j = 0; j < result.renderGroup.length; j++) {
                     var renderGroup = result.renderGroup[j];
@@ -364,7 +380,6 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader1Lines = function (renderGroup, usrColor) {
-        console.log('drawRenderGroupShader1Lines');
         var color = glContext.getColorByName(usrColor);
         var prog = programs[1];
         gl.useProgram(prog.gl);
@@ -749,9 +764,14 @@ function Renderer(modelData, glc) {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, coordSys.idxBuf);
         gl.drawElements(gl.TRIANGLES, 114, gl.UNSIGNED_SHORT, 468);
     };
-    function drawScene() {
+    function drawScene(seperation) {
         gl.disable(gl.DEPTH_TEST);
         mat4.identity(mScene);
+        if (seperation) {
+            let xOld = transVec[0];
+            let xNew = xOld + seperation;
+            transVec[0] = xNew;
+        }
         mat4.translate(mScene, mScene, transVec);
         mat4.scale(mScene, mScene, scale);
         mat4.multiply(mScene, mScene, rotScene);
@@ -773,6 +793,12 @@ function Renderer(modelData, glc) {
         }
         gl.clear(gl.DEPTH_BUFFER_BIT);
     }
+    function drawSceneVR() {
+        gl.viewport(0, 0, glWidth / 2, glHeight);
+        drawScene(0.15);
+        gl.viewport(glWidth / 2, 0, glWidth / 2, glHeight);
+        drawScene(-0.15);
+    }
     function checkGLerror() {
         var error = gl.getError();
         if (error) {
@@ -784,7 +810,12 @@ function Renderer(modelData, glc) {
     (function renderLoop() {
         if (drawCallRequest) {
             drawCallRequest = false;
-            drawScene();
+            if (!vr) {
+                drawScene();
+            }
+            else {
+                drawSceneVR();
+            }
         }
         if (!checkGLerror()) {
             requestAnimationFrame(renderLoop);

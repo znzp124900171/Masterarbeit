@@ -200,10 +200,12 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             canvas.width = width;
             if (vrOn) {
                 canvas.height = height;
+                renderer.resizeVRCanvas(canvas.width, canvas.height);
+                
             } else {
                 canvas.height = height - navHeader.outerHeight();
+                renderer.resizeCanvas(canvas.width, canvas.height);
             }
-            renderer.resizeCanvas(canvas.width, canvas.height);
         }
         handleRangeX = function (evt) {
             var eyeX = parseFloat(evt.currentTarget.value);

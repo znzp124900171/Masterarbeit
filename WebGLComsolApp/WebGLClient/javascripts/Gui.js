@@ -157,11 +157,12 @@ function Gui(modelData, renderer, glContext) {
             canvas.width = width;
             if (vrOn) {
                 canvas.height = height;
+                renderer.resizeVRCanvas(canvas.width, canvas.height);
             }
             else {
                 canvas.height = height - navHeader.outerHeight();
+                renderer.resizeCanvas(canvas.width, canvas.height);
             }
-            renderer.resizeCanvas(canvas.width, canvas.height);
         };
         handleRangeX = function (evt) {
             var eyeX = parseFloat(evt.currentTarget.value);
@@ -230,7 +231,7 @@ function Gui(modelData, renderer, glContext) {
         fullScreenButton.click(toggleFullScreen);
         lightButton.click(toggleLight);
         vrButton.click(toggleVR);
-        document.onkeydown = function (event) {
+        document.onkeypress = function (event) {
             let isEscape = false;
             let docElement, request;
             if ('key' in event) {

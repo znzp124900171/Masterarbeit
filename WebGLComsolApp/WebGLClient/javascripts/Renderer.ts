@@ -1,7 +1,6 @@
 ﻿/// <refernce path="lib/gl-matrix.d.ts"/>
 /// <refernce path="lib/jquery.d.ts"/>
 
-
 //The render engine 
 // calculates the M V P Matrices
 // start draw Call
@@ -94,6 +93,17 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     initMatrices();
     initStaticData();
 
+    function computeStereoViewProjectionMatrices(width:number,height:number): void {
+
+        let up = vec3.create();
+        vec3.set(up, 0, 0, 1);
+
+        let aspect = width / height;
+        let near = 0.05;
+        let far = 100;
+
+    }
+
     /*  This function creates the initial Matrices, Quaternions and Vectors
     **  it is called by initializiation of the RenderQueue
     */
@@ -109,7 +119,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         vec3.set(lightPosition, 1, 1, 1);
 
         eye = vec3.create();
-        vec3.set(eye, 0, 0, 2);
+        vec3.set(eye, 0, 0, 1);
 
         center = vec3.create();
         vec3.set(center, 0, 0, 0);
@@ -218,10 +228,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         drawCallRequest = true;
     }
 
-    this.getActivePlotGroupType = function (): number {
-        return plotType;
-    }
-
     // sets the active Model by ID (if not exist, request it from server and callback when finished )
     // set all current rendering data to null
     this.setActiveModelById = function (modelId: string, callback:() => void) {
@@ -313,6 +319,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     // get all Active Plots
     this.getActivePlots = function (): Result[]{
         return activePlots;
+    }
+
+    // get active plot type
+    this.getActivePlotGroupType = function (): number {
+        return plotType;
     }
 
     // add the plot to the active Plot List
@@ -411,7 +422,26 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     this.resizeCanvas = function (width: number, height: number) {
         glWidth = width;
         glHeight = height;
+
         gl.viewport(0, 0, width, height);
+        
+        mat4.perspective(pScene, viewAngle, width / height, 0.05, 100.0);
+
+        mat4.identity(mFront);
+        mat4.translate(mFront, mFront, new Float32Array([-0.3 * width / height, -0.3, 0]));
+
+        mat4.identity(vpFront);
+        mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+        mat4.multiply(vpFront, pScene, vpFront);
+
+        drawCallRequest = true;
+    }
+
+    // when VR feature is actived, full screen the canvas and update the Render engine
+    this.resizeVRCanvas = function (width: number, height: number) {
+        glWidth = width;
+        glHeight = height;
+
         mat4.perspective(pScene, viewAngle, width / height, 0.05, 100.0);
 
         mat4.identity(mFront);
@@ -437,10 +467,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     //draw all active Plots
     var drawPlots = function () {
-        console.log('drawPlots');
         for (var i = 0; i < activePlots.length; i++) {
             var result = activePlots[i];
-            console.log('result type :' + result.type);
             if (!result.noData) {
                 for (var j = 0; j < result.renderGroup.length; j++) {
                     var renderGroup = result.renderGroup[j];
@@ -503,7 +531,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     // draw the wire frame of plotGroup
     var drawRenderGroupShader1Lines = function (renderGroup: RenderGroup, usrColor: string) {
-        console.log('drawRenderGroupShader1Lines');
         var color = glContext.getColorByName(usrColor);
         var prog = programs[1];
 
@@ -973,9 +1000,14 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     
 
     //paint the complete Scene
-    function drawScene() {
+    function drawScene(seperation?:number) {
         gl.disable(gl.DEPTH_TEST);
         mat4.identity(mScene);          //Setup Model Matrix
+        if (seperation) {
+            let xOld = transVec[0];
+            let xNew = xOld + seperation;
+            transVec[0] = xNew;
+        }
         mat4.translate(mScene, mScene, transVec);   //Translate according to the user (first rotate then translate)
         mat4.scale(mScene, mScene, scale);          //Scale to unit Box -1,1,   (scalation is cummutativ)
         mat4.multiply(mScene, mScene, rotScene);    //Rotate Model
@@ -1001,6 +1033,15 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             drawFront();
         }
         gl.clear(gl.DEPTH_BUFFER_BIT);
+
+    }
+
+    //paint the stereoscopic 3D with two viewplot
+    function drawSceneVR() {
+        gl.viewport(0, 0, glWidth / 2, glHeight);
+        drawScene(0.15);
+        gl.viewport(glWidth / 2, 0, glWidth / 2, glHeight);
+        drawScene(-0.15);
     }
 
     function checkGLerror() : boolean{
@@ -1017,7 +1058,12 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     (function renderLoop() {
         if (drawCallRequest) {
             drawCallRequest = false;
-            drawScene();
+            if (!vr) {
+                drawScene();
+            } else {
+                drawSceneVR();
+            }
+            
         }
         if (!checkGLerror()) {
             requestAnimationFrame(renderLoop);

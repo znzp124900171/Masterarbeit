@@ -81,7 +81,7 @@ function Web3DContext(canvas: HTMLElement) {
     function create3DContext(canvas, opt_attribs) {
         var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
         var context = null;
-        for (var ii = 0; ii < names.length; ++ii) {
+        for (let ii = 0; ii < names.length; ++ii) {
             try {
                 context = canvas.getContext(names[ii], opt_attribs);
             } catch (e) { }
@@ -99,6 +99,8 @@ function Web3DContext(canvas: HTMLElement) {
         // 4: Multi Geom Plots
         // 5: color text + deformation
         // 101, 102, ..., Pong Light Effects
+
+        // gl_Position refers to the clipping coordinates
 
         shaders = [{
                 name: "unifiedColorShader",
