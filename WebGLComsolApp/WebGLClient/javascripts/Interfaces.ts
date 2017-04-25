@@ -4,34 +4,34 @@
 // in this file all CONSTANT Strings are defined
 // and all Object for Typescript IntelliSense support are declared
 
-var initTouchPointer: () => void;
+let initTouchPointer: () => void;
 
 //Comsol Plot Types
-var TYPE_VOLUME = "Volume";
-var TYPE_SLICE = "Slice";
-var TYPE_MULTISLICE = "Multislice";
-var TYPE_SURFACE = "Surface";
+let TYPE_VOLUME = "Volume";
+let TYPE_SLICE = "Slice";
+let TYPE_MULTISLICE = "Multislice";
+let TYPE_SURFACE = "Surface";
 
-var TYPE_PLOTGROUP3D = "PlotGroup3D";
-var TYPE_PLOTGROUP2D = "PlotGroup2D";
-var TYPE_PLOTGROUP1D = "PlotGroup1D";
-var TYPE_STREAMLINES = "Streamline";
-var TYPE_LINES = "Lines";
+let TYPE_PLOTGROUP3D = "PlotGroup3D";
+let TYPE_PLOTGROUP2D = "PlotGroup2D";
+let TYPE_PLOTGROUP1D = "PlotGroup1D";
+let TYPE_STREAMLINES = "Streamline";
+let TYPE_LINES = "Lines";
 
-var TYPE_ARROW_VOLUME = "ArrowVolume";
-var TYPE_ARROW_SURFACE = "ArrowSurface";
-var TYPE_ARROW_LINE = "ArrowLine";
+let TYPE_ARROW_VOLUME = "ArrowVolume";
+let TYPE_ARROW_SURFACE = "ArrowSurface";
+let TYPE_ARROW_LINE = "ArrowLine";
 
 //Comsol Attributes, DataTypes
-var ATTR_COLOR = "Color";				// linear Mapping to the colorTable
-var ATTR_VECTORX = "VectorX";			// X-Value of Vectors
-var ATTR_VECTORY = "VectorY";			// Y-Value of Vectors
-var ATTR_VECTORZ = "VectorZ";			// Z-Value of Vectors
-var ATTR_ISO = "IsoLevel";				// Isolevel mapped to Color
-var ATTR_RAD = "Radius";			    // Radius for Lines as Tubes
-var ATTR_DEFX = "DeformX";				// Deformation in X-Direction
-var ATTR_DEFY = "DeformY";				// Deformation in Y-Direction
-var ATTR_DEFZ = "DeformZ";				// Deformation in Z-Direction
+let ATTR_COLOR = "Color";				// linear Mapping to the colorTable
+let ATTR_VECTORX = "VectorX";			// X-Value of Vectors
+let ATTR_VECTORY = "VectorY";			// Y-Value of Vectors
+let ATTR_VECTORZ = "VectorZ";			// Z-Value of Vectors
+let ATTR_ISO = "IsoLevel";				// Isolevel mapped to Color
+let ATTR_RAD = "Radius";			    // Radius for Lines as Tubes
+let ATTR_DEFX = "DeformX";				// Deformation in X-Direction
+let ATTR_DEFY = "DeformY";				// Deformation in Y-Direction
+let ATTR_DEFZ = "DeformZ";				// Deformation in Z-Direction
 
 interface GuiConfigType {
     uniColor: boolean;
@@ -94,6 +94,11 @@ interface Renderer {
     resetView(): void;
     resizeCanvas(width: number, height: number): void;
     resizeVRCanvas(width: number, height: number): void;
+
+    //VR feature
+    getSeperation(): number;
+    setSeperation(seperation:number): void;
+
 }
 
 interface ModelCmds {

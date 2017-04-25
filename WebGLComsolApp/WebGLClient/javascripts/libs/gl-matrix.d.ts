@@ -26,7 +26,7 @@ interface glMatrix {
   */
   toRadian(a: number): number;
 }
-declare var glMatrix: glMatrix;
+declare let glMatrix: glMatrix;
 
 
 interface vec2 {
@@ -384,7 +384,7 @@ interface vec2 {
    */
   str(a: Float32Array): string;
 }
-declare var vec2: vec2;
+declare let vec2: vec2;
 
 
 interface vec3 {
@@ -795,7 +795,7 @@ interface vec3 {
    */
   str(a: Float32Array): string;
 }
-declare var vec3: vec3;
+declare let vec3: vec3;
 
 
 interface vec4 {
@@ -1123,7 +1123,7 @@ interface vec4 {
    */
   str(a: Float32Array): string;
 }
-declare var vec4: vec4;
+declare let vec4: vec4;
 
 
 interface mat2 {
@@ -1285,7 +1285,7 @@ interface mat2 {
    */
   LDU(L: Float32Array, D: Float32Array, U: Float32Array, a: Float32Array): Float32Array[];
 }
-declare var mat2: mat2;
+declare let mat2: mat2;
 
 
 interface mat2d {
@@ -1443,7 +1443,7 @@ interface mat2d {
    */
   frob(a: Float32Array): number;
 }
-declare var mat2d: mat2d;
+declare let mat2d: mat2d;
 
 
 interface mat3 {
@@ -1657,7 +1657,7 @@ interface mat3 {
    */
   frob(a: Float32Array): number;
 }
-declare var mat3: mat3;
+declare let mat3: mat3;
 
 
 interface mat4 {
@@ -1894,7 +1894,7 @@ interface mat4 {
    *
    *     mat4.identity(dest);
    *     mat4.translate(dest, vec);
-   *     var quatMat = mat4.create();
+   *     let quatMat = mat4.create();
    *     quat4.toMat4(quat, quatMat);
    *     mat4.multiply(dest, quatMat);
    *
@@ -1911,7 +1911,7 @@ interface mat4 {
    *
    *     mat4.identity(dest);
    *     mat4.translate(dest, vec);
-   *     var quatMat = mat4.create();
+   *     let quatMat = mat4.create();
    *     quat4.toMat4(quat, quatMat);
    *     mat4.multiply(dest, quatMat);
    *     mat4.scale(dest, scale)
@@ -1931,7 +1931,7 @@ interface mat4 {
    *     mat4.identity(dest);
    *     mat4.translate(dest, vec);
    *     mat4.translate(dest, origin);
-   *     var quatMat = mat4.create();
+   *     let quatMat = mat4.create();
    *     quat4.toMat4(quat, quatMat);
    *     mat4.multiply(dest, quatMat);
    *     mat4.scale(dest, scale)
@@ -2036,7 +2036,7 @@ interface mat4 {
    */
   frob(a: Float32Array): number;
 }
-declare var mat4: mat4;
+declare let mat4: mat4;
 
 
 interface quat {
@@ -2339,5 +2339,5 @@ interface quat {
    */
   str(a: Float32Array): string;
 }
-declare var quat: quat;
+declare let quat: quat;
 

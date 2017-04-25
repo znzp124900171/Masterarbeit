@@ -31,13 +31,13 @@ THE SOFTWARE. */
 	else if(typeof define === 'function' && define.amd)
 		define(factory);
 	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+		let a = factory();
+		for(let i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
 	}
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
-/******/ 	var installedModules = {};
+/******/ 	let installedModules = {};
 
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
@@ -47,7 +47,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 			return installedModules[moduleId].exports;
 
 /******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
+/******/ 		let module = installedModules[moduleId] = {
 /******/ 			exports: {},
 /******/ 			id: moduleId,
 /******/ 			loaded: false
@@ -147,7 +147,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @class Common utilities
 	 * @name glMatrix
 	 */
-	var glMatrix = {};
+	let glMatrix = {};
 
 	// Configuration Constants
 	glMatrix.EPSILON = 0.000001;
@@ -168,7 +168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    glMatrix.ARRAY_TYPE = type;
 	}
 
-	var degree = Math.PI / 180;
+	let degree = Math.PI / 180;
 
 	/**
 	* Convert Degree To Radian
@@ -206,13 +206,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE. */
 
-	var glMatrix = __webpack_require__(1);
+	let glMatrix = __webpack_require__(1);
 
 	/**
 	 * @class 2x2 Matrix
 	 * @name mat2
 	 */
-	var mat2 = {};
+	let mat2 = {};
 
 	/**
 	 * Creates a new identity mat2
@@ -220,7 +220,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2} a new 2x2 matrix
 	 */
 	mat2.create = function() {
-	    var out = new glMatrix.ARRAY_TYPE(4);
+	    let out = new glMatrix.ARRAY_TYPE(4);
 	    out[0] = 1;
 	    out[1] = 0;
 	    out[2] = 0;
@@ -235,7 +235,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2} a new 2x2 matrix
 	 */
 	mat2.clone = function(a) {
-	    var out = new glMatrix.ARRAY_TYPE(4);
+	    let out = new glMatrix.ARRAY_TYPE(4);
 	    out[0] = a[0];
 	    out[1] = a[1];
 	    out[2] = a[2];
@@ -282,7 +282,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	mat2.transpose = function(out, a) {
 	    // If we are transposing ourselves we can skip a few steps but have to cache some values
 	    if (out === a) {
-	        var a1 = a[1];
+	        let a1 = a[1];
 	        out[1] = a[2];
 	        out[2] = a1;
 	    } else {
@@ -303,7 +303,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2} out
 	 */
 	mat2.invert = function(out, a) {
-	    var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
+	    let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
 
 	        // Calculate the determinant
 	        det = a0 * a3 - a2 * a1;
@@ -330,7 +330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	mat2.adjoint = function(out, a) {
 	    // Caching this value is nessecary if out == a
-	    var a0 = a[0];
+	    let a0 = a[0];
 	    out[0] =  a[3];
 	    out[1] = -a[1];
 	    out[2] = -a[2];
@@ -358,8 +358,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2} out
 	 */
 	mat2.multiply = function (out, a, b) {
-	    var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
-	    var b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
+	    let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
+	    let b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
 	    out[0] = a0 * b0 + a2 * b1;
 	    out[1] = a1 * b0 + a3 * b1;
 	    out[2] = a0 * b2 + a2 * b3;
@@ -382,7 +382,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2} out
 	 */
 	mat2.rotate = function (out, a, rad) {
-	    var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
+	    let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
 	        s = Math.sin(rad),
 	        c = Math.cos(rad);
 	    out[0] = a0 *  c + a2 * s;
@@ -401,7 +401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2} out
 	 **/
 	mat2.scale = function(out, a, v) {
-	    var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
+	    let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
 	        v0 = v[0], v1 = v[1];
 	    out[0] = a0 * v0;
 	    out[1] = a1 * v0;
@@ -422,7 +422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2} out
 	 */
 	mat2.fromRotation = function(out, rad) {
-	    var s = Math.sin(rad),
+	    let s = Math.sin(rad),
 	        c = Math.cos(rad);
 	    out[0] = c;
 	    out[1] = s;
@@ -514,7 +514,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE. */
 
-	var glMatrix = __webpack_require__(1);
+	let glMatrix = __webpack_require__(1);
 
 	/**
 	 * @class 2x3 Matrix
@@ -534,7 +534,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * </pre>
 	 * The last row is ignored so the array is shorter and operations are faster.
 	 */
-	var mat2d = {};
+	let mat2d = {};
 
 	/**
 	 * Creates a new identity mat2d
@@ -542,7 +542,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2d} a new 2x3 matrix
 	 */
 	mat2d.create = function() {
-	    var out = new glMatrix.ARRAY_TYPE(6);
+	    let out = new glMatrix.ARRAY_TYPE(6);
 	    out[0] = 1;
 	    out[1] = 0;
 	    out[2] = 0;
@@ -559,7 +559,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2d} a new 2x3 matrix
 	 */
 	mat2d.clone = function(a) {
-	    var out = new glMatrix.ARRAY_TYPE(6);
+	    let out = new glMatrix.ARRAY_TYPE(6);
 	    out[0] = a[0];
 	    out[1] = a[1];
 	    out[2] = a[2];
@@ -610,10 +610,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2d} out
 	 */
 	mat2d.invert = function(out, a) {
-	    var aa = a[0], ab = a[1], ac = a[2], ad = a[3],
+	    let aa = a[0], ab = a[1], ac = a[2], ad = a[3],
 	        atx = a[4], aty = a[5];
 
-	    var det = aa * ad - ab * ac;
+	    let det = aa * ad - ab * ac;
 	    if(!det){
 	        return null;
 	    }
@@ -647,7 +647,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2d} out
 	 */
 	mat2d.multiply = function (out, a, b) {
-	    var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5],
+	    let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5],
 	        b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3], b4 = b[4], b5 = b[5];
 	    out[0] = a0 * b0 + a2 * b1;
 	    out[1] = a1 * b0 + a3 * b1;
@@ -673,7 +673,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2d} out
 	 */
 	mat2d.rotate = function (out, a, rad) {
-	    var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5],
+	    let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5],
 	        s = Math.sin(rad),
 	        c = Math.cos(rad);
 	    out[0] = a0 *  c + a2 * s;
@@ -694,7 +694,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2d} out
 	 **/
 	mat2d.scale = function(out, a, v) {
-	    var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5],
+	    let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5],
 	        v0 = v[0], v1 = v[1];
 	    out[0] = a0 * v0;
 	    out[1] = a1 * v0;
@@ -714,7 +714,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2d} out
 	 **/
 	mat2d.translate = function(out, a, v) {
-	    var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5],
+	    let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5],
 	        v0 = v[0], v1 = v[1];
 	    out[0] = a0;
 	    out[1] = a1;
@@ -737,7 +737,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat2d} out
 	 */
 	mat2d.fromRotation = function(out, rad) {
-	    var s = Math.sin(rad), c = Math.cos(rad);
+	    let s = Math.sin(rad), c = Math.cos(rad);
 	    out[0] = c;
 	    out[1] = s;
 	    out[2] = -s;
@@ -837,13 +837,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE. */
 
-	var glMatrix = __webpack_require__(1);
+	let glMatrix = __webpack_require__(1);
 
 	/**
 	 * @class 3x3 Matrix
 	 * @name mat3
 	 */
-	var mat3 = {};
+	let mat3 = {};
 
 	/**
 	 * Creates a new identity mat3
@@ -851,7 +851,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat3} a new 3x3 matrix
 	 */
 	mat3.create = function() {
-	    var out = new glMatrix.ARRAY_TYPE(9);
+	    let out = new glMatrix.ARRAY_TYPE(9);
 	    out[0] = 1;
 	    out[1] = 0;
 	    out[2] = 0;
@@ -891,7 +891,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat3} a new 3x3 matrix
 	 */
 	mat3.clone = function(a) {
-	    var out = new glMatrix.ARRAY_TYPE(9);
+	    let out = new glMatrix.ARRAY_TYPE(9);
 	    out[0] = a[0];
 	    out[1] = a[1];
 	    out[2] = a[2];
@@ -953,7 +953,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	mat3.transpose = function(out, a) {
 	    // If we are transposing ourselves we can skip a few steps but have to cache some values
 	    if (out === a) {
-	        var a01 = a[1], a02 = a[2], a12 = a[5];
+	        let a01 = a[1], a02 = a[2], a12 = a[5];
 	        out[1] = a[3];
 	        out[2] = a[6];
 	        out[3] = a01;
@@ -983,7 +983,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat3} out
 	 */
 	mat3.invert = function(out, a) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2],
+	    let a00 = a[0], a01 = a[1], a02 = a[2],
 	        a10 = a[3], a11 = a[4], a12 = a[5],
 	        a20 = a[6], a21 = a[7], a22 = a[8],
 
@@ -1019,7 +1019,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat3} out
 	 */
 	mat3.adjoint = function(out, a) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2],
+	    let a00 = a[0], a01 = a[1], a02 = a[2],
 	        a10 = a[3], a11 = a[4], a12 = a[5],
 	        a20 = a[6], a21 = a[7], a22 = a[8];
 
@@ -1042,7 +1042,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} determinant of a
 	 */
 	mat3.determinant = function (a) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2],
+	    let a00 = a[0], a01 = a[1], a02 = a[2],
 	        a10 = a[3], a11 = a[4], a12 = a[5],
 	        a20 = a[6], a21 = a[7], a22 = a[8];
 
@@ -1058,7 +1058,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat3} out
 	 */
 	mat3.multiply = function (out, a, b) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2],
+	    let a00 = a[0], a01 = a[1], a02 = a[2],
 	        a10 = a[3], a11 = a[4], a12 = a[5],
 	        a20 = a[6], a21 = a[7], a22 = a[8],
 
@@ -1095,7 +1095,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat3} out
 	 */
 	mat3.translate = function(out, a, v) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2],
+	    let a00 = a[0], a01 = a[1], a02 = a[2],
 	        a10 = a[3], a11 = a[4], a12 = a[5],
 	        a20 = a[6], a21 = a[7], a22 = a[8],
 	        x = v[0], y = v[1];
@@ -1123,7 +1123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat3} out
 	 */
 	mat3.rotate = function (out, a, rad) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2],
+	    let a00 = a[0], a01 = a[1], a02 = a[2],
 	        a10 = a[3], a11 = a[4], a12 = a[5],
 	        a20 = a[6], a21 = a[7], a22 = a[8],
 
@@ -1153,7 +1153,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat3} out
 	 **/
 	mat3.scale = function(out, a, v) {
-	    var x = v[0], y = v[1];
+	    let x = v[0], y = v[1];
 
 	    out[0] = x * a[0];
 	    out[1] = x * a[1];
@@ -1205,7 +1205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat3} out
 	 */
 	mat3.fromRotation = function(out, rad) {
-	    var s = Math.sin(rad), c = Math.cos(rad);
+	    let s = Math.sin(rad), c = Math.cos(rad);
 
 	    out[0] = c;
 	    out[1] = s;
@@ -1278,7 +1278,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @returns {mat3} out
 	*/
 	mat3.fromQuat = function (out, q) {
-	    var x = q[0], y = q[1], z = q[2], w = q[3],
+	    let x = q[0], y = q[1], z = q[2], w = q[3],
 	        x2 = x + x,
 	        y2 = y + y,
 	        z2 = z + z,
@@ -1317,7 +1317,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @returns {mat3} out
 	*/
 	mat3.normalFromMat4 = function (out, a) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+	    let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
 	        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
 	        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
 	        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
@@ -1408,13 +1408,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE. */
 
-	var glMatrix = __webpack_require__(1);
+	let glMatrix = __webpack_require__(1);
 
 	/**
 	 * @class 4x4 Matrix
 	 * @name mat4
 	 */
-	var mat4 = {
+	let mat4 = {
 	  scalar: {},
 	  SIMD: {},
 	};
@@ -1425,7 +1425,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} a new 4x4 matrix
 	 */
 	mat4.create = function() {
-	    var out = new glMatrix.ARRAY_TYPE(16);
+	    let out = new glMatrix.ARRAY_TYPE(16);
 	    out[0] = 1;
 	    out[1] = 0;
 	    out[2] = 0;
@@ -1452,7 +1452,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} a new 4x4 matrix
 	 */
 	mat4.clone = function(a) {
-	    var out = new glMatrix.ARRAY_TYPE(16);
+	    let out = new glMatrix.ARRAY_TYPE(16);
 	    out[0] = a[0];
 	    out[1] = a[1];
 	    out[2] = a[2];
@@ -1535,7 +1535,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	mat4.scalar.transpose = function(out, a) {
 	    // If we are transposing ourselves we can skip a few steps but have to cache some values
 	    if (out === a) {
-	        var a01 = a[1], a02 = a[2], a03 = a[3],
+	        let a01 = a[1], a02 = a[2], a03 = a[3],
 	            a12 = a[6], a13 = a[7],
 	            a23 = a[11];
 
@@ -1581,7 +1581,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.SIMD.transpose = function(out, a) {
-	    var a0, a1, a2, a3,
+	    let a0, a1, a2, a3,
 	        tmp01, tmp23,
 	        out0, out1, out2, out3;
 
@@ -1624,7 +1624,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.scalar.invert = function(out, a) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+	    let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
 	        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
 	        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
 	        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
@@ -1678,7 +1678,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.SIMD.invert = function(out, a) {
-	  var row0, row1, row2, row3,
+	  let row0, row1, row2, row3,
 	      tmp1,
 	      minor0, minor1, minor2, minor3,
 	      det,
@@ -1787,7 +1787,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.scalar.adjoint = function(out, a) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+	    let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
 	        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
 	        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
 	        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
@@ -1819,15 +1819,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.SIMD.adjoint = function(out, a) {
-	  var a0, a1, a2, a3;
-	  var row0, row1, row2, row3;
-	  var tmp1;
-	  var minor0, minor1, minor2, minor3;
+	  let a0, a1, a2, a3;
+	  let row0, row1, row2, row3;
+	  let tmp1;
+	  let minor0, minor1, minor2, minor3;
 
-	  var a0 = SIMD.Float32x4.load(a, 0);
-	  var a1 = SIMD.Float32x4.load(a, 4);
-	  var a2 = SIMD.Float32x4.load(a, 8);
-	  var a3 = SIMD.Float32x4.load(a, 12);
+	  let a0 = SIMD.Float32x4.load(a, 0);
+	  let a1 = SIMD.Float32x4.load(a, 4);
+	  let a2 = SIMD.Float32x4.load(a, 8);
+	  let a3 = SIMD.Float32x4.load(a, 12);
 
 	  // Transpose the source matrix.  Sort of.  Not a true transpose operation
 	  tmp1 = SIMD.Float32x4.shuffle(a0, a1, 0, 1, 4, 5);
@@ -1915,7 +1915,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} determinant of a
 	 */
 	mat4.determinant = function (a) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+	    let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
 	        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
 	        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
 	        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
@@ -1946,13 +1946,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.SIMD.multiply = function (out, a, b) {
-	    var a0 = SIMD.Float32x4.load(a, 0);
-	    var a1 = SIMD.Float32x4.load(a, 4);
-	    var a2 = SIMD.Float32x4.load(a, 8);
-	    var a3 = SIMD.Float32x4.load(a, 12);
+	    let a0 = SIMD.Float32x4.load(a, 0);
+	    let a1 = SIMD.Float32x4.load(a, 4);
+	    let a2 = SIMD.Float32x4.load(a, 8);
+	    let a3 = SIMD.Float32x4.load(a, 12);
 
-	    var b0 = SIMD.Float32x4.load(b, 0);
-	    var out0 = SIMD.Float32x4.add(
+	    let b0 = SIMD.Float32x4.load(b, 0);
+	    let out0 = SIMD.Float32x4.add(
 	                   SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b0, 0, 0, 0, 0), a0),
 	                   SIMD.Float32x4.add(
 	                       SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b0, 1, 1, 1, 1), a1),
@@ -1961,8 +1961,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                           SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b0, 3, 3, 3, 3), a3))));
 	    SIMD.Float32x4.store(out, 0, out0);
 
-	    var b1 = SIMD.Float32x4.load(b, 4);
-	    var out1 = SIMD.Float32x4.add(
+	    let b1 = SIMD.Float32x4.load(b, 4);
+	    let out1 = SIMD.Float32x4.add(
 	                   SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b1, 0, 0, 0, 0), a0),
 	                   SIMD.Float32x4.add(
 	                       SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b1, 1, 1, 1, 1), a1),
@@ -1971,8 +1971,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                           SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b1, 3, 3, 3, 3), a3))));
 	    SIMD.Float32x4.store(out, 4, out1);
 
-	    var b2 = SIMD.Float32x4.load(b, 8);
-	    var out2 = SIMD.Float32x4.add(
+	    let b2 = SIMD.Float32x4.load(b, 8);
+	    let out2 = SIMD.Float32x4.add(
 	                   SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b2, 0, 0, 0, 0), a0),
 	                   SIMD.Float32x4.add(
 	                       SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b2, 1, 1, 1, 1), a1),
@@ -1981,8 +1981,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                               SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b2, 3, 3, 3, 3), a3))));
 	    SIMD.Float32x4.store(out, 8, out2);
 
-	    var b3 = SIMD.Float32x4.load(b, 12);
-	    var out3 = SIMD.Float32x4.add(
+	    let b3 = SIMD.Float32x4.load(b, 12);
+	    let out3 = SIMD.Float32x4.add(
 	                   SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b3, 0, 0, 0, 0), a0),
 	                   SIMD.Float32x4.add(
 	                        SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(b3, 1, 1, 1, 1), a1),
@@ -2003,13 +2003,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.scalar.multiply = function (out, a, b) {
-	    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+	    let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
 	        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
 	        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
 	        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
 
 	    // Cache only the current line of the second matrix
-	    var b0  = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
+	    let b0  = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
 	    out[0] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
 	    out[1] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
 	    out[2] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
@@ -2060,7 +2060,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.scalar.translate = function (out, a, v) {
-	    var x = v[0], y = v[1], z = v[2],
+	    let x = v[0], y = v[1], z = v[2],
 	        a00, a01, a02, a03,
 	        a10, a11, a12, a13,
 	        a20, a21, a22, a23;
@@ -2097,7 +2097,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.SIMD.translate = function (out, a, v) {
-	    var a0 = SIMD.Float32x4.load(a, 0),
+	    let a0 = SIMD.Float32x4.load(a, 0),
 	        a1 = SIMD.Float32x4.load(a, 4),
 	        a2 = SIMD.Float32x4.load(a, 8),
 	        a3 = SIMD.Float32x4.load(a, 12),
@@ -2113,7 +2113,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    a1 = SIMD.Float32x4.mul(a1, SIMD.Float32x4.swizzle(vec, 1, 1, 1, 1));
 	    a2 = SIMD.Float32x4.mul(a2, SIMD.Float32x4.swizzle(vec, 2, 2, 2, 2));
 
-	    var t0 = SIMD.Float32x4.add(a0, SIMD.Float32x4.add(a1, SIMD.Float32x4.add(a2, a3)));
+	    let t0 = SIMD.Float32x4.add(a0, SIMD.Float32x4.add(a1, SIMD.Float32x4.add(a2, a3)));
 	    SIMD.Float32x4.store(out, 12, t0);
 
 	    return out;
@@ -2138,7 +2138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 **/
 	mat4.scalar.scale = function(out, a, v) {
-	    var x = v[0], y = v[1], z = v[2];
+	    let x = v[0], y = v[1], z = v[2];
 
 	    out[0] = a[0] * x;
 	    out[1] = a[1] * x;
@@ -2168,8 +2168,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 **/
 	mat4.SIMD.scale = function(out, a, v) {
-	    var a0, a1, a2;
-	    var vec = SIMD.Float32x4(v[0], v[1], v[2], 0);
+	    let a0, a1, a2;
+	    let vec = SIMD.Float32x4(v[0], v[1], v[2], 0);
 
 	    a0 = SIMD.Float32x4.load(a, 0);
 	    SIMD.Float32x4.store(
@@ -2210,7 +2210,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.rotate = function (out, a, rad, axis) {
-	    var x = axis[0], y = axis[1], z = axis[2],
+	    let x = axis[0], y = axis[1], z = axis[2],
 	        len = Math.sqrt(x * x + y * y + z * z),
 	        s, c, t,
 	        a00, a01, a02, a03,
@@ -2272,7 +2272,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.scalar.rotateX = function (out, a, rad) {
-	    var s = Math.sin(rad),
+	    let s = Math.sin(rad),
 	        c = Math.cos(rad),
 	        a10 = a[4],
 	        a11 = a[5],
@@ -2315,7 +2315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.SIMD.rotateX = function (out, a, rad) {
-	    var s = SIMD.Float32x4.splat(Math.sin(rad)),
+	    let s = SIMD.Float32x4.splat(Math.sin(rad)),
 	        c = SIMD.Float32x4.splat(Math.cos(rad));
 
 	    if (a !== out) { // If the source and destination differ, copy the unchanged rows
@@ -2330,8 +2330,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    // Perform axis-specific matrix multiplication
-	    var a_1 = SIMD.Float32x4.load(a, 4);
-	    var a_2 = SIMD.Float32x4.load(a, 8);
+	    let a_1 = SIMD.Float32x4.load(a, 4);
+	    let a_2 = SIMD.Float32x4.load(a, 8);
 	    SIMD.Float32x4.store(out, 4,
 	                         SIMD.Float32x4.add(SIMD.Float32x4.mul(a_1, c), SIMD.Float32x4.mul(a_2, s)));
 	    SIMD.Float32x4.store(out, 8,
@@ -2358,7 +2358,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.scalar.rotateY = function (out, a, rad) {
-	    var s = Math.sin(rad),
+	    let s = Math.sin(rad),
 	        c = Math.cos(rad),
 	        a00 = a[0],
 	        a01 = a[1],
@@ -2401,7 +2401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.SIMD.rotateY = function (out, a, rad) {
-	    var s = SIMD.Float32x4.splat(Math.sin(rad)),
+	    let s = SIMD.Float32x4.splat(Math.sin(rad)),
 	        c = SIMD.Float32x4.splat(Math.cos(rad));
 
 	    if (a !== out) { // If the source and destination differ, copy the unchanged rows
@@ -2416,8 +2416,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    // Perform axis-specific matrix multiplication
-	    var a_0 = SIMD.Float32x4.load(a, 0);
-	    var a_2 = SIMD.Float32x4.load(a, 8);
+	    let a_0 = SIMD.Float32x4.load(a, 0);
+	    let a_2 = SIMD.Float32x4.load(a, 8);
 	    SIMD.Float32x4.store(out, 0,
 	                         SIMD.Float32x4.sub(SIMD.Float32x4.mul(a_0, c), SIMD.Float32x4.mul(a_2, s)));
 	    SIMD.Float32x4.store(out, 8,
@@ -2444,7 +2444,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.scalar.rotateZ = function (out, a, rad) {
-	    var s = Math.sin(rad),
+	    let s = Math.sin(rad),
 	        c = Math.cos(rad),
 	        a00 = a[0],
 	        a01 = a[1],
@@ -2487,7 +2487,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.SIMD.rotateZ = function (out, a, rad) {
-	    var s = SIMD.Float32x4.splat(Math.sin(rad)),
+	    let s = SIMD.Float32x4.splat(Math.sin(rad)),
 	        c = SIMD.Float32x4.splat(Math.cos(rad));
 
 	    if (a !== out) { // If the source and destination differ, copy the unchanged last row
@@ -2502,8 +2502,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    // Perform axis-specific matrix multiplication
-	    var a_0 = SIMD.Float32x4.load(a, 0);
-	    var a_1 = SIMD.Float32x4.load(a, 4);
+	    let a_0 = SIMD.Float32x4.load(a, 0);
+	    let a_1 = SIMD.Float32x4.load(a, 4);
 	    SIMD.Float32x4.store(out, 0,
 	                         SIMD.Float32x4.add(SIMD.Float32x4.mul(a_0, c), SIMD.Float32x4.mul(a_1, s)));
 	    SIMD.Float32x4.store(out, 4,
@@ -2596,7 +2596,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.fromRotation = function(out, rad, axis) {
-	    var x = axis[0], y = axis[1], z = axis[2],
+	    let x = axis[0], y = axis[1], z = axis[2],
 	        len = Math.sqrt(x * x + y * y + z * z),
 	        s, c, t;
 
@@ -2643,7 +2643,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.fromXRotation = function(out, rad) {
-	    var s = Math.sin(rad),
+	    let s = Math.sin(rad),
 	        c = Math.cos(rad);
 
 	    // Perform axis-specific matrix multiplication
@@ -2678,7 +2678,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.fromYRotation = function(out, rad) {
-	    var s = Math.sin(rad),
+	    let s = Math.sin(rad),
 	        c = Math.cos(rad);
 
 	    // Perform axis-specific matrix multiplication
@@ -2713,7 +2713,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.fromZRotation = function(out, rad) {
-	    var s = Math.sin(rad),
+	    let s = Math.sin(rad),
 	        c = Math.cos(rad);
 
 	    // Perform axis-specific matrix multiplication
@@ -2742,7 +2742,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 *     mat4.identity(dest);
 	 *     mat4.translate(dest, vec);
-	 *     var quatMat = mat4.create();
+	 *     let quatMat = mat4.create();
 	 *     quat4.toMat4(quat, quatMat);
 	 *     mat4.multiply(dest, quatMat);
 	 *
@@ -2753,7 +2753,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	mat4.fromRotationTranslation = function (out, q, v) {
 	    // Quaternion math
-	    var x = q[0], y = q[1], z = q[2], w = q[3],
+	    let x = q[0], y = q[1], z = q[2], w = q[3],
 	        x2 = x + x,
 	        y2 = y + y,
 	        z2 = z + z,
@@ -2794,7 +2794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 *     mat4.identity(dest);
 	 *     mat4.translate(dest, vec);
-	 *     var quatMat = mat4.create();
+	 *     let quatMat = mat4.create();
 	 *     quat4.toMat4(quat, quatMat);
 	 *     mat4.multiply(dest, quatMat);
 	 *     mat4.scale(dest, scale)
@@ -2807,7 +2807,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	mat4.fromRotationTranslationScale = function (out, q, v, s) {
 	    // Quaternion math
-	    var x = q[0], y = q[1], z = q[2], w = q[3],
+	    let x = q[0], y = q[1], z = q[2], w = q[3],
 	        x2 = x + x,
 	        y2 = y + y,
 	        z2 = z + z,
@@ -2852,7 +2852,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *     mat4.identity(dest);
 	 *     mat4.translate(dest, vec);
 	 *     mat4.translate(dest, origin);
-	 *     var quatMat = mat4.create();
+	 *     let quatMat = mat4.create();
 	 *     quat4.toMat4(quat, quatMat);
 	 *     mat4.multiply(dest, quatMat);
 	 *     mat4.scale(dest, scale)
@@ -2867,7 +2867,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	mat4.fromRotationTranslationScaleOrigin = function (out, q, v, s, o) {
 	  // Quaternion math
-	  var x = q[0], y = q[1], z = q[2], w = q[3],
+	  let x = q[0], y = q[1], z = q[2], w = q[3],
 	      x2 = x + x,
 	      y2 = y + y,
 	      z2 = z + z,
@@ -2911,7 +2911,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	mat4.fromQuat = function (out, q) {
-	    var x = q[0], y = q[1], z = q[2], w = q[3],
+	    let x = q[0], y = q[1], z = q[2], w = q[3],
 	        x2 = x + x,
 	        y2 = y + y,
 	        z2 = z + z,
@@ -2962,7 +2962,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.frustum = function (out, left, right, bottom, top, near, far) {
-	    var rl = 1 / (right - left),
+	    let rl = 1 / (right - left),
 	        tb = 1 / (top - bottom),
 	        nf = 1 / (near - far);
 	    out[0] = (near * 2) * rl;
@@ -2995,7 +2995,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.perspective = function (out, fovy, aspect, near, far) {
-	    var f = 1.0 / Math.tan(fovy / 2),
+	    let f = 1.0 / Math.tan(fovy / 2),
 	        nf = 1 / (near - far);
 	    out[0] = f / aspect;
 	    out[1] = 0;
@@ -3028,7 +3028,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.perspectiveFromFieldOfView = function (out, fov, near, far) {
-	    var upTan = Math.tan(fov.upDegrees * Math.PI/180.0),
+	    let upTan = Math.tan(fov.upDegrees * Math.PI/180.0),
 	        downTan = Math.tan(fov.downDegrees * Math.PI/180.0),
 	        leftTan = Math.tan(fov.leftDegrees * Math.PI/180.0),
 	        rightTan = Math.tan(fov.rightDegrees * Math.PI/180.0),
@@ -3067,7 +3067,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.ortho = function (out, left, right, bottom, top, near, far) {
-	    var lr = 1 / (left - right),
+	    let lr = 1 / (left - right),
 	        bt = 1 / (bottom - top),
 	        nf = 1 / (near - far);
 	    out[0] = -2 * lr;
@@ -3099,7 +3099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {mat4} out
 	 */
 	mat4.lookAt = function (out, eye, center, up) {
-	    var x0, x1, x2, y0, y1, y2, z0, z1, z2, len,
+	    let x0, x1, x2, y0, y1, y2, z0, z1, z2, len,
 	        eyex = eye[0],
 	        eyey = eye[1],
 	        eyez = eye[2],
@@ -3227,16 +3227,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE. */
 
-	var glMatrix = __webpack_require__(1);
-	var mat3 = __webpack_require__(4);
-	var vec3 = __webpack_require__(7);
-	var vec4 = __webpack_require__(8);
+	let glMatrix = __webpack_require__(1);
+	let mat3 = __webpack_require__(4);
+	let vec3 = __webpack_require__(7);
+	let vec4 = __webpack_require__(8);
 
 	/**
 	 * @class Quaternion
 	 * @name quat
 	 */
-	var quat = {};
+	let quat = {};
 
 	/**
 	 * Creates a new identity quat
@@ -3244,7 +3244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {quat} a new quaternion
 	 */
 	quat.create = function() {
-	    var out = new glMatrix.ARRAY_TYPE(4);
+	    let out = new glMatrix.ARRAY_TYPE(4);
 	    out[0] = 0;
 	    out[1] = 0;
 	    out[2] = 0;
@@ -3264,12 +3264,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {quat} out
 	 */
 	quat.rotationTo = (function() {
-	    var tmpvec3 = vec3.create();
-	    var xUnitVec3 = vec3.fromValues(1,0,0);
-	    var yUnitVec3 = vec3.fromValues(0,1,0);
+	    let tmpvec3 = vec3.create();
+	    let xUnitVec3 = vec3.fromValues(1,0,0);
+	    let yUnitVec3 = vec3.fromValues(0,1,0);
 
 	    return function(out, a, b) {
-	        var dot = vec3.dot(a, b);
+	        let dot = vec3.dot(a, b);
 	        if (dot < -0.999999) {
 	            vec3.cross(tmpvec3, xUnitVec3, a);
 	            if (vec3.length(tmpvec3) < 0.000001)
@@ -3305,7 +3305,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {quat} out
 	 */
 	quat.setAxes = (function() {
-	    var matr = mat3.create();
+	    let matr = mat3.create();
 
 	    return function(out, view, right, up) {
 	        matr[0] = right[0];
@@ -3393,7 +3393,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 **/
 	quat.setAxisAngle = function(out, axis, rad) {
 	    rad = rad * 0.5;
-	    var s = Math.sin(rad);
+	    let s = Math.sin(rad);
 	    out[0] = s * axis[0];
 	    out[1] = s * axis[1];
 	    out[2] = s * axis[2];
@@ -3421,7 +3421,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {quat} out
 	 */
 	quat.multiply = function(out, a, b) {
-	    var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+	    let ax = a[0], ay = a[1], az = a[2], aw = a[3],
 	        bx = b[0], by = b[1], bz = b[2], bw = b[3];
 
 	    out[0] = ax * bw + aw * bx + ay * bz - az * by;
@@ -3459,7 +3459,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	quat.rotateX = function (out, a, rad) {
 	    rad *= 0.5; 
 
-	    var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+	    let ax = a[0], ay = a[1], az = a[2], aw = a[3],
 	        bx = Math.sin(rad), bw = Math.cos(rad);
 
 	    out[0] = ax * bw + aw * bx;
@@ -3480,7 +3480,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	quat.rotateY = function (out, a, rad) {
 	    rad *= 0.5; 
 
-	    var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+	    let ax = a[0], ay = a[1], az = a[2], aw = a[3],
 	        by = Math.sin(rad), bw = Math.cos(rad);
 
 	    out[0] = ax * bw - az * by;
@@ -3501,7 +3501,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	quat.rotateZ = function (out, a, rad) {
 	    rad *= 0.5; 
 
-	    var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+	    let ax = a[0], ay = a[1], az = a[2], aw = a[3],
 	        bz = Math.sin(rad), bw = Math.cos(rad);
 
 	    out[0] = ax * bw + ay * bz;
@@ -3521,7 +3521,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {quat} out
 	 */
 	quat.calculateW = function (out, a) {
-	    var x = a[0], y = a[1], z = a[2];
+	    let x = a[0], y = a[1], z = a[2];
 
 	    out[0] = x;
 	    out[1] = y;
@@ -3565,10 +3565,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // benchmarks:
 	    //    http://jsperf.com/quaternion-slerp-implementations
 
-	    var ax = a[0], ay = a[1], az = a[2], aw = a[3],
+	    let ax = a[0], ay = a[1], az = a[2], aw = a[3],
 	        bx = b[0], by = b[1], bz = b[2], bw = b[3];
 
-	    var        omega, cosom, sinom, scale0, scale1;
+	    let        omega, cosom, sinom, scale0, scale1;
 
 	    // calc cosine
 	    cosom = ax * bx + ay * by + az * bz + aw * bw;
@@ -3614,8 +3614,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {quat} out
 	 */
 	quat.sqlerp = (function () {
-	  var temp1 = quat.create();
-	  var temp2 = quat.create();
+	  let temp1 = quat.create();
+	  let temp2 = quat.create();
 	  
 	  return function (out, a, b, c, d, t) {
 	    quat.slerp(temp1, a, d, t);
@@ -3634,7 +3634,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {quat} out
 	 */
 	quat.invert = function(out, a) {
-	    var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
+	    let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3],
 	        dot = a0*a0 + a1*a1 + a2*a2 + a3*a3,
 	        invDot = dot ? 1.0/dot : 0;
 	    
@@ -3717,8 +3717,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	quat.fromMat3 = function(out, m) {
 	    // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
 	    // article "Quaternion Calculus and Fast Animation".
-	    var fTrace = m[0] + m[4] + m[8];
-	    var fRoot;
+	    let fTrace = m[0] + m[4] + m[8];
+	    let fRoot;
 
 	    if ( fTrace > 0.0 ) {
 	        // |w| > 1/2, may as well choose w > 1/2
@@ -3730,13 +3730,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        out[2] = (m[1]-m[3])*fRoot;
 	    } else {
 	        // |w| <= 1/2
-	        var i = 0;
+	        let i = 0;
 	        if ( m[4] > m[0] )
 	          i = 1;
 	        if ( m[8] > m[i*3+i] )
 	          i = 2;
-	        var j = (i+1)%3;
-	        var k = (i+2)%3;
+	        let j = (i+1)%3;
+	        let k = (i+2)%3;
 	        
 	        fRoot = Math.sqrt(m[i*3+i]-m[j*3+j]-m[k*3+k] + 1.0);
 	        out[i] = 0.5 * fRoot;
@@ -3786,13 +3786,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE. */
 
-	var glMatrix = __webpack_require__(1);
+	let glMatrix = __webpack_require__(1);
 
 	/**
 	 * @class 3 Dimensional Vector
 	 * @name vec3
 	 */
-	var vec3 = {};
+	let vec3 = {};
 
 	/**
 	 * Creates a new, empty vec3
@@ -3800,7 +3800,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} a new 3D vector
 	 */
 	vec3.create = function() {
-	    var out = new glMatrix.ARRAY_TYPE(3);
+	    let out = new glMatrix.ARRAY_TYPE(3);
 	    out[0] = 0;
 	    out[1] = 0;
 	    out[2] = 0;
@@ -3814,7 +3814,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} a new 3D vector
 	 */
 	vec3.clone = function(a) {
-	    var out = new glMatrix.ARRAY_TYPE(3);
+	    let out = new glMatrix.ARRAY_TYPE(3);
 	    out[0] = a[0];
 	    out[1] = a[1];
 	    out[2] = a[2];
@@ -3830,7 +3830,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} a new 3D vector
 	 */
 	vec3.fromValues = function(x, y, z) {
-	    var out = new glMatrix.ARRAY_TYPE(3);
+	    let out = new glMatrix.ARRAY_TYPE(3);
 	    out[0] = x;
 	    out[1] = y;
 	    out[2] = z;
@@ -4014,7 +4014,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} distance between a and b
 	 */
 	vec3.distance = function(a, b) {
-	    var x = b[0] - a[0],
+	    let x = b[0] - a[0],
 	        y = b[1] - a[1],
 	        z = b[2] - a[2];
 	    return Math.sqrt(x*x + y*y + z*z);
@@ -4034,7 +4034,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} squared distance between a and b
 	 */
 	vec3.squaredDistance = function(a, b) {
-	    var x = b[0] - a[0],
+	    let x = b[0] - a[0],
 	        y = b[1] - a[1],
 	        z = b[2] - a[2];
 	    return x*x + y*y + z*z;
@@ -4053,7 +4053,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} length of a
 	 */
 	vec3.length = function (a) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1],
 	        z = a[2];
 	    return Math.sqrt(x*x + y*y + z*z);
@@ -4072,7 +4072,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} squared length of a
 	 */
 	vec3.squaredLength = function (a) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1],
 	        z = a[2];
 	    return x*x + y*y + z*z;
@@ -4120,10 +4120,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec3.normalize = function(out, a) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1],
 	        z = a[2];
-	    var len = x*x + y*y + z*z;
+	    let len = x*x + y*y + z*z;
 	    if (len > 0) {
 	        //TODO: evaluate use of glm_invsqrt here?
 	        len = 1 / Math.sqrt(len);
@@ -4154,7 +4154,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec3.cross = function(out, a, b) {
-	    var ax = a[0], ay = a[1], az = a[2],
+	    let ax = a[0], ay = a[1], az = a[2],
 	        bx = b[0], by = b[1], bz = b[2];
 
 	    out[0] = ay * bz - az * by;
@@ -4173,7 +4173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec3.lerp = function (out, a, b, t) {
-	    var ax = a[0],
+	    let ax = a[0],
 	        ay = a[1],
 	        az = a[2];
 	    out[0] = ax + t * (b[0] - ax);
@@ -4194,7 +4194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec3.hermite = function (out, a, b, c, d, t) {
-	  var factorTimes2 = t * t,
+	  let factorTimes2 = t * t,
 	      factor1 = factorTimes2 * (2 * t - 3) + 1,
 	      factor2 = factorTimes2 * (t - 2) + t,
 	      factor3 = factorTimes2 * (t - 1),
@@ -4219,7 +4219,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec3.bezier = function (out, a, b, c, d, t) {
-	  var inverseFactor = 1 - t,
+	  let inverseFactor = 1 - t,
 	      inverseFactorTimesTwo = inverseFactor * inverseFactor,
 	      factorTimes2 = t * t,
 	      factor1 = inverseFactorTimesTwo * inverseFactor,
@@ -4244,9 +4244,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	vec3.random = function (out, scale) {
 	    scale = scale || 1.0;
 
-	    var r = glMatrix.RANDOM() * 2.0 * Math.PI;
-	    var z = (glMatrix.RANDOM() * 2.0) - 1.0;
-	    var zScale = Math.sqrt(1.0-z*z) * scale;
+	    let r = glMatrix.RANDOM() * 2.0 * Math.PI;
+	    let z = (glMatrix.RANDOM() * 2.0) - 1.0;
+	    let zScale = Math.sqrt(1.0-z*z) * scale;
 
 	    out[0] = Math.cos(r) * zScale;
 	    out[1] = Math.sin(r) * zScale;
@@ -4264,7 +4264,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec3.transformMat4 = function(out, a, m) {
-	    var x = a[0], y = a[1], z = a[2],
+	    let x = a[0], y = a[1], z = a[2],
 	        w = m[3] * x + m[7] * y + m[11] * z + m[15];
 	    w = w || 1.0;
 	    out[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
@@ -4282,7 +4282,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec3.transformMat3 = function(out, a, m) {
-	    var x = a[0], y = a[1], z = a[2];
+	    let x = a[0], y = a[1], z = a[2];
 	    out[0] = x * m[0] + y * m[3] + z * m[6];
 	    out[1] = x * m[1] + y * m[4] + z * m[7];
 	    out[2] = x * m[2] + y * m[5] + z * m[8];
@@ -4300,7 +4300,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	vec3.transformQuat = function(out, a, q) {
 	    // benchmarks: http://jsperf.com/quaternion-transform-vec3-implementations
 
-	    var x = a[0], y = a[1], z = a[2],
+	    let x = a[0], y = a[1], z = a[2],
 	        qx = q[0], qy = q[1], qz = q[2], qw = q[3],
 
 	        // calculate quat * vec
@@ -4325,7 +4325,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec3.rotateX = function(out, a, b, c){
-	   var p = [], r=[];
+	   let p = [], r=[];
 		  //Translate point to the origin
 		  p[0] = a[0] - b[0];
 		  p[1] = a[1] - b[1];
@@ -4353,7 +4353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec3.rotateY = function(out, a, b, c){
-	  	var p = [], r=[];
+	  	let p = [], r=[];
 	  	//Translate point to the origin
 	  	p[0] = a[0] - b[0];
 	  	p[1] = a[1] - b[1];
@@ -4381,7 +4381,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec3.rotateZ = function(out, a, b, c){
-	  	var p = [], r=[];
+	  	let p = [], r=[];
 	  	//Translate point to the origin
 	  	p[0] = a[0] - b[0];
 	  	p[1] = a[1] - b[1];
@@ -4413,10 +4413,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @function
 	 */
 	vec3.forEach = (function() {
-	    var vec = vec3.create();
+	    let vec = vec3.create();
 
 	    return function(a, stride, offset, count, fn, arg) {
-	        var i, l;
+	        let i, l;
 	        if(!stride) {
 	            stride = 3;
 	        }
@@ -4449,13 +4449,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	vec3.angle = function(a, b) {
 	   
-	    var tempA = vec3.fromValues(a[0], a[1], a[2]);
-	    var tempB = vec3.fromValues(b[0], b[1], b[2]);
+	    let tempA = vec3.fromValues(a[0], a[1], a[2]);
+	    let tempB = vec3.fromValues(b[0], b[1], b[2]);
 	 
 	    vec3.normalize(tempA, tempA);
 	    vec3.normalize(tempB, tempB);
 	 
-	    var cosine = vec3.dot(tempA, tempB);
+	    let cosine = vec3.dot(tempA, tempB);
 
 	    if(cosine > 1.0){
 	        return 0;
@@ -4501,13 +4501,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE. */
 
-	var glMatrix = __webpack_require__(1);
+	let glMatrix = __webpack_require__(1);
 
 	/**
 	 * @class 4 Dimensional Vector
 	 * @name vec4
 	 */
-	var vec4 = {};
+	let vec4 = {};
 
 	/**
 	 * Creates a new, empty vec4
@@ -4515,7 +4515,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec4} a new 4D vector
 	 */
 	vec4.create = function() {
-	    var out = new glMatrix.ARRAY_TYPE(4);
+	    let out = new glMatrix.ARRAY_TYPE(4);
 	    out[0] = 0;
 	    out[1] = 0;
 	    out[2] = 0;
@@ -4530,7 +4530,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec4} a new 4D vector
 	 */
 	vec4.clone = function(a) {
-	    var out = new glMatrix.ARRAY_TYPE(4);
+	    let out = new glMatrix.ARRAY_TYPE(4);
 	    out[0] = a[0];
 	    out[1] = a[1];
 	    out[2] = a[2];
@@ -4548,7 +4548,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec4} a new 4D vector
 	 */
 	vec4.fromValues = function(x, y, z, w) {
-	    var out = new glMatrix.ARRAY_TYPE(4);
+	    let out = new glMatrix.ARRAY_TYPE(4);
 	    out[0] = x;
 	    out[1] = y;
 	    out[2] = z;
@@ -4744,7 +4744,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} distance between a and b
 	 */
 	vec4.distance = function(a, b) {
-	    var x = b[0] - a[0],
+	    let x = b[0] - a[0],
 	        y = b[1] - a[1],
 	        z = b[2] - a[2],
 	        w = b[3] - a[3];
@@ -4765,7 +4765,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} squared distance between a and b
 	 */
 	vec4.squaredDistance = function(a, b) {
-	    var x = b[0] - a[0],
+	    let x = b[0] - a[0],
 	        y = b[1] - a[1],
 	        z = b[2] - a[2],
 	        w = b[3] - a[3];
@@ -4785,7 +4785,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} length of a
 	 */
 	vec4.length = function (a) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1],
 	        z = a[2],
 	        w = a[3];
@@ -4805,7 +4805,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} squared length of a
 	 */
 	vec4.squaredLength = function (a) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1],
 	        z = a[2],
 	        w = a[3];
@@ -4856,11 +4856,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec4} out
 	 */
 	vec4.normalize = function(out, a) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1],
 	        z = a[2],
 	        w = a[3];
-	    var len = x*x + y*y + z*z + w*w;
+	    let len = x*x + y*y + z*z + w*w;
 	    if (len > 0) {
 	        len = 1 / Math.sqrt(len);
 	        out[0] = x * len;
@@ -4892,7 +4892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec4} out
 	 */
 	vec4.lerp = function (out, a, b, t) {
-	    var ax = a[0],
+	    let ax = a[0],
 	        ay = a[1],
 	        az = a[2],
 	        aw = a[3];
@@ -4932,7 +4932,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec4} out
 	 */
 	vec4.transformMat4 = function(out, a, m) {
-	    var x = a[0], y = a[1], z = a[2], w = a[3];
+	    let x = a[0], y = a[1], z = a[2], w = a[3];
 	    out[0] = m[0] * x + m[4] * y + m[8] * z + m[12] * w;
 	    out[1] = m[1] * x + m[5] * y + m[9] * z + m[13] * w;
 	    out[2] = m[2] * x + m[6] * y + m[10] * z + m[14] * w;
@@ -4949,7 +4949,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec4} out
 	 */
 	vec4.transformQuat = function(out, a, q) {
-	    var x = a[0], y = a[1], z = a[2],
+	    let x = a[0], y = a[1], z = a[2],
 	        qx = q[0], qy = q[1], qz = q[2], qw = q[3],
 
 	        // calculate quat * vec
@@ -4979,10 +4979,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @function
 	 */
 	vec4.forEach = (function() {
-	    var vec = vec4.create();
+	    let vec = vec4.create();
 
 	    return function(a, stride, offset, count, fn, arg) {
-	        var i, l;
+	        let i, l;
 	        if(!stride) {
 	            stride = 4;
 	        }
@@ -5044,13 +5044,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE. */
 
-	var glMatrix = __webpack_require__(1);
+	let glMatrix = __webpack_require__(1);
 
 	/**
 	 * @class 2 Dimensional Vector
 	 * @name vec2
 	 */
-	var vec2 = {};
+	let vec2 = {};
 
 	/**
 	 * Creates a new, empty vec2
@@ -5058,7 +5058,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec2} a new 2D vector
 	 */
 	vec2.create = function() {
-	    var out = new glMatrix.ARRAY_TYPE(2);
+	    let out = new glMatrix.ARRAY_TYPE(2);
 	    out[0] = 0;
 	    out[1] = 0;
 	    return out;
@@ -5071,7 +5071,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec2} a new 2D vector
 	 */
 	vec2.clone = function(a) {
-	    var out = new glMatrix.ARRAY_TYPE(2);
+	    let out = new glMatrix.ARRAY_TYPE(2);
 	    out[0] = a[0];
 	    out[1] = a[1];
 	    return out;
@@ -5085,7 +5085,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec2} a new 2D vector
 	 */
 	vec2.fromValues = function(x, y) {
-	    var out = new glMatrix.ARRAY_TYPE(2);
+	    let out = new glMatrix.ARRAY_TYPE(2);
 	    out[0] = x;
 	    out[1] = y;
 	    return out;
@@ -5257,7 +5257,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} distance between a and b
 	 */
 	vec2.distance = function(a, b) {
-	    var x = b[0] - a[0],
+	    let x = b[0] - a[0],
 	        y = b[1] - a[1];
 	    return Math.sqrt(x*x + y*y);
 	};
@@ -5276,7 +5276,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} squared distance between a and b
 	 */
 	vec2.squaredDistance = function(a, b) {
-	    var x = b[0] - a[0],
+	    let x = b[0] - a[0],
 	        y = b[1] - a[1];
 	    return x*x + y*y;
 	};
@@ -5294,7 +5294,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} length of a
 	 */
 	vec2.length = function (a) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1];
 	    return Math.sqrt(x*x + y*y);
 	};
@@ -5312,7 +5312,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {Number} squared length of a
 	 */
 	vec2.squaredLength = function (a) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1];
 	    return x*x + y*y;
 	};
@@ -5357,9 +5357,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec2} out
 	 */
 	vec2.normalize = function(out, a) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1];
-	    var len = x*x + y*y;
+	    let len = x*x + y*y;
 	    if (len > 0) {
 	        //TODO: evaluate use of glm_invsqrt here?
 	        len = 1 / Math.sqrt(len);
@@ -5390,7 +5390,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec3} out
 	 */
 	vec2.cross = function(out, a, b) {
-	    var z = a[0] * b[1] - a[1] * b[0];
+	    let z = a[0] * b[1] - a[1] * b[0];
 	    out[0] = out[1] = 0;
 	    out[2] = z;
 	    return out;
@@ -5406,7 +5406,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec2} out
 	 */
 	vec2.lerp = function (out, a, b, t) {
-	    var ax = a[0],
+	    let ax = a[0],
 	        ay = a[1];
 	    out[0] = ax + t * (b[0] - ax);
 	    out[1] = ay + t * (b[1] - ay);
@@ -5422,7 +5422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	vec2.random = function (out, scale) {
 	    scale = scale || 1.0;
-	    var r = glMatrix.RANDOM() * 2.0 * Math.PI;
+	    let r = glMatrix.RANDOM() * 2.0 * Math.PI;
 	    out[0] = Math.cos(r) * scale;
 	    out[1] = Math.sin(r) * scale;
 	    return out;
@@ -5437,7 +5437,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec2} out
 	 */
 	vec2.transformMat2 = function(out, a, m) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1];
 	    out[0] = m[0] * x + m[2] * y;
 	    out[1] = m[1] * x + m[3] * y;
@@ -5453,7 +5453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec2} out
 	 */
 	vec2.transformMat2d = function(out, a, m) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1];
 	    out[0] = m[0] * x + m[2] * y + m[4];
 	    out[1] = m[1] * x + m[3] * y + m[5];
@@ -5470,7 +5470,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec2} out
 	 */
 	vec2.transformMat3 = function(out, a, m) {
-	    var x = a[0],
+	    let x = a[0],
 	        y = a[1];
 	    out[0] = m[0] * x + m[3] * y + m[6];
 	    out[1] = m[1] * x + m[4] * y + m[7];
@@ -5488,7 +5488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {vec2} out
 	 */
 	vec2.transformMat4 = function(out, a, m) {
-	    var x = a[0], 
+	    let x = a[0], 
 	        y = a[1];
 	    out[0] = m[0] * x + m[4] * y + m[12];
 	    out[1] = m[1] * x + m[5] * y + m[13];
@@ -5508,10 +5508,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @function
 	 */
 	vec2.forEach = (function() {
-	    var vec = vec2.create();
+	    let vec = vec2.create();
 
 	    return function(a, stride, offset, count, fn, arg) {
-	        var i, l;
+	        let i, l;
 	        if(!stride) {
 	            stride = 2;
 	        }

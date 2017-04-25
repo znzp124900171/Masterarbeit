@@ -73,7 +73,7 @@ $(function () {
         $.extend(true, $.GUI.options, GUIOptions);
     }
     //Easy access to options
-    var o = $.GUI.options;
+    let o = $.GUI.options;
     //Set up the object
     _init();
     //Activate the layout maker
@@ -111,7 +111,7 @@ $(function () {
      * ------------------------
      */
     $('.btn-group[data-toggle="btn-toggle"]').each(function () {
-        var group = $(this);
+        let group = $(this);
         $(this).find(".btn").on('click', function (e) {
             group.find(".btn.active").removeClass("active");
             $(this).addClass("active");
@@ -199,7 +199,7 @@ function _init() {
     $.GUI.pushMenu = {
         activate: function (toggleBtn) {
             //Get the screen sizes
-            var screenSizes = $.GUI.options.screenSizes;
+            let screenSizes = $.GUI.options.screenSizes;
             //Enable sidebar toggle
             $(document).on('click', toggleBtn, function (e) {
                 e.preventDefault();
@@ -238,14 +238,14 @@ function _init() {
      * @Usage: $.GUI.tree('.sidebar')
      */
     $.GUI.tree = function (menu) {
-        var _this = this;
-        var animationSpeed = $.GUI.options.animationSpeed;
+        let _this = this;
+        let animationSpeed = $.GUI.options.animationSpeed;
 
         $(document).off('click', menu + ' li a')
             .on('click', menu + ' li a', function (e) {
             //Get the clicked link and the next element
-            var $this = $(this);
-            var checkElement = $this.next();
+            let $this = $(this);
+            let checkElement = $this.next();
 
             //Check if the next element is a menu and is visible
             if (checkElement.is('.treeview-menu') && checkElement.is(':visible') && !$('body').hasClass('sidebar-collapse')) {
@@ -257,13 +257,13 @@ function _init() {
             }
             else if (checkElement.is('.treeview-menu') && !checkElement.is(':visible')) {
                 //Get the parent menu
-                var parent = $this.parents('ul').first();
+                let parent = $this.parents('ul').first();
                 //Close all open menus within the parent
-                var ul = parent.find('ul:visible').slideUp(animationSpeed);
+                let ul = parent.find('ul:visible').slideUp(animationSpeed);
                 //Remove the menu-open class from the parent
                 ul.removeClass('menu-open');
                 //Get the parent li
-                var parent_li = $this.parent("li");
+                let parent_li = $this.parent("li");
                 //Open the target menu and add the menu-open class
                 checkElement.slideDown(animationSpeed, function () {
                     //Add the class active to the parent li
@@ -281,11 +281,11 @@ function _init() {
 
         // load the files and data
         $('.treeview-menu').on('click','a', function () {
-            var $this = $(this);
-            var modelSeleted = $this.is('[data-model]');
-            var plotGroupSeleted = $this.is('[data-result]');
-            var plotSelected = $this.is('[data-plot]');
-            var active = $this.hasClass('active'); // true === active, false === deactive
+            let $this = $(this);
+            let modelSeleted = $this.is('[data-model]');
+            let plotGroupSeleted = $this.is('[data-result]');
+            let plotSelected = $this.is('[data-plot]');
+            let active = $this.hasClass('active'); // true === active, false === deactive
 
             if (modelSeleted) {
                 if (!$('body').hasClass('sidebar-collapse')) {

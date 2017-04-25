@@ -1,6 +1,6 @@
 function checkBrowser() {
-    var browserOk = true;
-    var problems = [];
+    let browserOk = true;
+    let problems = [];
     if (typeof (Worker) === "undefined") {
         browserOk = false;
         problems.push("No Web Worker");
@@ -15,14 +15,14 @@ function checkBrowser() {
 }
 function handleProblem(text) {
     $.mobile.navigate("#problemInfo");
-    var parent = $("#browserSupport");
-    for (var i in text) {
+    let parent = $("#browserSupport");
+    for (let i in text) {
         parent.append($("<p></p>").text(text[i]));
     }
 }
 function handleError(err) {
     $.mobile.navigate("#errorWindow");
-    var parent = $("#errorMain");
+    let parent = $("#errorMain");
     parent.append($("<p></p>").text('Error name: ' + err.name));
     parent.append($("<p></p>").text('Error description: ' + err.message));
 }
@@ -30,11 +30,11 @@ function main() {
     if (!checkBrowser()) {
         return -1;
     }
-    var modelCmds;
-    var postProcessor;
-    var renderer;
-    var glContext;
-    var gui;
+    let modelCmds;
+    let postProcessor;
+    let renderer;
+    let glContext;
+    let gui;
     glMatrix.setMatrixArrayType(Float32Array);
     modelCmds = new ModelCmds();
     try {

@@ -531,6 +531,10 @@ a {
 .content-wrapper {
     background-color: #ecf0f5;
     z-index: 800;
+    p {
+        background-color: transparent;
+        width:auto;
+    }
 }
 
 .main-footer {

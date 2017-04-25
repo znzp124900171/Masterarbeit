@@ -13,8 +13,8 @@ interface JQueryMobileStatic {
 
 // All required Function should be checked here
 function checkBrowser(): boolean {
-    var browserOk = true;
-    var problems: string[] = [];
+    let browserOk = true;
+    let problems: string[] = [];
 
     if (typeof (Worker) === "undefined") {
         browserOk = false;
@@ -32,8 +32,8 @@ function checkBrowser(): boolean {
 //Problem Handler
 function handleProblem(text: string[]) {
     $.mobile.navigate("#problemInfo");
-    var parent = $("#browserSupport");
-    for (var i in text) {
+    let parent = $("#browserSupport");
+    for (let i in text) {
         parent.append($("<p></p>").text(text[i]));
     }
 }
@@ -42,7 +42,7 @@ function handleProblem(text: string[]) {
 function handleError(err: Error) {
 
     $.mobile.navigate("#errorWindow");
-    var parent = $("#errorMain");
+    let parent = $("#errorMain");
 
     parent.append($("<p></p>").text('Error name: ' + err.name));
     parent.append($("<p></p>").text('Error description: ' + err.message));
@@ -59,11 +59,11 @@ function main() {
         return -1;
     }
 
-    var modelCmds: ModelCmds;
-    var postProcessor: PostProcessor;
-    var renderer: Renderer;
-    var glContext: Web3DContext;
-    var gui;
+    let modelCmds: ModelCmds;
+    let postProcessor: PostProcessor;
+    let renderer: Renderer;
+    let glContext: Web3DContext;
+    let gui;
 
     // initialize the glMatrix Library
     glMatrix.setMatrixArrayType(Float32Array);
