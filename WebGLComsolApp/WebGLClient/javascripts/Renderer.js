@@ -1,6 +1,6 @@
 function Renderer(modelData, glc) {
-    let self = this;
-    let drawCallRequest = true;
+    var self = this;
+    var drawCallRequest = true;
     window.requestAnimFrame = (function () {
         return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -9,46 +9,46 @@ function Renderer(modelData, glc) {
                 window.setTimeout(callback, 1000 / 60);
             };
     })();
-    let glContext = glc;
-    let modelCmd = modelData;
-    let gl = glContext.getContext();
-    let programs = glContext.getPrograms();
-    let light = false;
-    let vr = false;
-    let plotType;
-    let glWidth;
-    let glHeight;
-    let degToRad = Math.PI / 180;
-    let viewAngle = 45 * degToRad;
-    let eyeSeperation = 0.03;
-    let activeModel = null;
-    let activePlotgroup = null;
-    let activePlots = [];
-    let scale;
-    let offset;
-    let lightPosition;
-    let center;
-    let up;
-    let eye;
-    let transVec;
-    let mvpBackground;
-    let quatTmp;
-    let quatRot;
-    let rotScene;
-    let rotNorm;
-    let mScene;
-    let vScene;
-    let mvScene;
-    let pScene;
-    let mvpScene;
-    let mFront;
-    let vpFront;
-    let mvpFront;
-    let mvpColorLegend;
-    let background;
-    let colorLegend;
-    let coordSys;
-    let coordSysVertex = new Float32Array([0, 0, 0, 0.1, 0, 0, 0.09, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085,
+    var glContext = glc;
+    var modelCmd = modelData;
+    var gl = glContext.getContext();
+    var programs = glContext.getPrograms();
+    var light = false;
+    var vr = false;
+    var plotType;
+    var glWidth;
+    var glHeight;
+    var degToRad = Math.PI / 180;
+    var viewAngle = 45 * degToRad;
+    var eyeSeperation = 0.03;
+    var activeModel = null;
+    var activePlotgroup = null;
+    var activePlots = [];
+    var scale;
+    var offset;
+    var lightPosition;
+    var center;
+    var up;
+    var eye;
+    var transVec;
+    var mvpBackground;
+    var quatTmp;
+    var quatRot;
+    var rotScene;
+    var rotNorm;
+    var mScene;
+    var vScene;
+    var mvScene;
+    var pScene;
+    var mvpScene;
+    var mFront;
+    var vpFront;
+    var mvpFront;
+    var mvpColorLegend;
+    var background;
+    var colorLegend;
+    var coordSys;
+    var coordSysVertex = new Float32Array([0, 0, 0, 0.1, 0, 0, 0.09, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085,
         0.09, 0.004045085, 0.0029389262, 0.09, 0.004755283, 0.001545085, 0.09, 0.005, 3.061617E-19, 0.09, 0.004755283, -0.001545085, 0.09, 0.004045085, -0.0029389262,
         0.09, 0.0029389262, -0.004045085, 0.09, 0.001545085, -0.004755283, 0.09, 6.123234E-19, -0.005, 0.09, -0.001545085, -0.004755283, 0.09, -0.0029389262, -0.004045085,
         0.09, -0.004045085, -0.0029389262, 0.09, -0.004755283, -0.001545085, 0.09, -0.005, -9.184851E-19, 0.09, -0.004755283, 0.001545085, 0.09, -0.004045085, 0.0029389262,
@@ -229,7 +229,7 @@ function Renderer(modelData, glc) {
         }
     };
     this.removePlot = function (plot) {
-        let index = activePlots.indexOf(plot);
+        var index = activePlots.indexOf(plot);
         if (index !== -1) {
             activePlots.splice(index, 1);
         }
@@ -316,22 +316,22 @@ function Renderer(modelData, glc) {
         mat4.multiply(vpFront, pScene, vpFront);
         drawCallRequest = true;
     };
-    let drawPlotGroup = function () {
+    var drawPlotGroup = function () {
         if (!activePlotgroup.noData) {
-            for (let i = 0; i < activePlotgroup.renderGroup.length; i++) {
+            for (var i = 0; i < activePlotgroup.renderGroup.length; i++) {
                 drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], activePlotgroup.usrColor);
                 console.log('usrColor: ' + activePlotgroup.usrColor);
             }
         }
     };
-    let drawPlots = function () {
-        for (let i = 0; i < activePlots.length; i++) {
-            let result = activePlots[i];
+    var drawPlots = function () {
+        for (var i = 0; i < activePlots.length; i++) {
+            var result = activePlots[i];
             if (!result.noData) {
-                for (let j = 0; j < result.renderGroup.length; j++) {
-                    let renderGroup = result.renderGroup[j];
-                    let shaderId = getShaderType(result.type, light, renderGroup.attributes);
-                    let geomType = getGeoType(result.type);
+                for (var j = 0; j < result.renderGroup.length; j++) {
+                    var renderGroup = result.renderGroup[j];
+                    var shaderId = getShaderType(result.type, light, renderGroup.attributes);
+                    var geomType = getGeoType(result.type);
                     switch (shaderId) {
                         case 1:
                             if (geomType === 2) {
@@ -381,17 +381,17 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader1Lines = function (renderGroup, usrColor) {
-        let color = glContext.getColorByName(usrColor);
-        let prog = programs[1];
+    var drawRenderGroupShader1Lines = function (renderGroup, usrColor) {
+        var color = glContext.getColorByName(usrColor);
+        var prog = programs[1];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
         gl.uniform3fv(prog.uniforms[GL_UNI_COL], color);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], plotType, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
@@ -399,17 +399,17 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader1Trias = function (renderGroup, usrColor) {
-        let color = glContext.getColorByName(usrColor);
-        let prog = programs[1];
+    var drawRenderGroupShader1Trias = function (renderGroup, usrColor) {
+        var color = glContext.getColorByName(usrColor);
+        var prog = programs[1];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
         gl.uniform3fv(prog.uniforms[GL_UNI_COL], color);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geom.indices);
@@ -417,9 +417,9 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader101Trias = function (renderGroup, usrColor) {
-        let color = glContext.getColorByName(usrColor);
-        let prog = programs[101];
+    var drawRenderGroupShader101Trias = function (renderGroup, usrColor) {
+        var color = glContext.getColorByName(usrColor);
+        var prog = programs[101];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_P], false, pScene);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MV], false, mvScene);
@@ -428,10 +428,10 @@ function Renderer(modelData, glc) {
         gl.uniform3fv(prog.uniforms[GL_UNI_COL], color);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_NRM]);
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.normals);
@@ -441,9 +441,9 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader3Lines = function (renderGroup, usrText) {
-        let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
-        let prog = programs[3];
+    var drawRenderGroupShader3Lines = function (renderGroup, usrText) {
+        var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
+        var prog = programs[3];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
         gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
@@ -451,10 +451,10 @@ function Renderer(modelData, glc) {
         gl.bindTexture(gl.TEXTURE_2D, glContext.getTextureByName(usrText));
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.attributes[colAttr.index]);
@@ -464,10 +464,10 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader3Trias = function (renderGroup, usrText) {
+    var drawRenderGroupShader3Trias = function (renderGroup, usrText) {
         drawLegend(renderGroup, usrText);
-        let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
-        let prog = programs[3];
+        var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
+        var prog = programs[3];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
         gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
@@ -475,10 +475,10 @@ function Renderer(modelData, glc) {
         gl.bindTexture(gl.TEXTURE_2D, glContext.getTextureByName(usrText));
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], plotType, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.attributes[colAttr.index]);
@@ -488,9 +488,9 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader103Trias = function (renderGroup, usrText) {
-        let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
-        let prog = programs[103];
+    var drawRenderGroupShader103Trias = function (renderGroup, usrText) {
+        var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
+        var prog = programs[103];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_P], false, pScene);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MV], false, mvScene);
@@ -502,10 +502,10 @@ function Renderer(modelData, glc) {
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_NRM]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.normals);
@@ -517,18 +517,18 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader4 = function (renderGroup, usrScale, usrColor) {
-        let prog = programs[4];
+    var drawRenderGroupShader4 = function (renderGroup, usrScale, usrColor) {
+        var prog = programs[4];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
         gl.uniform1f(prog.uniforms[GL_UNI_SCL], usrScale);
         gl.uniform3fv(prog.uniforms[GL_UNI_COL], glContext.getColorByName(usrColor));
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_POS]);
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.position);
@@ -538,8 +538,8 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader104 = function (renderGroup, usrScale, usrColor) {
-        let prog = programs[104];
+    var drawRenderGroupShader104 = function (renderGroup, usrScale, usrColor) {
+        var prog = programs[104];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MV], false, mvScene);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_P], false, pScene);
@@ -549,10 +549,10 @@ function Renderer(modelData, glc) {
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_POS]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_NRM]);
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.position);
@@ -564,12 +564,12 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader5Lines = function (renderGroup, usrText, usrScale) {
-        let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
-        let defXAttr = renderGroup.attributes[ATTR_DEFX];
-        let defYAttr = renderGroup.attributes[ATTR_DEFY];
-        let defZAttr = renderGroup.attributes[ATTR_DEFZ];
-        let prog = programs[5];
+    var drawRenderGroupShader5Lines = function (renderGroup, usrText, usrScale) {
+        var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
+        var defXAttr = renderGroup.attributes[ATTR_DEFX];
+        var defYAttr = renderGroup.attributes[ATTR_DEFY];
+        var defZAttr = renderGroup.attributes[ATTR_DEFZ];
+        var prog = programs[5];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
         gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
@@ -589,10 +589,10 @@ function Renderer(modelData, glc) {
         if (defZAttr) {
             gl.enableVertexAttribArray(prog.attributes[GL_ATTR_DEF_Z]);
         }
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.attributes[colAttr.index]);
@@ -614,12 +614,12 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader5Trias = function (renderGroup, usrText, usrScale) {
-        let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
-        let defXAttr = renderGroup.attributes[ATTR_DEFX];
-        let defYAttr = renderGroup.attributes[ATTR_DEFY];
-        let defZAttr = renderGroup.attributes[ATTR_DEFZ];
-        let prog = programs[5];
+    var drawRenderGroupShader5Trias = function (renderGroup, usrText, usrScale) {
+        var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
+        var defXAttr = renderGroup.attributes[ATTR_DEFX];
+        var defYAttr = renderGroup.attributes[ATTR_DEFY];
+        var defZAttr = renderGroup.attributes[ATTR_DEFZ];
+        var prog = programs[5];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
         gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
@@ -639,10 +639,10 @@ function Renderer(modelData, glc) {
         if (defZAttr) {
             gl.enableVertexAttribArray(prog.attributes[GL_ATTR_DEF_Z]);
         }
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.attributes[colAttr.index]);
@@ -664,12 +664,12 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawRenderGroupShader105Trias = function (renderGroup, usrText, usrScale) {
-        let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
-        let defXAttr = renderGroup.attributes[ATTR_DEFX];
-        let defYAttr = renderGroup.attributes[ATTR_DEFY];
-        let defZAttr = renderGroup.attributes[ATTR_DEFZ];
-        let prog = programs[103];
+    var drawRenderGroupShader105Trias = function (renderGroup, usrText, usrScale) {
+        var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
+        var defXAttr = renderGroup.attributes[ATTR_DEFX];
+        var defYAttr = renderGroup.attributes[ATTR_DEFY];
+        var defZAttr = renderGroup.attributes[ATTR_DEFZ];
+        var prog = programs[103];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpScene);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MV], false, mvScene);
@@ -693,10 +693,10 @@ function Renderer(modelData, glc) {
         if (defZAttr) {
             gl.enableVertexAttribArray(prog.attributes[GL_ATTR_DEF_Z]);
         }
-        for (let i = 0; i < renderGroup.renderData.length; i++) {
-            let geomData = renderGroup.renderData[i].geomData;
-            for (let j = 0; j < geomData.length; j++) {
-                let geom = geomData[j];
+        for (var i = 0; i < renderGroup.renderData.length; i++) {
+            var geomData = renderGroup.renderData[i].geomData;
+            for (var j = 0; j < geomData.length; j++) {
+                var geom = geomData[j];
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.vertices);
                 gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
                 gl.bindBuffer(gl.ARRAY_BUFFER, geom.normals);
@@ -720,7 +720,7 @@ function Renderer(modelData, glc) {
             }
         }
     };
-    let drawBackground = function () {
+    var drawBackground = function () {
         gl.useProgram(programs[2].gl);
         gl.uniformMatrix4fv(programs[2].uniforms[GL_UNI_MVP], false, mvpBackground);
         gl.enableVertexAttribArray(programs[2].attributes[GL_ATTR_VTX]);
@@ -731,9 +731,9 @@ function Renderer(modelData, glc) {
         gl.vertexAttribPointer(programs[2].attributes[GL_ATTR_COL], 3, gl.FLOAT, false, 0, 0);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
-    let drawLegend = function (renderGroup, usrText) {
-        let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
-        let prog = programs[3];
+    var drawLegend = function (renderGroup, usrText) {
+        var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
+        var prog = programs[3];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
         gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
@@ -747,7 +747,7 @@ function Renderer(modelData, glc) {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorLegend.indexBuf);
         gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
     };
-    let drawFront = function () {
+    var drawFront = function () {
         gl.useProgram(programs[1].gl);
         gl.uniformMatrix4fv(programs[1].uniforms[GL_UNI_MVP], false, mvpFront);
         gl.enableVertexAttribArray(programs[1].attributes[GL_ATTR_VTX]);
@@ -770,8 +770,8 @@ function Renderer(modelData, glc) {
         gl.disable(gl.DEPTH_TEST);
         mat4.identity(mScene);
         if (seperation) {
-            let xOld = transVec[0];
-            let xNew = xOld + seperation;
+            var xOld = transVec[0];
+            var xNew = xOld + seperation;
             transVec[0] = xNew;
         }
         mat4.translate(mScene, mScene, transVec);
@@ -802,7 +802,7 @@ function Renderer(modelData, glc) {
         drawScene(-eyeSeperation);
     }
     function checkGLerror() {
-        let error = gl.getError();
+        var error = gl.getError();
         if (error) {
             console.log("GL Error: " + error);
             return true;

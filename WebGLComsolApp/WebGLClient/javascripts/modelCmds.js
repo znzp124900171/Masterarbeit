@@ -1,20 +1,20 @@
-let MODEL_PATH = "visual";
-let MODEL_LIST = "list.json";
+var MODEL_PATH = "visual";
+var MODEL_LIST = "list.json";
 function ModelCmds() {
-    let self = this;
-    let modelList;
-    let modelArray = {};
-    let postProcessor;
-    let getGuiConfig = function (result) {
-        let guiType;
+    var self = this;
+    var modelList;
+    var modelArray = {};
+    var postProcessor;
+    var getGuiConfig = function (result) {
+        var guiType;
         guiType.uniColor = false;
         guiType.isoTexture = false;
         guiType.colorTexture = false;
         guiType.arrowScale = false;
         guiType.radiusScale = false;
         guiType.deformationScale = false;
-        for (let group of result.renderGroup) {
-            for (let attr in group.attributes) {
+        for (var group of result.renderGroup) {
+            for (var attr in group.attributes) {
                 switch (attr) {
                     case ATTR_VECTORX:
                         guiType.arrowScale = true;
@@ -52,17 +52,17 @@ function ModelCmds() {
     };
     this.getPlotGroup = function (modelId, plotGroupTag, callback) {
         self.getModel(modelId, function (model) {
-            for (let i in model.results) {
+            for (var i in model.results) {
                 if (model.results[i].tag === plotGroupTag) {
-                    let plotGroup = model.results[i];
+                    var plotGroup = model.results[i];
                     if (!plotGroup.ready && !plotGroup.requested) {
-                        let counter = 0;
+                        var counter = 0;
                         plotGroup.requested = true;
                         postProcessor.initResultSize(plotGroup);
                         plotGroup.renderGroup.forEach(function (renderGroup, k) {
                             renderGroup.renderData.forEach(function (renderData, j) {
                                 counter++;
-                                let path = MODEL_PATH + '/' + modelId + '/' + plotGroupTag + '.' + j + '.' + k + '.bin';
+                                var path = MODEL_PATH + '/' + modelId + '/' + plotGroupTag + '.' + j + '.' + k + '.bin';
                                 requestPlot(plotGroup, renderGroup, renderData, path, function () {
                                     postProcessor.preparePlotGroup(model, plotGroup, j, k);
                                     counter--;
@@ -90,11 +90,11 @@ function ModelCmds() {
                         if (plot.tag === plotTag) {
                             if (!plot.ready && !plot.requested) {
                                 plot.requested = true;
-                                let counter = 0;
+                                var counter = 0;
                                 plot.renderGroup.forEach(function (renderGroup, j) {
                                     renderGroup.renderData.forEach(function (renderData, k) {
                                         counter++;
-                                        let path = MODEL_PATH + '/' + modelId + '/' + plotGroupTag + '/' + plotTag + '.' + j + '.' + k + '.bin';
+                                        var path = MODEL_PATH + '/' + modelId + '/' + plotGroupTag + '/' + plotTag + '.' + j + '.' + k + '.bin';
                                         requestPlot(plot, renderGroup, renderData, path, function (result, renderGroup, renderData) {
                                             postProcessor.preparePlot(model, plotGroup, plot, renderGroup, renderData);
                                             counter--;
@@ -125,8 +125,8 @@ function ModelCmds() {
     };
     this.getPlotGroupMap = function (modelId, callback) {
         self.getModel(modelId, function (model) {
-            let plotGroupList = [];
-            for (let i in model.results) {
+            var plotGroupList = [];
+            for (var i in model.results) {
                 plotGroupList.push({ name: model.results[i].name, id: model.results[i].tag });
             }
             callback(plotGroupList);
@@ -134,11 +134,11 @@ function ModelCmds() {
     };
     this.getPlotMap = function (modelId, plotGroupId, callback) {
         self.getModel(modelId, function (model) {
-            let plotList = [];
-            for (let i in model.results) {
+            var plotList = [];
+            for (var i in model.results) {
                 if (model.results[i].tag === plotGroupId) {
-                    let plotGroup = model.results[i];
-                    for (let j in plotGroup.feature) {
+                    var plotGroup = model.results[i];
+                    for (var j in plotGroup.feature) {
                         plotList.push({ name: plotGroup.feature[j].name, id: plotGroup.feature[j].tag });
                     }
                 }
@@ -147,10 +147,10 @@ function ModelCmds() {
         });
     };
     function requestModel(modelId, callback) {
-        let request = new XMLHttpRequest();
+        var request = new XMLHttpRequest();
         request.open("GET", MODEL_PATH + "/" + modelId + ".json", true);
         request.onload = function (e) {
-            let model = JSON.parse(request.response);
+            var model = JSON.parse(request.response);
             model.id = modelId;
             modelArray[modelId] = model;
             callback(model);
@@ -158,7 +158,7 @@ function ModelCmds() {
         request.send();
     }
     function requestPlot(result, renderGroup, renderData, plotURI, callback) {
-        let request = new XMLHttpRequest();
+        var request = new XMLHttpRequest();
         request.open("GET", plotURI, true);
         request.responseType = "arraybuffer";
         request.onload = function (e) {
@@ -168,7 +168,7 @@ function ModelCmds() {
         request.send();
     }
     function requestModelList(callback) {
-        let request = new XMLHttpRequest();
+        var request = new XMLHttpRequest();
         request.open("GET", MODEL_PATH + "/" + MODEL_LIST, true);
         request.onload = function () {
             try {

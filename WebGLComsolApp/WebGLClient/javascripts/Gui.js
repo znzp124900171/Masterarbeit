@@ -1,44 +1,44 @@
 function Gui(modelData, renderer, glContext) {
-    let self = this;
-    let gl = glContext.getContext();
-    let canvas = document.getElementById('webgl');
-    let jqModelList = $("#model");
-    let jqResultList = $("#result");
-    let jqPlotList = $("#plot");
-    let jqColor = $('#color');
-    let jqColorTable = $('#colorTable');
+    var self = this;
+    var gl = glContext.getContext();
+    var canvas = document.getElementById('webgl');
+    var jqModelList = $("#model");
+    var jqResultList = $("#result");
+    var jqPlotList = $("#plot");
+    var jqColor = $('#color');
+    var jqColorTable = $('#colorTable');
     modelData.getModelList(updateModelList);
-    let reset = $('#reset');
+    ;
     (function () {
-        let fullScreenButton = $('#fullScreen');
-        let lightButton = $('#light');
-        let resetButton = $('#reset');
-        let vrButton = $('#vr');
-        let navHeader = $('header');
-        let navSidebar = $('aside');
-        let width;
-        let height;
-        let pointerMoved = false;
-        let pointerOne = null;
-        let pointerTwo = null;
-        let pointerSpecial = null;
-        let lastPosition = {};
-        let keydown = null;
-        let pointerDown;
-        let pointerUp;
-        let pointerMove;
-        let pointerLeave;
-        let handleMouseWheel;
-        let handleResize;
-        let handleRangeX;
-        let handleRangeY;
-        let handleRangeZ;
-        let vrOn = false;
-        let toggleFullScreen;
-        let handleFullScreenChange;
-        let handleResetView;
-        let toggleLight;
-        let toggleVR;
+        var fullScreenButton = $('#fullScreen');
+        var lightButton = $('#light');
+        var resetButton = $('#reset');
+        var vrButton = $('#vr');
+        var navHeader = $('header');
+        var navSidebar = $('aside');
+        var width;
+        var height;
+        var pointerMoved = false;
+        var pointerOne = null;
+        var pointerTwo = null;
+        var pointerSpecial = null;
+        var lastPosition = {};
+        var keydown = null;
+        var pointerDown;
+        var pointerUp;
+        var pointerMove;
+        var pointerLeave;
+        var handleMouseWheel;
+        var handleResize;
+        var handleRangeX;
+        var handleRangeY;
+        var handleRangeZ;
+        var vrOn = false;
+        var toggleFullScreen;
+        var handleFullScreenChange;
+        var handleResetView;
+        var toggleLight;
+        var toggleVR;
         pointerDown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
@@ -61,9 +61,9 @@ function Gui(modelData, renderer, glContext) {
         pointerMove = function (evt) {
             if (pointerOne) {
                 if (pointerTwo) {
-                    let firstPosition, secondPosition;
-                    let newPosition = { x: evt.clientX, y: evt.clientY };
-                    let enableRotate = false;
+                    var firstPosition, secondPosition;
+                    var newPosition = { x: evt.clientX, y: evt.clientY };
+                    var enableRotate = false;
                     if (evt.pointerId === pointerOne) {
                         firstPosition = lastPosition[pointerOne];
                         secondPosition = lastPosition[pointerTwo];
@@ -77,49 +77,49 @@ function Gui(modelData, renderer, glContext) {
                     else {
                         return;
                     }
-                    let difX = firstPosition.x - secondPosition.x;
-                    let difY = firstPosition.y - secondPosition.y;
-                    let lastDist = Math.sqrt(difX * difX + difY * difY);
+                    var difX = firstPosition.x - secondPosition.x;
+                    var difY = firstPosition.y - secondPosition.y;
+                    var lastDist = Math.sqrt(difX * difX + difY * difY);
                     difX = newPosition.x - secondPosition.x;
                     difY = newPosition.y - secondPosition.y;
-                    let newDist = Math.sqrt(difX * difX + difY * difY);
-                    let zVal = renderer.getPosition()[2];
+                    var newDist = Math.sqrt(difX * difX + difY * difY);
+                    var zVal = renderer.getPosition()[2];
                     zVal += (lastDist - newDist) * 0.05;
                     renderer.setZPosition(zVal);
                 }
                 else {
                     if (evt.button === 0 || evt.buttons & 1 || (evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 2) {
-                        let oldPosition = lastPosition[evt.pointerId];
-                        let newPosition = { x: evt.clientX, y: evt.clientY };
-                        let renderPosi = renderer.getPosition();
-                        let deltaX = (oldPosition.x - newPosition.x) * -1 / width;
-                        let deltaY = (oldPosition.y - newPosition.y) / width;
+                        var oldPosition = lastPosition[evt.pointerId];
+                        var newPosition = { x: evt.clientX, y: evt.clientY };
+                        var renderPosi = renderer.getPosition();
+                        var deltaX = (oldPosition.x - newPosition.x) * -1 / width;
+                        var deltaY = (oldPosition.y - newPosition.y) / width;
                         renderPosi[0] += deltaX;
                         renderPosi[1] += deltaY;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.setPositionV(renderPosi);
                     }
                     else if ((evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 3) {
-                        let position = lastPosition[evt.pointerId];
-                        let newPosition = { x: evt.clientX, y: evt.clientY };
-                        let deltaX = (newPosition.x - position.x) * 100 / width;
-                        let deltaY = (newPosition.y - position.y) * 100 / height;
+                        var position = lastPosition[evt.pointerId];
+                        var newPosition = { x: evt.clientX, y: evt.clientY };
+                        var deltaX = (newPosition.x - position.x) * 100 / width;
+                        var deltaY = (newPosition.y - position.y) * 100 / height;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.rotateObject(deltaX, deltaY);
                         updateAxisPosition(deltaX, deltaY, width, height);
                     }
                     else if (evt.button === 1 || evt.button & 1) {
-                        let position = lastPosition[evt.pointerId];
-                        let newPosition = { x: evt.clientX, y: evt.clientY };
-                        let deltaX = (newPosition.x - position.x) * -1 / width;
-                        let deltaY = (newPosition.y - position.y) / width;
+                        var position = lastPosition[evt.pointerId];
+                        var newPosition = { x: evt.clientX, y: evt.clientY };
+                        var deltaX = (newPosition.x - position.x) * -1 / width;
+                        var deltaY = (newPosition.y - position.y) / width;
                         if (Math.abs(deltaX) > Math.abs(deltaY)) {
                             var dist = deltaX;
                         }
                         else {
                             var dist = deltaY;
                         }
-                        let eyeZ = renderer.getPosition()[2];
+                        var eyeZ = renderer.getPosition()[2];
                         eyeZ = Math.log(-eyeZ + 1) * 50;
                         eyeZ += dist;
                         eyeZ = -Math.exp(eyeZ / 50) + 1;
@@ -168,8 +168,8 @@ function Gui(modelData, renderer, glContext) {
             if (evt.preventDefault) {
                 evt.preventDefault();
             }
-            let delta = evt.detail ? evt.detail * (-120) : evt.wheelDelta;
-            let eyeZ = renderer.getPosition()[2];
+            var delta = evt.detail ? evt.detail * (-120) : evt.wheelDelta;
+            var eyeZ = renderer.getPosition()[2];
             eyeZ = Math.log(-eyeZ + 1) * 50;
             eyeZ += delta / 120;
             eyeZ = -Math.exp(eyeZ / 50) + 1;
@@ -194,20 +194,20 @@ function Gui(modelData, renderer, glContext) {
             console.log(canvas.getBoundingClientRect().width);
         };
         handleRangeX = function (evt) {
-            let eyeX = parseFloat(evt.currentTarget.value);
+            var eyeX = parseFloat(evt.currentTarget.value);
             renderer.setXPosition(eyeX / 50);
         };
         handleRangeY = function (evt) {
-            let eyeY = parseFloat(evt.currentTarget.value);
+            var eyeY = parseFloat(evt.currentTarget.value);
             renderer.setYPosition(eyeY / 50);
         };
         handleRangeZ = function (evt) {
-            let eyeZ = parseFloat(evt.currentTarget.value);
+            var eyeZ = parseFloat(evt.currentTarget.value);
             eyeZ = -Math.exp(eyeZ / 50) + 1;
             renderer.setZPosition(eyeZ);
         };
         toggleFullScreen = function () {
-            let docElement, request;
+            var docElement, request;
             if ((document.fullScreenElement && document.fullScreenElement !== null) ||
                 (!document.mozFullScreen && !document.webkitIsFullScreen)) {
                 docElement = document.documentElement;
@@ -228,7 +228,7 @@ function Gui(modelData, renderer, glContext) {
             renderer.resetView();
         };
         toggleLight = function () {
-            let lightOn = renderer.toggleLight();
+            var lightOn = renderer.toggleLight();
         };
         toggleVR = function () {
             vrOn = renderer.toggleVR();
@@ -249,21 +249,20 @@ function Gui(modelData, renderer, glContext) {
         canvas.addEventListener("contextmenu", function (e) {
             e.preventDefault();
         }, false);
-        let mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel";
+        var mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel";
         document.addEventListener(mousewheelevt, handleMouseWheel, false);
         document.addEventListener('pointerleave', pointerLeave, false);
         canvas.addEventListener('pointerdown', pointerDown, false);
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
-        document.addEventListener('keydown', keydown, false);
         window.onresize = handleResize;
         resetButton.click(handleResetView);
         fullScreenButton.click(toggleFullScreen);
         lightButton.click(toggleLight);
         vrButton.click(toggleVR);
         document.onkeypress = function (event) {
-            let isEscape = false;
-            let docElement, request;
+            var isEscape = false;
+            var docElement, request;
             if ('key' in event) {
                 isEscape = (event.key == "Escape" || event.key == "Esc");
             }
@@ -277,8 +276,8 @@ function Gui(modelData, renderer, glContext) {
         handleResize();
     }());
     jqModelList.on('click', 'a.active', function () {
-        let newModelID = $(this).attr('data-model');
-        let oldModelID = renderer.getActiveModelId();
+        var newModelID = $(this).attr('data-model');
+        var oldModelID = renderer.getActiveModelId();
         if (newModelID !== oldModelID) {
             renderer.setActiveModelById(newModelID, function () {
                 console.log("New modelId: " + newModelID);
@@ -287,12 +286,12 @@ function Gui(modelData, renderer, glContext) {
         }
     });
     jqResultList.on('click', 'a.active', function () {
-        let newPlotGroupID = $(this).attr('data-result');
-        let oldPlotGroupID = renderer.getActivePlotGroupId();
+        var newPlotGroupID = $(this).attr('data-result');
+        var oldPlotGroupID = renderer.getActivePlotGroupId();
         if (newPlotGroupID !== oldPlotGroupID) {
             renderer.resetView();
             renderer.setActivePlotGroupById(newPlotGroupID, function () {
-                let modelID = renderer.getActiveModelId();
+                var modelID = renderer.getActiveModelId();
                 console.log("modelId: " + modelID + " \nNew plotGroupId: " + newPlotGroupID);
                 modelData.getPlotMap(modelID, newPlotGroupID, updatePlotList);
             });
@@ -301,13 +300,13 @@ function Gui(modelData, renderer, glContext) {
     setColors(glContext.getColorNames());
     setTextures(glContext.getTextureName());
     function setColors(colorList) {
-        let jqColorList = $('#color');
-        for (let i in colorList) {
-            let li = $('<li></li>');
-            let a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
-            let span = $('<span></span>');
-            let div = $('<div></div>');
-            let p = $('<p class="text-center no-margin"></p>');
+        var jqColorList = $('#color');
+        for (var i in colorList) {
+            var li = $('<li></li>');
+            var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
+            var span = $('<span></span>');
+            var div = $('<div></div>');
+            var p = $('<p class="text-center no-margin"></p>');
             span.removeClass();
             if (colorList[i] === 'dark green') {
                 span.addClass('dark-green');
@@ -333,13 +332,13 @@ function Gui(modelData, renderer, glContext) {
         }
     }
     function setTextures(colTable) {
-        let jqColorTableList = $('#colorTable');
-        for (let i in colTable) {
-            let li = $('<li></li>');
-            let a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
-            let span = $('<span></span>');
-            let div = $('<div></div>');
-            let p = $('<p class="text-center no-margin"></p>');
+        var jqColorTableList = $('#colorTable');
+        for (var i in colTable) {
+            var li = $('<li></li>');
+            var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
+            var span = $('<span></span>');
+            var div = $('<div></div>');
+            var p = $('<p class="text-center no-margin"></p>');
             span.removeClass();
             span.addClass(colTable[i]);
             p.text(colTable[i]);
@@ -353,9 +352,9 @@ function Gui(modelData, renderer, glContext) {
     function updateModelList(modelList) {
         removeAllPlots();
         jqModelList.find('.treeview-menu').children().filter('li').remove();
-        for (let i in modelList) {
-            let list = $('<li></li>');
-            let selectItem = $('<a></a>');
+        for (var i in modelList) {
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
             selectItem.attr('href', '#');
             selectItem.attr('data-model', modelList[i].modelId);
             selectItem.text(modelList[i].name);
@@ -366,9 +365,9 @@ function Gui(modelData, renderer, glContext) {
     function updatePlotGroupList(plotGroupList) {
         removeAllPlots();
         jqResultList.find('.treeview-menu').children().remove('li');
-        for (let i in plotGroupList) {
-            let list = $('<li></li>');
-            let selectItem = $('<a></a>');
+        for (var i in plotGroupList) {
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
             selectItem.attr('href', '#');
             selectItem.attr('data-result', plotGroupList[i].id);
             selectItem.text(plotGroupList[i].name);
@@ -383,8 +382,8 @@ function Gui(modelData, renderer, glContext) {
         removeAllPlots();
         jqPlotList.find('.treeview-menu').children().remove('li');
         plotList.forEach(function (plot) {
-            let list = $('<li></li>');
-            let selectItem = $('<a></a>');
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
             selectItem.attr('href', '#');
             selectItem.attr('data-plot', plot.id);
             selectItem.text(plot.name);
@@ -397,14 +396,14 @@ function Gui(modelData, renderer, glContext) {
     }
     function setPlot(plotTag, activeHandle) {
         resetPlot();
-        let modelId = renderer.getActiveModelId();
-        let plotGroupId = renderer.getActivePlotGroupId();
+        var modelId = renderer.getActiveModelId();
+        var plotGroupId = renderer.getActivePlotGroupId();
         console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
-        let result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_result) {
+        var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_result) {
             if (activeHandle) {
                 renderer.addPlot(_result);
                 jqColor.on('click', 'a', function () {
-                    let colorSelected = $(this).find('span').attr('class');
+                    var colorSelected = $(this).find('span').attr('class');
                     _result.usrColor = colorSelected;
                     renderer.renderScene();
                 });
@@ -425,9 +424,9 @@ function Gui(modelData, renderer, glContext) {
         jqColorTable.off('click');
     }
     function updateAxisPosition(deltaX, deltaY, width, height) {
-        let xAxis = $('p[data-axis="x"]');
-        let yAxis = $('p[data-axis="y"]');
-        let zAxis = $('p[data-axis="z"]');
+        var xAxis = $('p[data-axis="x"]');
+        var yAxis = $('p[data-axis="y"]');
+        var zAxis = $('p[data-axis="z"]');
         xAxis.position().top = 50 + 0.7 * width + deltaY;
         xAxis.position().left = 230 + 0.2 * width + deltaX;
         alert(xAxis.position().top);

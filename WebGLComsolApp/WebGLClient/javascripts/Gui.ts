@@ -14,9 +14,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var jqColorTable = $('#colorTable');
 
     //request ModelList
-    modelData.getModelList(updateModelList);
-
-    var reset = $('#reset');
+    modelData.getModelList(updateModelList);;
 
     //Input Handler
     (function () {
@@ -130,9 +128,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         var deltaX = (newPosition.x - position.x) * 100 / width;
                         var deltaY = (newPosition.y - position.y) * 100 / height;
                         lastPosition[evt.pointerId] = newPosition;
-                        renderer.rotateObject(deltaX, deltaY);
-
-                        updateAxisPosition(deltaX, deltaY, width, height);
+                        renderer.rotateObject(deltaX, deltaY);;
                         
                     } else if (evt.button === 1 || evt.button & 1) { //middle Button => zoom
                         var position = lastPosition[evt.pointerId];
@@ -305,7 +301,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         canvas.addEventListener('pointerdown', pointerDown, false);
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
-        document.addEventListener('keydown', keydown, false);
+        //document.addEventListener('keydown', keydown, false);
         
 
         window.onresize = handleResize;
@@ -500,15 +496,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     function resetPlot() {
         jqColor.off('click');
         jqColorTable.off('click');
-    }
-
-    function updateAxisPosition(deltaX:number, deltaY:number, width:number, height:number) {
-        var xAxis = $('p[data-axis="x"]');
-        var yAxis = $('p[data-axis="y"]');
-        var zAxis = $('p[data-axis="z"]');
-        xAxis.position().top = 50 + 0.7 * width + deltaY;
-        xAxis.position().left = 230 + 0.2 * width + deltaX;
-        alert(xAxis.position().top);
     }
 }
 
