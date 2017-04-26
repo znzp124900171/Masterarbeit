@@ -43,7 +43,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var viewAngle = 45 * degToRad;
     // Pupillary distance
     var eyeSeperation: number = 0.03;
-
     // Render Items:
     // active Model, only one Model is selected at one time
     var activeModel: Model = null;
@@ -64,7 +63,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var up: Float32Array;
     //Position of the Viewer
     var eye:        Float32Array;
-    var transVec: Float32Array;
+    var transVec:   Float32Array;
 
     //3D Matrices and Quaternions
     var mvpBackground:  Float32Array;       // Model View Projection Matrix of Background
@@ -81,7 +80,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var vpFront:        Float32Array;       // View Projection Matrix of Foreground
     var mvpFront:       Float32Array;       // Model View Projection Matrix of Foreground
     var mvpColorLegend: Float32Array;       // Model View Projection Matrix of color legend
-
+    
     //Background
     var background: Background;
 
@@ -90,21 +89,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     //x,y,z Axis
     var coordSys: CoordSys;
-
-    var coordSysVertex: Float32Array = new Float32Array([0, 0, 0, 0.1, 0, 0, 0.09, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085,
-        0.09, 0.004045085, 0.0029389262, 0.09, 0.004755283, 0.001545085, 0.09, 0.005, 3.061617E-19, 0.09, 0.004755283, -0.001545085, 0.09, 0.004045085, -0.0029389262,
-        0.09, 0.0029389262, -0.004045085, 0.09, 0.001545085, -0.004755283, 0.09, 6.123234E-19, -0.005, 0.09, -0.001545085, -0.004755283, 0.09, -0.0029389262, -0.004045085,
-        0.09, -0.004045085, -0.0029389262, 0.09, -0.004755283, -0.001545085, 0.09, -0.005, -9.184851E-19, 0.09, -0.004755283, 0.001545085, 0.09, -0.004045085, 0.0029389262,
-        0.09, -0.0029389262, 0.004045085, 0.09, -0.001545085, 0.004755283, 0, 0.1, 0, 0.005, 0.09, 0.0, 0.004755283, 0.09, 0.001545085, 0.004045085, 0.09, 0.0029389262,
-        0.0029389262, 0.09, 0.004045085, 0.001545085, 0.09, 0.004755283, 3.061617E-19, 0.09, 0.005, -0.001545085, 0.09, 0.004755283, -0.0029389262, 0.09, 0.004045085,
-        -0.004045085, 0.09, 0.0029389262, -0.004755283, 0.09, 0.001545085, -0.005, 0.09, 6.123234E-19, -0.004755283, 0.09, -0.001545085, -0.004045085, 0.09, -0.0029389262,
-        -0.0029389262, 0.09, -0.004045085, -0.001545085, 0.09, -0.004755283, -9.184851E-19, 0.09, -0.005, 0.001545085, 0.09, -0.004755283, 0.0029389262, 0.09, -0.004045085,
-        0.004045085, 0.09, -0.0029389262, 0.004755283, 0.09, -0.001545085, 0, 0, 0.1, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085, 0.09,
-        0.004045085, 0.0029389262, 0.09, 0.004755283, 0.001545085, 0.09, 0.005, 3.061617E-19, 0.09, 0.004755283, -0.001545085, 0.09, 0.004045085, -0.0029389262, 0.09,
-        0.0029389262, -0.004045085, 0.09, 0.001545085, -0.004755283, 0.09, 6.123234E-19, -0.005, 0.09, -0.001545085, -0.004755283, 0.09, -0.0029389262, -0.004045085, 0.09,
-        -0.004045085, -0.0029389262, 0.09, -0.004755283, -0.001545085, 0.09, -0.005, -9.184851E-19, 0.09, -0.004755283, 0.001545085, 0.09, -0.004045085, 0.0029389262, 0.09,
-        -0.0029389262, 0.004045085, 0.09, -0.001545085, 0.004755283, 0.09
-    ]);
 
     //init constant Render Data
     initMatrices();
@@ -195,7 +179,20 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         };
 
         coordSys = {
-            vertexBuf: glc.setupArrayBuffer(coordSysVertex),
+            vertexBuf: glc.setupArrayBuffer(new Float32Array([0, 0, 0, 0.1, 0, 0, 0.09, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085,
+                0.09, 0.004045085, 0.0029389262, 0.09, 0.004755283, 0.001545085, 0.09, 0.005, 3.061617E-19, 0.09, 0.004755283, -0.001545085, 0.09, 0.004045085, -0.0029389262,
+                0.09, 0.0029389262, -0.004045085, 0.09, 0.001545085, -0.004755283, 0.09, 6.123234E-19, -0.005, 0.09, -0.001545085, -0.004755283, 0.09, -0.0029389262, -0.004045085,
+                0.09, -0.004045085, -0.0029389262, 0.09, -0.004755283, -0.001545085, 0.09, -0.005, -9.184851E-19, 0.09, -0.004755283, 0.001545085, 0.09, -0.004045085, 0.0029389262,
+                0.09, -0.0029389262, 0.004045085, 0.09, -0.001545085, 0.004755283, 0, 0.1, 0, 0.005, 0.09, 0.0, 0.004755283, 0.09, 0.001545085, 0.004045085, 0.09, 0.0029389262,
+                0.0029389262, 0.09, 0.004045085, 0.001545085, 0.09, 0.004755283, 3.061617E-19, 0.09, 0.005, -0.001545085, 0.09, 0.004755283, -0.0029389262, 0.09, 0.004045085,
+                -0.004045085, 0.09, 0.0029389262, -0.004755283, 0.09, 0.001545085, -0.005, 0.09, 6.123234E-19, -0.004755283, 0.09, -0.001545085, -0.004045085, 0.09, -0.0029389262,
+                -0.0029389262, 0.09, -0.004045085, -0.001545085, 0.09, -0.004755283, -9.184851E-19, 0.09, -0.005, 0.001545085, 0.09, -0.004755283, 0.0029389262, 0.09, -0.004045085,
+                0.004045085, 0.09, -0.0029389262, 0.004755283, 0.09, -0.001545085, 0, 0, 0.1, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085, 0.09,
+                0.004045085, 0.0029389262, 0.09, 0.004755283, 0.001545085, 0.09, 0.005, 3.061617E-19, 0.09, 0.004755283, -0.001545085, 0.09, 0.004045085, -0.0029389262, 0.09,
+                0.0029389262, -0.004045085, 0.09, 0.001545085, -0.004755283, 0.09, 6.123234E-19, -0.005, 0.09, -0.001545085, -0.004755283, 0.09, -0.0029389262, -0.004045085, 0.09,
+                -0.004045085, -0.0029389262, 0.09, -0.004755283, -0.001545085, 0.09, -0.005, -9.184851E-19, 0.09, -0.004755283, 0.001545085, 0.09, -0.004045085, 0.0029389262, 0.09,
+                -0.0029389262, 0.004045085, 0.09, -0.001545085, 0.004755283, 0.09
+            ])),
             idxBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 0, 22, 0, 43, 2, 3, 4, 2, 4, 5, 2, 5, 6, 2, 6, 7, 2, 7, 8, 2, 8, 9, 2, 9, 10, 2, 10, 11, 2, 11, 12, 2, 12, 13, 2, 13,
                 14, 2, 14, 15, 2, 15, 16, 2, 16, 17, 2, 17, 18, 2, 18, 19, 2, 19, 20, 2, 20, 21, 2, 1, 3, 3, 1, 4, 4, 1, 5, 5, 1, 6, 6, 1, 7, 7, 1, 8, 8, 1, 9, 9, 1, 10, 10, 1, 11, 11,
                 1, 12, 12, 1, 13, 13, 1, 14, 14, 1, 15, 15, 1, 16, 16, 1, 17, 17, 1, 18, 18, 1, 19, 19, 1, 20, 20, 1, 21, 21, 1, 2, 23, 24, 25, 23, 25, 26, 23, 26, 27, 23, 27, 28, 23,
@@ -379,7 +376,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     //sets the seperation distance (pupillary distance) of plots in two viewports
-    this.setSeperation = function (seperation:number) {
+    this.setSeperation = function (seperation: number) {
         eyeSeperation = seperation;
         drawCallRequest = true;
     }
@@ -454,7 +451,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.identity(vpFront);
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
         mat4.multiply(vpFront, pScene, vpFront);
-
 
         drawCallRequest = true;
     }
@@ -992,11 +988,12 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.uniform3fv(programs[1].uniforms[GL_UNI_COL], [0.0, 1.0, 0.0]);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, coordSys.idxBuf);
         gl.drawElements(gl.TRIANGLES, 114, gl.UNSIGNED_SHORT, 12);
+
         gl.uniform3fv(programs[1].uniforms[GL_UNI_COL], [0.0, 0.0, 1.0]);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, coordSys.idxBuf);
         gl.drawElements(gl.TRIANGLES, 114, gl.UNSIGNED_SHORT, 240);
 
-        gl.uniform3fv(programs[1].uniforms[GL_UNI_COL], [1, 0.0, 0.0]);
+        gl.uniform3fv(programs[1].uniforms[GL_UNI_COL], [1.0, 0.0, 0.0]);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, coordSys.idxBuf);
         gl.drawElements(gl.TRIANGLES, 114, gl.UNSIGNED_SHORT, 468);
         }
@@ -1010,8 +1007,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
         //Setup the seperation distance in two viewports,
         if (seperation) {
-            var xOld = transVec[0];
-            var xNew = xOld + seperation;
+            let xOld = transVec[0];
+            let xNew = xOld + seperation;
             transVec[0] = xNew;
         }
         mat4.translate(mScene, mScene, transVec);   //Translate according to the user (first rotate then translate)

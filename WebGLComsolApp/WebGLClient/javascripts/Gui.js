@@ -8,14 +8,14 @@ function Gui(modelData, renderer, glContext) {
     var jqColor = $('#color');
     var jqColorTable = $('#colorTable');
     modelData.getModelList(updateModelList);
-    ;
+    var reset = $('#reset');
     (function () {
         var fullScreenButton = $('#fullScreen');
         var lightButton = $('#light');
         var resetButton = $('#reset');
         var vrButton = $('#vr');
-        var navHeader = $('header');
-        var navSidebar = $('aside');
+        let navHeader = $('header');
+        let navSidebar = $('aside');
         var width;
         var height;
         var pointerMoved = false;
@@ -23,7 +23,6 @@ function Gui(modelData, renderer, glContext) {
         var pointerTwo = null;
         var pointerSpecial = null;
         var lastPosition = {};
-        var keydown = null;
         var pointerDown;
         var pointerUp;
         var pointerMove;
@@ -106,7 +105,6 @@ function Gui(modelData, renderer, glContext) {
                         var deltaY = (newPosition.y - position.y) * 100 / height;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.rotateObject(deltaX, deltaY);
-                        updateAxisPosition(deltaX, deltaY, width, height);
                     }
                     else if (evt.button === 1 || evt.button & 1) {
                         var position = lastPosition[evt.pointerId];
@@ -138,32 +136,6 @@ function Gui(modelData, renderer, glContext) {
                 pointerTwo = null;
             }
         };
-        console.log(canvas.getBoundingClientRect().width);
-        keydown = function (evt) {
-            if (evt.preventDefault) {
-                evt.preventDefault();
-            }
-            if (renderer.getSeperation() > 0.01) {
-                switch (evt.keyCode) {
-                    case 37:
-                        renderer.setSeperation(renderer.getSeperation() - 0.01);
-                        break;
-                    case 39:
-                        renderer.setSeperation(renderer.getSeperation() + 0.01);
-                        break;
-                    case 38:
-                        renderer.setZPosition(renderer.getPosition()[2] + 0.2);
-                        break;
-                    case 40:
-                        renderer.setZPosition(renderer.getPosition()[2] - 0.2);
-                        break;
-                }
-            }
-            else {
-                renderer.setSeperation(renderer.getSeperation() + 0.01);
-                alert('values are beyond the bondary');
-            }
-        };
         handleMouseWheel = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
@@ -191,7 +163,6 @@ function Gui(modelData, renderer, glContext) {
                 canvas.height = height - navHeader.outerHeight();
                 renderer.resizeCanvas(canvas.width, canvas.height);
             }
-            console.log(canvas.getBoundingClientRect().width);
         };
         handleRangeX = function (evt) {
             var eyeX = parseFloat(evt.currentTarget.value);
@@ -228,7 +199,7 @@ function Gui(modelData, renderer, glContext) {
             renderer.resetView();
         };
         toggleLight = function () {
-            var lightOn = renderer.toggleLight();
+            let lightOn = renderer.toggleLight();
         };
         toggleVR = function () {
             vrOn = renderer.toggleVR();
@@ -261,8 +232,8 @@ function Gui(modelData, renderer, glContext) {
         lightButton.click(toggleLight);
         vrButton.click(toggleVR);
         document.onkeypress = function (event) {
-            var isEscape = false;
-            var docElement, request;
+            let isEscape = false;
+            let docElement, request;
             if ('key' in event) {
                 isEscape = (event.key == "Escape" || event.key == "Esc");
             }
@@ -422,13 +393,5 @@ function Gui(modelData, renderer, glContext) {
     function resetPlot() {
         jqColor.off('click');
         jqColorTable.off('click');
-    }
-    function updateAxisPosition(deltaX, deltaY, width, height) {
-        var xAxis = $('p[data-axis="x"]');
-        var yAxis = $('p[data-axis="y"]');
-        var zAxis = $('p[data-axis="z"]');
-        xAxis.position().top = 50 + 0.7 * width + deltaY;
-        xAxis.position().left = 230 + 0.2 * width + deltaX;
-        alert(xAxis.position().top);
     }
 }

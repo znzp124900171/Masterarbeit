@@ -137,7 +137,7 @@ function _init() {
      */
     $.GUI.layout = {
         activate: function () {
-            var _this = this;
+            let _this = this;
             _this.fix();
             //_this.fixSidebar();
             _this.fixControlSidebar();
@@ -149,10 +149,10 @@ function _init() {
         },
         fix: function () {
             //Get window height and the wrapper height
-            var footer_height = $('.main-footer').outerHeight() || 0;
-            var neg = $('.main-header').outerHeight() + footer_height;
-            var window_height = $(window).height();
-            var sidebar_height = $(".sidebar").height() || 0;
+            let footer_height = $('.main-footer').outerHeight() || 0;
+            let neg = $('.main-header').outerHeight() + footer_height;
+            let window_height = $(window).height();
+            let sidebar_height = $(".sidebar").height() || 0;
             
             //Set the content height
             $(".content-wrapper").css('height', window_height - neg);
@@ -349,13 +349,13 @@ function _init() {
         //instantiate the object
         activate: function () {
             //Get the object
-            var _this = this;
+            let _this = this;
             //Update options
-            var o = $.GUI.options.controlSidebarOptions;
+            let o = $.GUI.options.controlSidebarOptions;
             //Get the sidebar
-            var sidebar = $(o.selector);
+            let sidebar = $(o.selector);
             //The toggle button
-            var btn = $(o.toggleBtnSelector);
+            let btn = $(o.toggleBtnSelector);
             //Listen to the click event
             btn.on('click', function (e) {
                 e.preventDefault();
@@ -404,10 +404,10 @@ function _init() {
      */
     $.GUI.SideBySide = {
         activate: function() {
-            var header = $('.main-header');
-            var footer = $('.main-footer');
-            var leftSidebar = $('.main-sidebar');
-            var rightSidebar = $('.control-sidebar');
+            let header = $('.main-header');
+            let footer = $('.main-footer');
+            let leftSidebar = $('.main-sidebar');
+            let rightSidebar = $('.control-sidebar');
 
             header.css('display', 'none');
             footer.css('display', 'none');

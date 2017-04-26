@@ -97,8 +97,7 @@ interface Renderer {
 
     //VR feature
     getSeperation(): number;
-    setSeperation(seperation:number): void;
-
+    setSeperation(seperation: number): void;
 }
 
 interface ModelCmds {

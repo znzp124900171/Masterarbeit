@@ -14,7 +14,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var jqColorTable = $('#colorTable');
 
     //request ModelList
-    modelData.getModelList(updateModelList);;
+    modelData.getModelList(updateModelList);
+
+    var reset = $('#reset');
 
     //Input Handler
     (function () {
@@ -23,8 +25,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var resetButton = $('#reset');
         var vrButton = $('#vr');
 
-        var navHeader = $('header');
-        var navSidebar = $('aside');
+        let navHeader = $('header');
+        let navSidebar = $('aside');
 
         var width;
         var height;
@@ -34,8 +36,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var pointerTwo = null;
         var pointerSpecial = null;
         var lastPosition = {};
-
-        var keydown = null;
 
         var pointerDown;
         var pointerUp;
@@ -120,6 +120,10 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.setPositionV(renderPosi);
 
+                        //rangeX.val(renderPosi[0] * 50);
+                        //rangeX.slider('refresh');
+                        //rangeY.val(renderPosi[1] * 50);
+                        //rangeY.slider('refresh');
                     } else if ((evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 3) { //right Button => rotate
 
                         var position = lastPosition[evt.pointerId];
@@ -128,7 +132,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         var deltaX = (newPosition.x - position.x) * 100 / width;
                         var deltaY = (newPosition.y - position.y) * 100 / height;
                         lastPosition[evt.pointerId] = newPosition;
-                        renderer.rotateObject(deltaX, deltaY);;
+                        renderer.rotateObject(deltaX, deltaY);
                         
                     } else if (evt.button === 1 || evt.button & 1) { //middle Button => zoom
                         var position = lastPosition[evt.pointerId];
@@ -165,8 +169,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             }
         }
 
-        console.log(canvas.getBoundingClientRect().width);
-
         //add the keyboard control to adjust plot in fullscrene
         keydown = function (evt) {
             if (evt.preventDefault) {
@@ -192,6 +194,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 alert('values are beyond the bondary')
             }
         }
+
 
         //mouse Wheel Event => prevent default and zoom instead
         handleMouseWheel = function (evt) {
@@ -229,8 +232,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 canvas.height = height - navHeader.outerHeight();
                 renderer.resizeCanvas(canvas.width, canvas.height);
             }
-
-            console.log(canvas.getBoundingClientRect().width);
         }
         handleRangeX = function (evt) {
             var eyeX = parseFloat(evt.currentTarget.value);
@@ -270,7 +271,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             renderer.resetView();
         }
         toggleLight = function () {
-            var lightOn = renderer.toggleLight();
+            let lightOn = renderer.toggleLight();
         }
         toggleVR = function () {
             vrOn = renderer.toggleVR();
@@ -302,7 +303,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
         //document.addEventListener('keydown', keydown, false);
-        
 
         window.onresize = handleResize;
         resetButton.click(handleResetView);
@@ -312,8 +312,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         vrButton.click(toggleVR);
 
         document.onkeypress = function (event) {
-            var isEscape = false;
-            var docElement, request;
+            let isEscape = false;
+            let docElement, request;
             if ('key' in event) {
                 isEscape = (event.key == "Escape" || event.key == "Esc");
             } else {
