@@ -1,62 +1,62 @@
 ﻿/// <reference path="libs/gl-matrix.d.ts"/>
 /// <reference path="libs/jquery.d.ts"/>
 function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) {
-    let self = this;
-    let gl = glContext.getContext();
+    var self = this;
+    var gl = glContext.getContext();
 
-    let canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('webgl');
+    var canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('webgl');
 
-    let jqModelList = $("#model");
-    let jqResultList = $("#result");
-    let jqPlotList = $("#plot");
+    var jqModelList = $("#model");
+    var jqResultList = $("#result");
+    var jqPlotList = $("#plot");
 
-    let jqColor = $('#color');
-    let jqColorTable = $('#colorTable');
+    var jqColor = $('#color');
+    var jqColorTable = $('#colorTable');
 
     //request ModelList
     modelData.getModelList(updateModelList);
 
-    let reset = $('#reset');
+    var reset = $('#reset');
 
     //Input Handler
     (function () {
-        let fullScreenButton = $('#fullScreen');
-        let lightButton = $('#light');
-        let resetButton = $('#reset');
-        let vrButton = $('#vr');
+        var fullScreenButton = $('#fullScreen');
+        var lightButton = $('#light');
+        var resetButton = $('#reset');
+        var vrButton = $('#vr');
 
-        let navHeader = $('header');
-        let navSidebar = $('aside');
+        var navHeader = $('header');
+        var navSidebar = $('aside');
 
-        let width;
-        let height;
+        var width;
+        var height;
 
-        let pointerMoved = false;
-        let pointerOne = null;
-        let pointerTwo = null;
-        let pointerSpecial = null;
-        let lastPosition = {};
+        var pointerMoved = false;
+        var pointerOne = null;
+        var pointerTwo = null;
+        var pointerSpecial = null;
+        var lastPosition = {};
 
-        let keydown = null;
+        var keydown = null;
 
-        let pointerDown;
-        let pointerUp;
-        let pointerMove;
-        let pointerLeave;
+        var pointerDown;
+        var pointerUp;
+        var pointerMove;
+        var pointerLeave;
 
-        let handleMouseWheel;
-        let handleResize;
-        let handleRangeX;
-        let handleRangeY;
-        let handleRangeZ;
+        var handleMouseWheel;
+        var handleResize;
+        var handleRangeX;
+        var handleRangeY;
+        var handleRangeZ;
 
-        let vrOn = false;
+        var vrOn = false;
 
-        let toggleFullScreen;
-        let handleFullScreenChange;
-        let handleResetView;
-        let toggleLight;
-        let toggleVR;
+        var toggleFullScreen;
+        var handleFullScreenChange;
+        var handleResetView;
+        var toggleLight;
+        var toggleVR;
 
         pointerDown = function (evt) {
             if (evt.preventDefault) {
@@ -79,9 +79,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         pointerMove = function (evt) {
             if (pointerOne) {   //first Pointer
                 if (pointerTwo) {   //first and second Pointer => pitch
-                    let firstPosition, secondPosition;
-                    let newPosition = { x: evt.clientX, y: evt.clientY };
-                    let enableRotate: boolean = false;
+                    var firstPosition, secondPosition;
+                    var newPosition = { x: evt.clientX, y: evt.clientY };
+                    var enableRotate: boolean = false;
 
                     if (evt.pointerId === pointerOne) {
                         firstPosition = lastPosition[pointerOne]
@@ -94,15 +94,15 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                     } else {
                         return;
                     }
-                    let difX = firstPosition.x - secondPosition.x;
-                    let difY = firstPosition.y - secondPosition.y;
-                    let lastDist = Math.sqrt(difX * difX + difY * difY);
+                    var difX = firstPosition.x - secondPosition.x;
+                    var difY = firstPosition.y - secondPosition.y;
+                    var lastDist = Math.sqrt(difX * difX + difY * difY);
 
                     difX = newPosition.x - secondPosition.x;
                     difY = newPosition.y - secondPosition.y;
-                    let newDist = Math.sqrt(difX * difX + difY * difY);
+                    var newDist = Math.sqrt(difX * difX + difY * difY);
 
-                    let zVal = renderer.getPosition()[2];
+                    var zVal = renderer.getPosition()[2];
                     zVal += (lastDist - newDist) * 0.05;
                     //rangeZ.val(zVal * 50);
                     //rangeZ.slider('refresh');
@@ -110,13 +110,13 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
                 } else {    //only first Pointer
                     if (evt.button === 0 || evt.buttons & 1 || (evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 2) { //left Button  => move
-                        let oldPosition = lastPosition[evt.pointerId];
-                        let newPosition = { x: evt.clientX, y: evt.clientY };
+                        var oldPosition = lastPosition[evt.pointerId];
+                        var newPosition = { x: evt.clientX, y: evt.clientY };
 
-                        let renderPosi = renderer.getPosition();
+                        var renderPosi = renderer.getPosition();
 
-                        let deltaX = (oldPosition.x - newPosition.x) * -1 / width;
-                        let deltaY = (oldPosition.y - newPosition.y) / width;
+                        var deltaX = (oldPosition.x - newPosition.x) * -1 / width;
+                        var deltaY = (oldPosition.y - newPosition.y) / width;
                         renderPosi[0] += deltaX;
                         renderPosi[1] += deltaY;
                         lastPosition[evt.pointerId] = newPosition;
@@ -124,22 +124,22 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
                     } else if ((evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 3) { //right Button => rotate
 
-                        let position = lastPosition[evt.pointerId];
-                        let newPosition = { x: evt.clientX, y: evt.clientY };
+                        var position = lastPosition[evt.pointerId];
+                        var newPosition = { x: evt.clientX, y: evt.clientY };
 
-                        let deltaX = (newPosition.x - position.x) * 100 / width;
-                        let deltaY = (newPosition.y - position.y) * 100 / height;
+                        var deltaX = (newPosition.x - position.x) * 100 / width;
+                        var deltaY = (newPosition.y - position.y) * 100 / height;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.rotateObject(deltaX, deltaY);
 
                         updateAxisPosition(deltaX, deltaY, width, height);
                         
                     } else if (evt.button === 1 || evt.button & 1) { //middle Button => zoom
-                        let position = lastPosition[evt.pointerId];
-                        let newPosition = { x: evt.clientX, y: evt.clientY };
+                        var position = lastPosition[evt.pointerId];
+                        var newPosition = { x: evt.clientX, y: evt.clientY };
 
-                        let deltaX = (newPosition.x - position.x) * -1 / width;
-                        let deltaY = (newPosition.y - position.y) / width;
+                        var deltaX = (newPosition.x - position.x) * -1 / width;
+                        var deltaY = (newPosition.y - position.y) / width;
 
                         if (Math.abs(deltaX) > Math.abs(deltaY)) {
                             var dist = deltaX;
@@ -147,7 +147,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                             var dist = deltaY;
                         }
 
-                        let eyeZ = renderer.getPosition()[2];
+                        var eyeZ = renderer.getPosition()[2];
                         eyeZ = Math.log(-eyeZ + 1) * 50
                         eyeZ += dist;
                         //rangeZ.val(eyeZ);
@@ -202,9 +202,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             if (evt.preventDefault) {
                 evt.preventDefault();
             }
-            let delta = evt.detail ? evt.detail * (-120) : evt.wheelDelta; // rotation degree of Mousewheel
+            var delta = evt.detail ? evt.detail * (-120) : evt.wheelDelta; // rotation degree of Mousewheel
 
-            let eyeZ = renderer.getPosition()[2];
+            var eyeZ = renderer.getPosition()[2];
             eyeZ = Math.log(-eyeZ + 1) * 50
             eyeZ += delta / 120;
             //rangeZ.val(eyeZ);
@@ -237,21 +237,21 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             console.log(canvas.getBoundingClientRect().width);
         }
         handleRangeX = function (evt) {
-            let eyeX = parseFloat(evt.currentTarget.value);
+            var eyeX = parseFloat(evt.currentTarget.value);
             renderer.setXPosition(eyeX/50);
         };
         handleRangeY = function (evt) {
-            let eyeY = parseFloat(evt.currentTarget.value);
+            var eyeY = parseFloat(evt.currentTarget.value);
             renderer.setYPosition(eyeY/50);
         };
         handleRangeZ = function (evt) {
-            let eyeZ = parseFloat(evt.currentTarget.value);
+            var eyeZ = parseFloat(evt.currentTarget.value);
             eyeZ = - Math.exp(eyeZ/50) + 1;
             renderer.setZPosition(eyeZ);
         };
 
         toggleFullScreen = function () {
-            let docElement, request;
+            var docElement, request;
             if (((<any>document).fullScreenElement && (<any>document).fullScreenElement !== null) ||            // cast it to any, so Typescript don't throw an exception
                 (!(<any>document).mozFullScreen && !(<any>document).webkitIsFullScreen)) {
 
@@ -274,7 +274,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             renderer.resetView();
         }
         toggleLight = function () {
-            let lightOn = renderer.toggleLight();
+            var lightOn = renderer.toggleLight();
         }
         toggleVR = function () {
             vrOn = renderer.toggleVR();
@@ -298,7 +298,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             e.preventDefault(); //no Context menu in webGL
         }, false);
 
-        let mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel";
+        var mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel";
 
         document.addEventListener(mousewheelevt, handleMouseWheel, false);
         document.addEventListener('pointerleave', pointerLeave, false);
@@ -316,8 +316,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         vrButton.click(toggleVR);
 
         document.onkeypress = function (event) {
-            let isEscape = false;
-            let docElement, request;
+            var isEscape = false;
+            var docElement, request;
             if ('key' in event) {
                 isEscape = (event.key == "Escape" || event.key == "Esc");
             } else {
@@ -334,8 +334,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
     //change Model
     jqModelList.on('click', 'a.active', function () {
-        let newModelID = $(this).attr('data-model');
-        let oldModelID = renderer.getActiveModelId(); //get old Model Id from Renderer
+        var newModelID = $(this).attr('data-model');
+        var oldModelID = renderer.getActiveModelId(); //get old Model Id from Renderer
         if (newModelID !== oldModelID) {    //if id changed
             renderer.setActiveModelById(newModelID, function () {       //reset the rendering scene, and request Model from server if not exists
                 console.log("New modelId: " + newModelID);
@@ -346,13 +346,13 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
     // change PlotGroup
     jqResultList.on('click', 'a.active', function () {
-        let newPlotGroupID = $(this).attr('data-result');
-        let oldPlotGroupID = renderer.getActivePlotGroupId();   //get old PlotGroup Id from Renderer
+        var newPlotGroupID = $(this).attr('data-result');
+        var oldPlotGroupID = renderer.getActivePlotGroupId();   //get old PlotGroup Id from Renderer
         if (newPlotGroupID !== oldPlotGroupID) {                //if id changed
             //reset view matrix at first
             renderer.resetView();
             renderer.setActivePlotGroupById(newPlotGroupID, function () {       //resets the current PlotGroup, and request PlotGroup Data from server
-                let modelID = renderer.getActiveModelId();
+                var modelID = renderer.getActiveModelId();
                 console.log("modelId: " + modelID + " \nNew plotGroupId: " + newPlotGroupID);
                 modelData.getPlotMap(modelID, newPlotGroupID, updatePlotList);
             });
@@ -366,14 +366,14 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     setTextures(glContext.getTextureName());
 
     function setColors(colorList: string[]) {
-        let jqColorList = $('#color');
+        var jqColorList = $('#color');
         //add the responding color classes
-        for (let i in colorList) {
-            let li = $('<li></li>');
-            let a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
-            let span = $('<span></span>');
-            let div = $('<div></div>');
-            let p = $('<p class="text-center no-margin"></p>');
+        for (var i in colorList) {
+            var li = $('<li></li>');
+            var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
+            var span = $('<span></span>');
+            var div = $('<div></div>');
+            var p = $('<p class="text-center no-margin"></p>');
 
             span.removeClass();
             if (colorList[i] === 'dark green') {
@@ -397,15 +397,15 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     }
 
     function setTextures(colTable: string[]) {
-        let jqColorTableList = $('#colorTable');
+        var jqColorTableList = $('#colorTable');
 
         //add the responding color classes
-        for (let i in colTable) {
-            let li = $('<li></li>');
-            let a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
-            let span = $('<span></span>');
-            let div = $('<div></div>');
-            let p = $('<p class="text-center no-margin"></p>');
+        for (var i in colTable) {
+            var li = $('<li></li>');
+            var a = $('<a href="javascript:void(0);" data-skin="skin-blue" class="full-opacity-hover"></a>');
+            var span = $('<span></span>');
+            var div = $('<div></div>');
+            var p = $('<p class="text-center no-margin"></p>');
 
             span.removeClass();
             span.addClass(colTable[i]);
@@ -422,9 +422,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     function updateModelList(modelList: { modelId: string; name: string }[]): void {
         removeAllPlots();
         jqModelList.find('.treeview-menu').children().filter('li').remove();
-        for (let i in modelList) {
-            let list = $('<li></li>');
-            let selectItem = $('<a></a>');
+        for (var i in modelList) {
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
             selectItem.attr('href', '#');
             selectItem.attr('data-model', modelList[i].modelId);
             selectItem.text(modelList[i].name);
@@ -438,9 +438,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     function updatePlotGroupList(plotGroupList: { name: string; id: string }[]): void {
         removeAllPlots();
         jqResultList.find('.treeview-menu').children().remove('li');
-        for (let i in plotGroupList) {
-            let list = $('<li></li>');
-            let selectItem = $('<a></a>');
+        for (var i in plotGroupList) {
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
             selectItem.attr('href', '#');
             selectItem.attr('data-result', plotGroupList[i].id);
             selectItem.text(plotGroupList[i].name);
@@ -459,8 +459,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         removeAllPlots();
         jqPlotList.find('.treeview-menu').children().remove('li');
         plotList.forEach(function (plot) {
-            let list = $('<li></li>');
-            let selectItem = $('<a></a>');
+            var list = $('<li></li>');
+            var selectItem = $('<a></a>');
             selectItem.attr('href', '#');
             selectItem.attr('data-plot', plot.id);
             selectItem.text(plot.name);
@@ -474,15 +474,15 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
     function setPlot(plotTag: string, activeHandle: boolean) {
         resetPlot();
-        let modelId = renderer.getActiveModelId();
-        let plotGroupId = renderer.getActivePlotGroupId();
+        var modelId = renderer.getActiveModelId();
+        var plotGroupId = renderer.getActivePlotGroupId();
         console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
-        let result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_result: Result) {
+        var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_result: Result) {
             if (activeHandle) {
                 renderer.addPlot(_result);
                 // if color selected
                 jqColor.on('click','a', function () {
-                    let colorSelected = $(this).find('span').attr('class');
+                    var colorSelected = $(this).find('span').attr('class');
                     _result.usrColor = colorSelected;
                     renderer.renderScene();
                 });
@@ -503,9 +503,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     }
 
     function updateAxisPosition(deltaX:number, deltaY:number, width:number, height:number) {
-        let xAxis = $('p[data-axis="x"]');
-        let yAxis = $('p[data-axis="y"]');
-        let zAxis = $('p[data-axis="z"]');
+        var xAxis = $('p[data-axis="x"]');
+        var yAxis = $('p[data-axis="y"]');
+        var zAxis = $('p[data-axis="z"]');
         xAxis.position().top = 50 + 0.7 * width + deltaY;
         xAxis.position().left = 230 + 0.2 * width + deltaX;
         alert(xAxis.position().top);

@@ -2,22 +2,22 @@
 /// <refernce path="libs/jquery.d.ts"/>
 
 
-let GL_UNI_MVP = "mvpMatrix";
-let GL_UNI_MV = "mvMatrix";
-let GL_UNI_P = "pMatrix";
-let GL_UNI_NORM = "normMatrix";
-let GL_UNI_COL = "color";
-let GL_UNI_LIG = "lightPosition";
-let GL_UNI_SCL = "scale";
-let GL_UNI_TEX = "texSampler";
+var GL_UNI_MVP = "mvpMatrix";
+var GL_UNI_MV = "mvMatrix";
+var GL_UNI_P = "pMatrix";
+var GL_UNI_NORM = "normMatrix";
+var GL_UNI_COL = "color";
+var GL_UNI_LIG = "lightPosition";
+var GL_UNI_SCL = "scale";
+var GL_UNI_TEX = "texSampler";
 
-let GL_ATTR_VTX = "vertex";
-let GL_ATTR_POS = "position";
-let GL_ATTR_NRM = "normal";
-let GL_ATTR_COL = "color";
-let GL_ATTR_DEF_X = "deformX";
-let GL_ATTR_DEF_Y = "deformY";
-let GL_ATTR_DEF_Z = "deformZ";
+var GL_ATTR_VTX = "vertex";
+var GL_ATTR_POS = "position";
+var GL_ATTR_NRM = "normal";
+var GL_ATTR_COL = "color";
+var GL_ATTR_DEF_X = "deformX";
+var GL_ATTR_DEF_Y = "deformY";
+var GL_ATTR_DEF_Z = "deformZ";
 
 class ShaderProgram {
     id: number;
@@ -62,12 +62,12 @@ interface Web3DContext {
 }
 
 function Web3DContext(canvas: HTMLElement) {
-    let shaders: Shader[];
-    let colorList: Color[];
-    let colorTables: ColorTables[];
-    let programs: ShaderProgram[];
-    let textures: WebGLTexture[];
-    let gl: WebGLRenderingContext;
+    var shaders: Shader[];
+    var colorList: Color[];
+    var colorTables: ColorTables[];
+    var programs: ShaderProgram[];
+    var textures: WebGLTexture[];
+    var gl: WebGLRenderingContext;
 
     gl = create3DContext(canvas, null);
     if (!gl) {
@@ -79,9 +79,9 @@ function Web3DContext(canvas: HTMLElement) {
     textures = initTextures();
 
     function create3DContext(canvas, opt_attribs) {
-        let names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
-        let context = null;
-        for (let ii = 0; ii < names.length; ++ii) {
+        var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
+        var context = null;
+        for (var ii = 0; ii < names.length; ++ii) {
             try {
                 context = canvas.getContext(names[ii], opt_attribs);
             } catch (e) { }
@@ -646,16 +646,16 @@ function Web3DContext(canvas: HTMLElement) {
     }
 
     function initShaders(): ShaderProgram[] {
-        let shaderPrograms: ShaderProgram[] = [];
-        let vxShader, pxShader;
+        var shaderPrograms: ShaderProgram[] = [];
+        var vxShader, pxShader;
 
-        for (let i = 0; i < shaders.length; i++) {
-            let program: ShaderProgram = new ShaderProgram();
+        for (var i = 0; i < shaders.length; i++) {
+            var program: ShaderProgram = new ShaderProgram();
 
             program.gl = gl.createProgram();
             program.attributes = [];
             program.uniforms = [];
-            let programId = shaders[i].id;
+            var programId = shaders[i].id;
                 
             vxShader = gl.createShader(gl.VERTEX_SHADER);           //create Vertex Shader
             gl.shaderSource(vxShader, shaders[i].vxProgram);        //get Shader Program
@@ -681,17 +681,17 @@ function Web3DContext(canvas: HTMLElement) {
                 handleError({ name: "Shader Program Linking", message: "Error while linking Shader: " + shaders[i].name + ":\t" + gl.getProgramInfoLog(program.gl) });
             }
 
-            for (let j = 0; j < shaders[i].attributes.length; j++) {
-                let attrName = shaders[i].attributes[j];
-                let attr = gl.getAttribLocation(program.gl, attrName);
+            for (var j = 0; j < shaders[i].attributes.length; j++) {
+                var attrName = shaders[i].attributes[j];
+                var attr = gl.getAttribLocation(program.gl, attrName);
                 if (attr === -1) {
                     handleError({ name: "Shader Attribute", message: "Error Attribute: " + attrName + " not found." });
                 }
                 program.attributes[attrName] = attr;
             }
-            for (let j = 0; j < shaders[i].uniforms.length; j++) {
-                let uniName = shaders[i].uniforms[j];
-                let uni = gl.getUniformLocation(program.gl, uniName);
+            for (var j = 0; j < shaders[i].uniforms.length; j++) {
+                var uniName = shaders[i].uniforms[j];
+                var uni = gl.getUniformLocation(program.gl, uniName);
                 if (uni === -1) {
                     handleError({ name: "Shader Program Linking", message: "Error Uniform: " + uniName + " not found." });
                 }
@@ -705,9 +705,9 @@ function Web3DContext(canvas: HTMLElement) {
     }
     function initTextures(): WebGLTexture[] {
 
-        let texArray = [];
+        var texArray = [];
 
-        for (let i = 0; i < colorTables.length; i++) {
+        for (var i = 0; i < colorTables.length; i++) {
             texArray[i] = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, texArray[i]);     //bind Texture Buffer 
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, colorTables[i].size, 1, 0, gl.RGB, gl.UNSIGNED_BYTE, colorTables[i].tex); 
@@ -723,7 +723,7 @@ function Web3DContext(canvas: HTMLElement) {
     }
 
     this.setupArrayBuffer = function (binFloatArray): WebGLBuffer {
-        let tmpBuf = gl.createBuffer();
+        var tmpBuf = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, tmpBuf);
         gl.bufferData(gl.ARRAY_BUFFER, binFloatArray, gl.STATIC_DRAW);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -731,7 +731,7 @@ function Web3DContext(canvas: HTMLElement) {
     };
 
     this.setupElementBuffer = function (binShortArray): WebGLBuffer {
-        let tmpBuf = gl.createBuffer();
+        var tmpBuf = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, tmpBuf);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, binShortArray, gl.STATIC_DRAW);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
@@ -751,23 +751,23 @@ function Web3DContext(canvas: HTMLElement) {
     }
 
     this.getTextureName = function (): string[] {
-        let names : string[] = [];
-        for (let i = 0; i < colorTables.length; i++) {
+        var names : string[] = [];
+        for (var i = 0; i < colorTables.length; i++) {
             names.push(colorTables[i].name);
         }
         return names;
     }
 
     this.getColorNames = function (): string[]  {
-        let names: string[] = [];
-        for (let i = 0; i < colorList.length; i++) {
+        var names: string[] = [];
+        for (var i = 0; i < colorList.length; i++) {
             names.push(colorList[i].name);
         }
         return names;
     }
 
     this.getColorByName = function(name: string): number[] {
-        for (let i = 0; i < colorList.length; i++) {
+        for (var i = 0; i < colorList.length; i++) {
             if (colorList[i].name === name) {
                 return colorList[i].value;
             }
@@ -775,7 +775,7 @@ function Web3DContext(canvas: HTMLElement) {
     }
 
     this.getTextureByName = function (name: string): WebGLTexture {
-        for (let i = 0; i < colorTables.length; i++) {
+        for (var i = 0; i < colorTables.length; i++) {
             if (colorTables[i].name === name) {
                 return textures[i];
             }

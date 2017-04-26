@@ -10,7 +10,7 @@
   $.fn.extend({
     slimScroll: function(options) {
 
-      let defaults = {
+      var defaults = {
 
         // width in pixels of the visible scroll area
         width : 'auto',
@@ -79,25 +79,25 @@
         railBorderRadius : '7px'
       };
 
-      let o = $.extend(defaults, options);
+      var o = $.extend(defaults, options);
 
       // do it for every element that matches selector
       this.each(function(){
 
-      let isOverPanel, isOverBar, isDragg, queueHide, touchDif,
+      var isOverPanel, isOverBar, isDragg, queueHide, touchDif,
         barHeight, percentScroll, lastScroll,
         divS = '<div></div>',
         minBarHeight = 30,
         releaseScroll = false;
 
         // used in event handlers and for better minification
-        let me = $(this);
+        var me = $(this);
 
         // ensure we are not binding it again
         if (me.parent().hasClass(o.wrapperClass))
         {
             // start from last bar position
-            let offset = me.scrollTop();
+            var offset = me.scrollTop();
 
             // find bar and rail
             bar = me.siblings('.' + o.barClass);
@@ -112,11 +112,11 @@
               if ( 'height' in options && options.height == 'auto' ) {
                 me.parent().css('height', 'auto');
                 me.css('height', 'auto');
-                let height = me.parent().parent().height();
+                var height = me.parent().parent().height();
                 me.parent().css('height', height);
                 me.css('height', height);
               } else if ('height' in options) {
-                let h = options.height;
+                var h = options.height;
                 me.parent().css('height', h);
                 me.css('height', h);
               }
@@ -158,7 +158,7 @@
         o.height = (o.height == 'auto') ? me.parent().height() : o.height;
 
         // wrap content
-        let wrapper = $(divS)
+        var wrapper = $(divS)
           .addClass(o.wrapperClass)
           .css({
             position: 'relative',
@@ -175,7 +175,7 @@
         });
 
         // create scrollbar rail
-        let rail = $(divS)
+        var rail = $(divS)
           .addClass(o.railClass)
           .css({
             width: o.size,
@@ -190,7 +190,7 @@
           });
 
         // create scrollbar
-        let bar = $(divS)
+        var bar = $(divS)
           .addClass(o.barClass)
           .css({
             background: o.color,
@@ -207,7 +207,7 @@
           });
 
         // set position
-        let posCss = (o.position == 'right') ? { right: o.distance } : { left: o.distance };
+        var posCss = (o.position == 'right') ? { right: o.distance } : { left: o.distance };
         rail.css(posCss);
         bar.css(posCss);
 
@@ -221,7 +221,7 @@
         // make it draggable and no longer dependent on the jqueryUI
         if (o.railDraggable){
           bar.bind("mousedown", function(e) {
-            let $doc = $(document);
+            var $doc = $(document);
             isDragg = true;
             t = parseFloat(bar.css('top'));
             pageY = e.pageY;
@@ -286,7 +286,7 @@
           if (e.originalEvent.touches.length)
           {
             // see how far user swiped
-            let diff = (touchDif - e.originalEvent.touches[0].pageY) / o.touchScrollStep;
+            var diff = (touchDif - e.originalEvent.touches[0].pageY) / o.touchScrollStep;
             // scroll content
             scrollContent(diff, true);
             touchDif = e.originalEvent.touches[0].pageY;
@@ -320,13 +320,13 @@
           // use mouse wheel only when mouse is over
           if (!isOverPanel) { return; }
 
-          let e = e || window.event;
+          var e = e || window.event;
 
-          let delta = 0;
+          var delta = 0;
           if (e.wheelDelta) { delta = -e.wheelDelta/120; }
           if (e.detail) { delta = e.detail / 3; }
 
-          let target = e.target || e.srcTarget || e.srcElement;
+          var target = e.target || e.srcTarget || e.srcElement;
           if ($(target).closest('.' + o.wrapperClass).is(me.parent())) {
             // scroll content
             scrollContent(delta, true);
@@ -340,8 +340,8 @@
         function scrollContent(y, isWheel, isJump)
         {
           releaseScroll = false;
-          let delta = y;
-          let maxTop = me.outerHeight() - bar.outerHeight();
+          var delta = y;
+          var maxTop = me.outerHeight() - bar.outerHeight();
 
           if (isWheel)
           {
@@ -368,7 +368,7 @@
           if (isJump)
           {
             delta = y;
-            let offsetTop = delta / me[0].scrollHeight * me.outerHeight();
+            var offsetTop = delta / me[0].scrollHeight * me.outerHeight();
             offsetTop = Math.min(Math.max(offsetTop, 0), maxTop);
             bar.css({ top: offsetTop + 'px' });
           }
@@ -406,7 +406,7 @@
           bar.css({ height: barHeight + 'px' });
 
           // hide scrollbar if content is not long enough
-          let display = barHeight == me.outerHeight() ? 'none' : 'block';
+          var display = barHeight == me.outerHeight() ? 'none' : 'block';
           bar.css({ display: display });
         }
 
@@ -425,7 +425,7 @@
             // publish approporiate event
             if (lastScroll != percentScroll)
             {
-                let msg = (~~percentScroll == 0) ? 'top' : 'bottom';
+                var msg = (~~percentScroll == 0) ? 'top' : 'bottom';
                 me.trigger('slimscroll', msg);
             }
           }

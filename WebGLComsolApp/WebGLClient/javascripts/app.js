@@ -73,7 +73,7 @@ $(function () {
         $.extend(true, $.GUI.options, GUIOptions);
     }
     //Easy access to options
-    let o = $.GUI.options;
+    var o = $.GUI.options;
     //Set up the object
     _init();
     //Activate the layout maker
@@ -111,7 +111,7 @@ $(function () {
      * ------------------------
      */
     $('.btn-group[data-toggle="btn-toggle"]').each(function () {
-        let group = $(this);
+        var group = $(this);
         $(this).find(".btn").on('click', function (e) {
             group.find(".btn.active").removeClass("active");
             $(this).addClass("active");
@@ -137,7 +137,7 @@ function _init() {
      */
     $.GUI.layout = {
         activate: function () {
-            let _this = this;
+            var _this = this;
             _this.fix();
             //_this.fixSidebar();
             _this.fixControlSidebar();
@@ -149,10 +149,10 @@ function _init() {
         },
         fix: function () {
             //Get window height and the wrapper height
-            let footer_height = $('.main-footer').outerHeight() || 0;
-            let neg = $('.main-header').outerHeight() + footer_height;
-            let window_height = $(window).height();
-            let sidebar_height = $(".sidebar").height() || 0;
+            var footer_height = $('.main-footer').outerHeight() || 0;
+            var neg = $('.main-header').outerHeight() + footer_height;
+            var window_height = $(window).height();
+            var sidebar_height = $(".sidebar").height() || 0;
             
             //Set the content height
             $(".content-wrapper").css('height', window_height - neg);
@@ -199,7 +199,7 @@ function _init() {
     $.GUI.pushMenu = {
         activate: function (toggleBtn) {
             //Get the screen sizes
-            let screenSizes = $.GUI.options.screenSizes;
+            var screenSizes = $.GUI.options.screenSizes;
             //Enable sidebar toggle
             $(document).on('click', toggleBtn, function (e) {
                 e.preventDefault();
@@ -238,14 +238,14 @@ function _init() {
      * @Usage: $.GUI.tree('.sidebar')
      */
     $.GUI.tree = function (menu) {
-        let _this = this;
-        let animationSpeed = $.GUI.options.animationSpeed;
+        var _this = this;
+        var animationSpeed = $.GUI.options.animationSpeed;
 
         $(document).off('click', menu + ' li a')
             .on('click', menu + ' li a', function (e) {
             //Get the clicked link and the next element
-            let $this = $(this);
-            let checkElement = $this.next();
+            var $this = $(this);
+            var checkElement = $this.next();
 
             //Check if the next element is a menu and is visible
             if (checkElement.is('.treeview-menu') && checkElement.is(':visible') && !$('body').hasClass('sidebar-collapse')) {
@@ -257,13 +257,13 @@ function _init() {
             }
             else if (checkElement.is('.treeview-menu') && !checkElement.is(':visible')) {
                 //Get the parent menu
-                let parent = $this.parents('ul').first();
+                var parent = $this.parents('ul').first();
                 //Close all open menus within the parent
-                let ul = parent.find('ul:visible').slideUp(animationSpeed);
+                var ul = parent.find('ul:visible').slideUp(animationSpeed);
                 //Remove the menu-open class from the parent
                 ul.removeClass('menu-open');
                 //Get the parent li
-                let parent_li = $this.parent("li");
+                var parent_li = $this.parent("li");
                 //Open the target menu and add the menu-open class
                 checkElement.slideDown(animationSpeed, function () {
                     //Add the class active to the parent li
@@ -281,11 +281,11 @@ function _init() {
 
         // load the files and data
         $('.treeview-menu').on('click','a', function () {
-            let $this = $(this);
-            let modelSeleted = $this.is('[data-model]');
-            let plotGroupSeleted = $this.is('[data-result]');
-            let plotSelected = $this.is('[data-plot]');
-            let active = $this.hasClass('active'); // true === active, false === deactive
+            var $this = $(this);
+            var modelSeleted = $this.is('[data-model]');
+            var plotGroupSeleted = $this.is('[data-result]');
+            var plotSelected = $this.is('[data-plot]');
+            var active = $this.hasClass('active'); // true === active, false === deactive
 
             if (modelSeleted) {
                 if (!$('body').hasClass('sidebar-collapse')) {
@@ -349,13 +349,13 @@ function _init() {
         //instantiate the object
         activate: function () {
             //Get the object
-            let _this = this;
+            var _this = this;
             //Update options
-            let o = $.GUI.options.controlSidebarOptions;
+            var o = $.GUI.options.controlSidebarOptions;
             //Get the sidebar
-            let sidebar = $(o.selector);
+            var sidebar = $(o.selector);
             //The toggle button
-            let btn = $(o.toggleBtnSelector);
+            var btn = $(o.toggleBtnSelector);
             //Listen to the click event
             btn.on('click', function (e) {
                 e.preventDefault();
@@ -404,10 +404,10 @@ function _init() {
      */
     $.GUI.SideBySide = {
         activate: function() {
-            let header = $('.main-header');
-            let footer = $('.main-footer');
-            let leftSidebar = $('.main-sidebar');
-            let rightSidebar = $('.control-sidebar');
+            var header = $('.main-header');
+            var footer = $('.main-footer');
+            var leftSidebar = $('.main-sidebar');
+            var rightSidebar = $('.control-sidebar');
 
             header.css('display', 'none');
             footer.css('display', 'none');
