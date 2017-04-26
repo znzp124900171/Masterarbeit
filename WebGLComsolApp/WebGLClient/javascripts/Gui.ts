@@ -36,6 +36,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var pointerTwo = null;
         var pointerSpecial = null;
         var lastPosition = {};
+        var keydown = null;
 
         var pointerDown;
         var pointerUp;

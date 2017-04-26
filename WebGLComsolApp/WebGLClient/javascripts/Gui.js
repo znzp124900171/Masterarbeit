@@ -23,6 +23,7 @@ function Gui(modelData, renderer, glContext) {
         var pointerTwo = null;
         var pointerSpecial = null;
         var lastPosition = {};
+        var keydown = null;
         var pointerDown;
         var pointerUp;
         var pointerMove;
@@ -134,6 +135,31 @@ function Gui(modelData, renderer, glContext) {
             if (pointerTwo) {
                 lastPosition[pointerTwo] = null;
                 pointerTwo = null;
+            }
+        };
+        keydown = function (evt) {
+            if (evt.preventDefault) {
+                evt.preventDefault();
+            }
+            if (renderer.getSeperation() > 0.01) {
+                switch (evt.keyCode) {
+                    case 37:
+                        renderer.setSeperation(renderer.getSeperation() - 0.01);
+                        break;
+                    case 39:
+                        renderer.setSeperation(renderer.getSeperation() + 0.01);
+                        break;
+                    case 38:
+                        renderer.setZPosition(renderer.getPosition()[2] + 0.2);
+                        break;
+                    case 40:
+                        renderer.setZPosition(renderer.getPosition()[2] - 0.2);
+                        break;
+                }
+            }
+            else {
+                renderer.setSeperation(renderer.getSeperation() + 0.01);
+                alert('values are beyond the bondary');
             }
         };
         handleMouseWheel = function (evt) {

@@ -20,6 +20,7 @@ function Renderer(modelData, glc) {
     var glHeight;
     var degToRad = Math.PI / 180;
     var viewAngle = 45 * degToRad;
+    var eyeSeperation = 0.03;
     var activeModel = null;
     var activePlotgroup = null;
     var activePlots = [];
@@ -49,13 +50,6 @@ function Renderer(modelData, glc) {
     var coordSys;
     initMatrices();
     initStaticData();
-    function computeStereoViewProjectionMatrices(width, height) {
-        let up = vec3.create();
-        vec3.set(up, 0, 0, 1);
-        let aspect = width / height;
-        let near = 0.05;
-        let far = 100;
-    }
     function initMatrices() {
         scale = vec3.create();
         vec3.set(scale, 1, 1, 1);
@@ -243,6 +237,9 @@ function Renderer(modelData, glc) {
     this.getPosition = function () {
         return transVec;
     };
+    this.getSeperation = function () {
+        return eyeSeperation;
+    };
     this.setPosition = function (eyeX, eyeY, eyeZ) {
         transVec[0] = eyeX;
         transVec[1] = eyeY;
@@ -263,6 +260,10 @@ function Renderer(modelData, glc) {
     };
     this.setZPosition = function (eyeZ) {
         transVec[2] = eyeZ;
+        drawCallRequest = true;
+    };
+    this.setSeperation = function (seperation) {
+        eyeSeperation = seperation;
         drawCallRequest = true;
     };
     this.rotateObject = function (x, y) {
@@ -795,9 +796,9 @@ function Renderer(modelData, glc) {
     }
     function drawSceneVR() {
         gl.viewport(0, 0, glWidth / 2, glHeight);
-        drawScene(0.15);
+        drawScene(eyeSeperation);
         gl.viewport(glWidth / 2, 0, glWidth / 2, glHeight);
-        drawScene(-0.15);
+        drawScene(-eyeSeperation);
     }
     function checkGLerror() {
         var error = gl.getError();
@@ -810,11 +811,11 @@ function Renderer(modelData, glc) {
     (function renderLoop() {
         if (drawCallRequest) {
             drawCallRequest = false;
-            if (!vr) {
-                drawScene();
+            if (vr) {
+                drawSceneVR();
             }
             else {
-                drawSceneVR();
+                drawScene();
             }
         }
         if (!checkGLerror()) {
