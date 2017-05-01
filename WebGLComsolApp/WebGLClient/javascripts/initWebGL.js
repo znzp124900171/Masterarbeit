@@ -10,6 +10,7 @@ var GL_ATTR_VTX = "vertex";
 var GL_ATTR_POS = "position";
 var GL_ATTR_NRM = "normal";
 var GL_ATTR_COL = "color";
+var GL_ATTR_TEX = "texCoord";
 var GL_ATTR_DEF_X = "deformX";
 var GL_ATTR_DEF_Y = "deformY";
 var GL_ATTR_DEF_Z = "deformZ";
@@ -22,6 +23,8 @@ function Web3DContext(canvas) {
     var programs;
     var textures;
     var gl;
+    var textTextures;
+    var textCtx = document.createElement("canvas").getContext("2d");
     gl = create3DContext(canvas, null);
     if (!gl) {
         throw "Could not create 3D Context";
@@ -29,6 +32,18 @@ function Web3DContext(canvas) {
     initStaticData();
     programs = initShaders();
     textures = initTextures();
+    textTextures = initTextTextures();
+    function createTextCanvas(text, width, height) {
+        textCtx.canvas.width = width;
+        textCtx.canvas.height = height;
+        textCtx.font = "25px Arial";
+        textCtx.textAlign = "center";
+        textCtx.textBaseline = "middle";
+        textCtx.fillStyle = "black";
+        textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
+        textCtx.fillText(text, width / 2, height / 2);
+        return textCtx.canvas;
+    }
     function create3DContext(canvas, opt_attribs) {
         var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
         var context = null;
@@ -407,6 +422,35 @@ function Web3DContext(canvas) {
                 attributes: [GL_ATTR_VTX, GL_ATTR_COL, GL_ATTR_NRM, GL_ATTR_DEF_X, GL_ATTR_DEF_Y, GL_ATTR_DEF_Z],
                 uniforms: [GL_UNI_MV, GL_UNI_P, GL_UNI_NORM, GL_UNI_LIG, GL_UNI_TEX, GL_UNI_SCL]
             },
+            {
+                name: 'textCanvasShader',
+                id: 6,
+                vxProgram: "\
+                    attribute vec3 vertex;\n\
+                    attribute vec2 texCoord;\n\
+                    \n\
+                    uniform mat4 mvpMatrix;\n\
+                    \n\
+                    varying vec2 varTexCoord;\n\
+                    \n\
+                    void main() {\n\
+                        gl_Position = mvpMatrix * vec4(vertex,1.0);\n\
+                        \n\
+                        varTexCoord = texCoord;\n\
+                }",
+                pxProgram: "\
+                    precision mediump float;\n\
+                    \n\
+                    uniform sampler2D texSampler;\n\
+                    \n\
+                    varying vec2 varTexCoord;\n\
+                    \n\
+                    void main() {\n\
+                        gl_FragColor = texture2D(texSampler, varTexCoord);\n\
+                    }",
+                attributes: [GL_ATTR_VTX, GL_ATTR_TEX],
+                uniforms: [GL_UNI_MVP, GL_UNI_TEX]
+            }
         ];
         colorList = [
             { name: 'black', value: [0.1, 0.1, 0.1] },
@@ -605,6 +649,19 @@ function Web3DContext(canvas) {
         }
         return texArray;
     }
+    function initTextTextures() {
+        let textTexArray;
+        let textCanvas = createTextCanvas('X', 50, 25);
+        textTexArray = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, textTexArray);
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        return textTexArray;
+    }
     this.setupArrayBuffer = function (binFloatArray) {
         var tmpBuf = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, tmpBuf);
@@ -655,5 +712,8 @@ function Web3DContext(canvas) {
                 return textures[i];
             }
         }
+    };
+    this.getTextTexture = function () {
+        return textTextures;
     };
 }

@@ -80,6 +80,10 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var vpFront:        Float32Array;       // View Projection Matrix of Foreground
     var mvpFront:       Float32Array;       // Model View Projection Matrix of Foreground
     var mvpColorLegend: Float32Array;       // Model View Projection Matrix of color legend
+
+    var mText: Float32Array;       // Model Matrix of text
+    var vpText: Float32Array;       // View Projection Matrx of text
+    var mvpText: Float32Array;       // Model View Projection Matrix of text
     
     //Background
     var background: Background;
@@ -89,6 +93,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     //x,y,z Axis
     var coordSys: CoordSys;
+
+    var axisText: Axis;
 
     //init constant Render Data
     initMatrices();
@@ -148,6 +154,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), center, up);
         mat4.multiply(vpFront, pScene, vpFront);
         mvpFront = mat4.create();
+
+        //Text Matrix
+        mText = mat4.create();
+        vpText = mat4.create();
+        mvpText = mat4.create();
     }
 
     /*  This function initize static data, like Backgroup and the Axis
@@ -204,6 +215,17 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 43, 63, 63, 43, 44]))
         };
 
+        axisText = {
+            vertexBuf: glc.setupArrayBuffer(new Float32Array([0.1, 0.025,
+                0.15, 0.025,
+                0.1, -0.025,
+                0.15, -0.025])),
+            textureBuf: glc.setupArrayBuffer(new Float32Array([0.0, 0.0,
+                1.0, 0.0,
+                0.0, 1.0,
+                1.0, 1.0])),
+            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3]))
+        };
     }
 
     this.renderScene = function () {
@@ -434,7 +456,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.identity(vpFront);
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
         mat4.multiply(vpFront, pScene, vpFront);
-
+        
         drawCallRequest = true;
     }
 
@@ -949,15 +971,14 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawLegend = function (renderGroup: RenderGroup, usrText: string) {
-        var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         //reset View
-        var prog = programs[3];
+        let prog = programs[3];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
         gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
         gl.activeTexture(gl.TEXTURE0);
         //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-        //gl.bindTexture(gl.TEXTURE_2D, glContext.getTextureByName(usrText));
+        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextureByName(usrText));
 
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
@@ -996,9 +1017,37 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.uniform3fv(programs[1].uniforms[GL_UNI_COL], [1.0, 0.0, 0.0]);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, coordSys.idxBuf);
         gl.drawElements(gl.TRIANGLES, 114, gl.UNSIGNED_SHORT, 468);
-        }
 
-    
+        drawAxis();
+    }
+
+    var drawAxis = function () {
+        //gl.enable(gl.BLEND);
+        //gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        //gl.depthMask(false);
+        let prog = programs[6];
+        let size = Float32Array.BYTES_PER_ELEMENT;
+        gl.useProgram(prog.gl);
+        console.log('x position: ' + mvpText[0]);
+        console.log('y difference: ' + (mvpFront[1]-mvpText[1]));
+        console.log('z position: ' + mvpText[2]);
+        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpText);
+        gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextTexture());
+
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_TEX]);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, axisText.vertexBuf);
+        gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, axisText.textureBuf);
+        gl.vertexAttribPointer(prog.attributes[GL_ATTR_TEX], 2, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, axisText.indexBuf);
+        gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
+        //gl.depthMask(true);
+    }
 
     //paint the complete Scene
     function drawScene(seperation?:number) {
@@ -1020,9 +1069,13 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.multiply(mvpScene, pScene, mvScene);
 
         mat4.multiply(mvpFront, mFront, rotScene);
+        
         mat4.multiply(mvpFront, vpFront, mvpFront);
 
-        
+
+        mat4.copy(mvpText, mvpFront);
+        mvpText[2] = 0;
+
         drawBackground();
         if (activeModel && activePlotgroup) {
             gl.enable(gl.DEPTH_TEST);

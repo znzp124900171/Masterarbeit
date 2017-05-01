@@ -31,7 +31,7 @@ function checkBrowser(): boolean {
 
 //Problem Handler
 function handleProblem(text: string[]) {
-    $.mobile.navigate("#problemInfo");
+    
     var parent = $("#browserSupport");
     for (var i in text) {
         parent.append($("<p></p>").text(text[i]));
@@ -40,8 +40,8 @@ function handleProblem(text: string[]) {
 
 //Error Handler
 function handleError(err: Error) {
-
-    $.mobile.navigate("#errorWindow");
+    alert('Error name: ' + err.name);
+    alert('Error message: ' + err.message);
     var parent = $("#errorMain");
 
     parent.append($("<p></p>").text('Error name: ' + err.name));

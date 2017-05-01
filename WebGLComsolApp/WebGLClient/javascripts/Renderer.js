@@ -45,9 +45,13 @@ function Renderer(modelData, glc) {
     var vpFront;
     var mvpFront;
     var mvpColorLegend;
+    var mText;
+    var vpText;
+    var mvpText;
     var background;
     var colorLegend;
     var coordSys;
+    var axisText;
     initMatrices();
     initStaticData();
     function initMatrices() {
@@ -84,6 +88,9 @@ function Renderer(modelData, glc) {
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), center, up);
         mat4.multiply(vpFront, pScene, vpFront);
         mvpFront = mat4.create();
+        mText = mat4.create();
+        vpText = mat4.create();
+        mvpText = mat4.create();
     }
     function initStaticData() {
         background = {
@@ -128,6 +135,17 @@ function Renderer(modelData, glc) {
                 53, 54, 44, 54, 55, 44, 55, 56, 44, 56, 57, 44, 57, 58, 44, 58, 59, 44, 59, 60, 44, 60, 61, 44, 61, 62, 44, 62, 63, 44, 43, 45, 45, 43, 46, 46, 43, 47, 47, 43, 48, 48,
                 43, 49, 49, 43, 50, 50, 43, 51, 51, 43, 52, 52, 43, 53, 53, 43, 54, 54, 43, 55, 55, 43, 56, 56, 43, 57, 57, 43, 58, 58, 43, 59, 59, 43, 60, 60, 43, 61, 61, 43, 62, 62,
                 43, 63, 63, 43, 44]))
+        };
+        axisText = {
+            vertexBuf: glc.setupArrayBuffer(new Float32Array([0.1, 0.025,
+                0.15, 0.025,
+                0.1, -0.025,
+                0.15, -0.025])),
+            textureBuf: glc.setupArrayBuffer(new Float32Array([0.0, 0.0,
+                1.0, 0.0,
+                0.0, 1.0,
+                1.0, 1.0])),
+            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3]))
         };
     }
     this.renderScene = function () {
@@ -731,12 +749,12 @@ function Renderer(modelData, glc) {
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
     var drawLegend = function (renderGroup, usrText) {
-        var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
-        var prog = programs[3];
+        let prog = programs[3];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
         gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
         gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextureByName(usrText));
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
         gl.enableVertexAttribArray(prog.attributes[GL_ATTR_COL]);
         gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.vertexBuf);
@@ -764,6 +782,27 @@ function Renderer(modelData, glc) {
         gl.uniform3fv(programs[1].uniforms[GL_UNI_COL], [1.0, 0.0, 0.0]);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, coordSys.idxBuf);
         gl.drawElements(gl.TRIANGLES, 114, gl.UNSIGNED_SHORT, 468);
+        drawAxis();
+    };
+    var drawAxis = function () {
+        let prog = programs[6];
+        let size = Float32Array.BYTES_PER_ELEMENT;
+        gl.useProgram(prog.gl);
+        console.log('x position: ' + mvpText[0]);
+        console.log('y difference: ' + (mvpFront[1] - mvpText[1]));
+        console.log('z position: ' + mvpText[2]);
+        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpText);
+        gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextTexture());
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_TEX]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, axisText.vertexBuf);
+        gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, axisText.textureBuf);
+        gl.vertexAttribPointer(prog.attributes[GL_ATTR_TEX], 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, axisText.indexBuf);
+        gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
     };
     function drawScene(seperation) {
         gl.disable(gl.DEPTH_TEST);
@@ -781,6 +820,8 @@ function Renderer(modelData, glc) {
         mat4.multiply(mvpScene, pScene, mvScene);
         mat4.multiply(mvpFront, mFront, rotScene);
         mat4.multiply(mvpFront, vpFront, mvpFront);
+        mat4.copy(mvpText, mvpFront);
+        mvpText[2] = 0;
         drawBackground();
         if (activeModel && activePlotgroup) {
             gl.enable(gl.DEPTH_TEST);

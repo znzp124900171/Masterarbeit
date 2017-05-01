@@ -14,14 +14,14 @@ function checkBrowser() {
     }
 }
 function handleProblem(text) {
-    $.mobile.navigate("#problemInfo");
     var parent = $("#browserSupport");
     for (var i in text) {
         parent.append($("<p></p>").text(text[i]));
     }
 }
 function handleError(err) {
-    $.mobile.navigate("#errorWindow");
+    alert('Error name: ' + err.name);
+    alert('Error message: ' + err.message);
     var parent = $("#errorMain");
     parent.append($("<p></p>").text('Error name: ' + err.name));
     parent.append($("<p></p>").text('Error description: ' + err.message));

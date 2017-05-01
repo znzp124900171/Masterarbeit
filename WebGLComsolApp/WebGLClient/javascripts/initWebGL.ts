@@ -15,6 +15,7 @@ var GL_ATTR_VTX = "vertex";
 var GL_ATTR_POS = "position";
 var GL_ATTR_NRM = "normal";
 var GL_ATTR_COL = "color";
+var GL_ATTR_TEX = "texCoord";
 var GL_ATTR_DEF_X = "deformX";
 var GL_ATTR_DEF_Y = "deformY";
 var GL_ATTR_DEF_Z = "deformZ";
@@ -58,6 +59,7 @@ interface Web3DContext {
     getColorNames(): string[];
     getColorByName(name: string): number[];
     getTextureByName(name: string): number;
+    getTextTexture();
 
 }
 
@@ -66,8 +68,10 @@ function Web3DContext(canvas: HTMLElement) {
     var colorList: Color[];
     var colorTables: ColorTables[];
     var programs: ShaderProgram[];
-    var textures: WebGLTexture[];
+    var textures: WebGLTexture;
     var gl: WebGLRenderingContext;
+    var textTextures: WebGLTexture[];
+    var textCtx: CanvasRenderingContext2D = document.createElement("canvas").getContext("2d");
 
     gl = create3DContext(canvas, null);
     if (!gl) {
@@ -77,6 +81,19 @@ function Web3DContext(canvas: HTMLElement) {
     initStaticData();
     programs = initShaders();
     textures = initTextures();
+    textTextures = initTextTextures();
+
+    function createTextCanvas(text, width, height) {
+        textCtx.canvas.width = width;
+        textCtx.canvas.height = height;
+        textCtx.font = "25px Arial";
+        textCtx.textAlign = "center";
+        textCtx.textBaseline = "middle";
+        textCtx.fillStyle = "black";
+        textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
+        textCtx.fillText(text, width / 2, height / 2);
+        return textCtx.canvas;
+    }
 
     function create3DContext(canvas, opt_attribs) {
         var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
@@ -479,170 +496,199 @@ function Web3DContext(canvas: HTMLElement) {
                 attributes: [GL_ATTR_VTX, GL_ATTR_COL, GL_ATTR_NRM, GL_ATTR_DEF_X, GL_ATTR_DEF_Y, GL_ATTR_DEF_Z],
                 uniforms: [GL_UNI_MV, GL_UNI_P, GL_UNI_NORM, GL_UNI_LIG, GL_UNI_TEX, GL_UNI_SCL]
             },
+            {
+                name: 'textCanvasShader',
+                id: 6,
+                vxProgram: "\
+                    attribute vec3 vertex;\n\
+                    attribute vec2 texCoord;\n\
+                    \n\
+                    uniform mat4 mvpMatrix;\n\
+                    \n\
+                    varying vec2 varTexCoord;\n\
+                    \n\
+                    void main() {\n\
+                        gl_Position = mvpMatrix * vec4(vertex,1.0);\n\
+                        \n\
+                        varTexCoord = texCoord;\n\
+                }",
+                pxProgram: "\
+                    precision mediump float;\n\
+                    \n\
+                    uniform sampler2D texSampler;\n\
+                    \n\
+                    varying vec2 varTexCoord;\n\
+                    \n\
+                    void main() {\n\
+                        gl_FragColor = texture2D(texSampler, varTexCoord);\n\
+                    }",
+                attributes: [GL_ATTR_VTX,GL_ATTR_TEX],
+                uniforms: [GL_UNI_MVP,GL_UNI_TEX]
+            }
         ]
 
-    colorList = [
-            { name: 'black', value: [0.1, 0.1, 0.1] },
-            { name: 'red', value: [0.5, 0.0, 0.0] },
-            { name: 'blue', value: [0.0, 0.2, 5.0] },
-            { name: 'light blue', value: [0.2, 0.4, 0.4] },
-            { name: 'green', value: [0.0, 0.5, 0.0] },
-            { name: 'dark green', value: [0.1, 0.2, 0.0] },
-            { name: 'yellow', value: [0.5, 0.5, 0.0] },
-            { name: 'yellow green', value: [0.4, 0.5, 0.0] },
-            { name: 'grey dark', value: [0.3, 0.3, 0.3] },
-            { name: 'grey light', value: [0.6, 0.6, 0.6] }];
+        colorList = [
+                { name: 'black', value: [0.1, 0.1, 0.1] },
+                { name: 'red', value: [0.5, 0.0, 0.0] },
+                { name: 'blue', value: [0.0, 0.2, 5.0] },
+                { name: 'light blue', value: [0.2, 0.4, 0.4] },
+                { name: 'green', value: [0.0, 0.5, 0.0] },
+                { name: 'dark green', value: [0.1, 0.2, 0.0] },
+                { name: 'yellow', value: [0.5, 0.5, 0.0] },
+                { name: 'yellow green', value: [0.4, 0.5, 0.0] },
+                { name: 'grey dark', value: [0.3, 0.3, 0.3] },
+                { name: 'grey light', value: [0.6, 0.6, 0.6] }];
 
 
-    colorTables = [
-            {
-                name: "Cyclic",
-                size: 7,
-                tex: new Uint8Array(
-                        [255, 0, 0,
-                        255, 255, 0,
-                        0, 255, 0,
-                        0, 255, 255,
-                        0, 0, 255,
-                        255, 0, 255,
-                        255, 0, 0,
-                        255, 0, 0]),
-            },
+        colorTables = [
+                {
+                    name: "Cyclic",
+                    size: 7,
+                    tex: new Uint8Array(
+                            [255, 0, 0,
+                            255, 255, 0,
+                            0, 255, 0,
+                            0, 255, 255,
+                            0, 0, 255,
+                            255, 0, 255,
+                            255, 0, 0,
+                            255, 0, 0]),
+                },
 
-            {
-                name: "Disco",
-                size: 9,
-                tex: new Uint8Array(
+                {
+                    name: "Disco",
+                    size: 9,
+                    tex: new Uint8Array(
+                            [0, 0, 128,
+                            0, 0, 255,
+                            0, 128, 255,
+                            0, 255, 255,
+                            128, 128, 255,
+                            255, 0, 255,
+                            255, 0, 128,
+                            255, 0, 0,
+                            128, 0, 0])
+                },
+
+                {
+                    name: 'DiscoLight',
+                    size: 9,
+                    tex: new Uint8Array(
+                            [0, 0, 128,
+                            0, 0, 255,
+                            0, 128, 255,
+                            0, 255, 255,
+                            128, 192, 255,
+                            255, 128, 255,
+                            255, 128, 255,
+                            255, 64, 128,
+                            255, 0, 0,
+                            128, 0, 0]),
+                },
+
+                {
+                    name: 'GrayPrint',
+                    size: 2,
+                    tex: new Uint8Array(
+                        [130, 130, 130,
+                        242, 242, 242]),
+                },
+
+                {
+                    name: 'GrayScale',
+                    size: 2,
+                    tex: new Uint8Array(
+                            [0, 0, 0,
+                            255, 255, 255]),
+                },
+
+                {
+                    name: 'Rainbow',
+                    size: 9,
+                    tex: new Uint8Array(
+                        [0, 0, 128,
+                            0, 0, 255,
+                            0, 128, 255, 
+                            0, 255, 255,
+                            128, 255, 128,
+                            255, 255, 0,
+                            255, 128, 0,
+                            255, 0, 0,
+                            128, 0, 0])
+
+                },
+
+                {
+                    name: 'RainbowLight',
+                    size: 4,
+                    tex: new Uint8Array(
+                            [0, 0, 255,
+                            0, 255, 255,
+                            255, 255, 0,
+                            255, 0, 0])
+                },
+
+                {
+                    name: 'Thermal',
+                    size: 17,
+                    tex: new Uint8Array([0, 0, 0,       64, 0, 0,       128, 0, 0, 
+                                        192, 0, 0,      255, 0, 0,      255, 37, 0, 
+                                        255, 73, 0,     255, 110, 0,    255, 146, 0,
+                                        255, 183, 0,    255, 219, 0,    255, 255, 0,
+                                        255, 255, 51,   255, 255, 102,  255, 255, 153,
+                                        255, 255, 204,  255, 255, 255])
+                },
+
+                {
+                    name: 'ThermalEquidistant',
+                    size: 4,
+                    tex: new Uint8Array([0, 0, 0, 255, 0, 0, 255, 255, 0, 255, 255, 255]),
+                },
+
+                {
+                    name: 'Traffic',
+                    size: 9,
+                    tex: new Uint8Array(
+                        [0, 170, 0,
+                            0, 255, 0,
+                            85, 255, 0,
+                            170, 255, 0,
+                            255, 255, 0,
+                            255, 170, 0,
+                            255, 85, 0,
+                            255, 0, 0,
+                            170, 0, 0]),
+                },
+
+                {
+                    name: 'TrafficLight',
+                    size: 3,
+                    tex: new Uint8Array(
+                            [0, 255, 0,
+                            255, 255, 0,
+                            0, 255, 0]),
+                },
+
+                {
+                    name: 'Wave',
+                    size: 5,
+                    tex: new Uint8Array(
                         [0, 0, 128,
                         0, 0, 255,
-                        0, 128, 255,
-                        0, 255, 255,
-                        128, 128, 255,
-                        255, 0, 255,
-                        255, 0, 128,
+                        204, 204, 204,
                         255, 0, 0,
-                        128, 0, 0])
-            },
+                        128,0,0]),
+                },
 
-            {
-                name: 'DiscoLight',
-                size: 9,
-                tex: new Uint8Array(
-                        [0, 0, 128,
-                        0, 0, 255,
-                        0, 128, 255,
-                        0, 255, 255,
-                        128, 192, 255,
-                        255, 128, 255,
-                        255, 128, 255,
-                        255, 64, 128,
-                        255, 0, 0,
-                        128, 0, 0]),
-            },
-
-            {
-                name: 'GrayPrint',
-                size: 2,
-                tex: new Uint8Array(
-                    [130, 130, 130,
-                    242, 242, 242]),
-            },
-
-            {
-                name: 'GrayScale',
-                size: 2,
-                tex: new Uint8Array(
-                        [0, 0, 0,
-                        255, 255, 255]),
-            },
-
-            {
-                name: 'Rainbow',
-                size: 9,
-                tex: new Uint8Array(
-                    [0, 0, 128,
-                        0, 0, 255,
-                        0, 128, 255, 
-                        0, 255, 255,
-                        128, 255, 128,
-                        255, 255, 0,
-                        255, 128, 0,
-                        255, 0, 0,
-                        128, 0, 0])
-
-            },
-
-            {
-                name: 'RainbowLight',
-                size: 4,
-                tex: new Uint8Array(
+                {
+                    name: 'WaveLight',
+                    size: 3,
+                    tex: new Uint8Array(
                         [0, 0, 255,
-                        0, 255, 255,
-                        255, 255, 0,
-                        255, 0, 0])
-            },
-
-            {
-                name: 'Thermal',
-                size: 17,
-                tex: new Uint8Array([0, 0, 0,       64, 0, 0,       128, 0, 0, 
-                                    192, 0, 0,      255, 0, 0,      255, 37, 0, 
-                                    255, 73, 0,     255, 110, 0,    255, 146, 0,
-                                    255, 183, 0,    255, 219, 0,    255, 255, 0,
-                                    255, 255, 51,   255, 255, 102,  255, 255, 153,
-                                    255, 255, 204,  255, 255, 255])
-            },
-
-            {
-                name: 'ThermalEquidistant',
-                size: 4,
-                tex: new Uint8Array([0, 0, 0, 255, 0, 0, 255, 255, 0, 255, 255, 255]),
-            },
-
-            {
-                name: 'Traffic',
-                size: 9,
-                tex: new Uint8Array(
-                    [0, 170, 0,
-                        0, 255, 0,
-                        85, 255, 0,
-                        170, 255, 0,
-                        255, 255, 0,
-                        255, 170, 0,
-                        255, 85, 0,
-                        255, 0, 0,
-                        170, 0, 0]),
-            },
-
-            {
-                name: 'TrafficLight',
-                size: 3,
-                tex: new Uint8Array(
-                        [0, 255, 0,
-                        255, 255, 0,
-                        0, 255, 0]),
-            },
-
-            {
-                name: 'Wave',
-                size: 5,
-                tex: new Uint8Array(
-                    [0, 0, 128,
-                    0, 0, 255,
-                    204, 204, 204,
-                    255, 0, 0,
-                    128,0,0]),
-            },
-
-            {
-                name: 'WaveLight',
-                size: 3,
-                tex: new Uint8Array(
-                    [0, 0, 255,
-                    255, 255, 255,
-                    255,0,0]),
-            }
-        ];
+                        255, 255, 255,
+                        255,0,0]),
+                }
+            ];
     }
 
     function initShaders(): ShaderProgram[] {
@@ -722,6 +768,23 @@ function Web3DContext(canvas: HTMLElement) {
         return texArray;
     }
 
+    function initTextTextures(): WebGLTexture[] {
+        let textTexArray;
+        let textCanvas = createTextCanvas('X', 50, 25);
+
+        textTexArray = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, textTexArray);     //bind Texture Buffer
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1); // not to unpremultiply,Multiplies the alpha channel into the other color channels
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
+        // with these following parameters, compatible WebGL devices will automatically accept any resolution for that texture (up to their maximum dimensions).
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); // linear minification
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); //s in texture coordinate means x-axis
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); //t in texture coordinate means y-axis
+        gl.bindTexture(gl.TEXTURE_2D, null);            //unbound Texture Buffer
+
+        return textTexArray;
+    }
+
     this.setupArrayBuffer = function (binFloatArray): WebGLBuffer {
         var tmpBuf = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, tmpBuf);
@@ -781,5 +844,9 @@ function Web3DContext(canvas: HTMLElement) {
             }
         }
     }
+    this.getTextTexture = function (): WebGLTexture {
+        return textTextures;
+    }
+
 }
 

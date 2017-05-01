@@ -60,6 +60,12 @@ interface CoordSys {
     idxBuf: WebGLBuffer;
 }
 
+interface Axis {
+    vertexBuf: WebGLBuffer;
+    textureBuf: WebGLBuffer;
+    indexBuf: WebGLBuffer;
+}
+
 interface Renderer {
     //updates the Scene
     renderScene();
