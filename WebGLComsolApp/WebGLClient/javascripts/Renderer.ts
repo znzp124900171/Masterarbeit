@@ -82,8 +82,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var mvpColorLegend: Float32Array;       // Model View Projection Matrix of color legend
 
     var mText: Float32Array;       // Model Matrix of text
+    var translateText: Float32Array;
+    var pText: Float32Array;
     var vpText: Float32Array;       // View Projection Matrx of text
     var mvpText: Float32Array;       // Model View Projection Matrix of text
+    var rotText: Float32Array;
     
     //Background
     var background: Background;
@@ -156,9 +159,14 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mvpFront = mat4.create();
 
         //Text Matrix
+        translateText = vec3.create();
         mText = mat4.create();
+        pText = mat4.create();
         vpText = mat4.create();
+        mat4.lookAt(vpText, new Float32Array([0, 0, 1]), center, up);
+        mat4.multiply(vpText, pText, vpText);
         mvpText = mat4.create();
+        rotText = mat4.create();
     }
 
     /*  This function initize static data, like Backgroup and the Axis
@@ -216,10 +224,10 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         };
 
         axisText = {
-            vertexBuf: glc.setupArrayBuffer(new Float32Array([0.1, 0.025,
-                0.15, 0.025,
-                0.1, -0.025,
-                0.15, -0.025])),
+            vertexBuf: glc.setupArrayBuffer(new Float32Array([0.09, 0.025,
+                0.014, 0.025,
+                0.09, -0.025,
+                0.014, -0.025])),
             textureBuf: glc.setupArrayBuffer(new Float32Array([0.0, 0.0,
                 1.0, 0.0,
                 0.0, 1.0,
@@ -456,7 +464,17 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.identity(vpFront);
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
         mat4.multiply(vpFront, pScene, vpFront);
-        
+
+        mat4.identity(mText);
+        mat4.translate(mText, mText, new Float32Array([-0.2 * width / height, -0.3, 0]));
+
+        mat4.identity(vpText);
+        pText[0] = pScene[0];
+        pText[1] = pScene[1];
+        pText[2] = 0;
+        mat4.lookAt(vpText, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+        mat4.multiply(vpText, pText, vpText);
+
         drawCallRequest = true;
     }
 
@@ -1022,15 +1040,12 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawAxis = function () {
-        //gl.enable(gl.BLEND);
-        //gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        //gl.depthMask(false);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        gl.depthMask(false);
         let prog = programs[6];
         let size = Float32Array.BYTES_PER_ELEMENT;
         gl.useProgram(prog.gl);
-        console.log('x position: ' + mvpText[0]);
-        console.log('y difference: ' + (mvpFront[1]-mvpText[1]));
-        console.log('z position: ' + mvpText[2]);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpText);
         gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
         gl.activeTexture(gl.TEXTURE0);
@@ -1046,7 +1061,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, axisText.indexBuf);
         gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
-        //gl.depthMask(true);
+        gl.depthMask(true);
     }
 
     //paint the complete Scene
@@ -1060,6 +1075,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             let xNew = xOld + seperation;
             transVec[0] = xNew;
         }
+
         mat4.translate(mScene, mScene, transVec);   //Translate according to the user (first rotate then translate)
         mat4.scale(mScene, mScene, scale);          //Scale to unit Box -1,1,   (scalation is cummutativ)
         mat4.multiply(mScene, mScene, rotScene);    //Rotate Model
@@ -1071,10 +1087,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.multiply(mvpFront, mFront, rotScene);
         
         mat4.multiply(mvpFront, vpFront, mvpFront);
-
-
-        mat4.copy(mvpText, mvpFront);
-        mvpText[2] = 0;
+        mat4.getTranslation(translateText, mvpFront);
+        mat4.translate(mvpText, mvpText, translateText);
 
         drawBackground();
         if (activeModel && activePlotgroup) {
