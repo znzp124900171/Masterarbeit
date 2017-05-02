@@ -458,7 +458,8 @@ function Web3DContext(canvas) {
             { name: 'yellow', value: [0.5, 0.5, 0.0] },
             { name: 'yellow green', value: [0.4, 0.5, 0.0] },
             { name: 'grey dark', value: [0.3, 0.3, 0.3] },
-            { name: 'grey light', value: [0.6, 0.6, 0.6] }];
+            { name: 'grey light', value: [0.6, 0.6, 0.6] }
+        ];
         colorTables = [
             {
                 name: "Cyclic",

@@ -46,8 +46,6 @@
   <ItemGroup>
     <Content Include="javascripts\libs\jquery-2.1.1.min.map" />
     <Content Include="tsconfig.json" />
-    <Content Include="visual\list.json" />
-    <Content Include="visual\piezoacoustic_transducer_2017-02-04 08-34-25.json" />
     <Content Include="stylesheets\style.css.map" />
     <Content Include="stylesheets\style.scss" />
     <None Include="compilerconfig.json" />
@@ -59,6 +57,15 @@
     <Content Include="stylesheets\fonts\fontawesome-webfont.woff" />
     <Content Include="stylesheets\fonts\fontawesome-webfont.woff2" />
     <Content Include="stylesheets\fonts\FontAwesome.otf" />
+    <Content Include="visual\ecore_transformer_2017-05-02 21-11-54.json" />
+    <Content Include="visual\ecore_transformer_2017-05-02 21-11-54\pg1.0.0.bin" />
+    <Content Include="visual\ecore_transformer_2017-05-02 21-11-54\pg1\arwv1.0.0.bin" />
+    <Content Include="visual\ecore_transformer_2017-05-02 21-11-54\pg1\arwv2.0.0.bin" />
+    <Content Include="visual\ecore_transformer_2017-05-02 21-11-54\pg1\surf1.0.0.bin" />
+    <Content Include="visual\ecore_transformer_2017-05-02 21-11-54\pg2.0.0.bin" />
+    <Content Include="visual\ecore_transformer_2017-05-02 21-11-54\pg2\arwv1.0.0.bin" />
+    <Content Include="visual\ecore_transformer_2017-05-02 21-11-54\pg2\slc1.0.0.bin" />
+    <Content Include="visual\list.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -79,7 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="visual\piezoacoustic_transducer_2017-02-04 08-34-25\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
