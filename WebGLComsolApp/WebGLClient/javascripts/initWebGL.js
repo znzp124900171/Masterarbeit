@@ -11,6 +11,7 @@ var GL_ATTR_POS = "position";
 var GL_ATTR_NRM = "normal";
 var GL_ATTR_COL = "color";
 var GL_ATTR_TEX = "texCoord";
+var GL_ATTR_SIZE = "size";
 var GL_ATTR_DEF_X = "deformX";
 var GL_ATTR_DEF_Y = "deformY";
 var GL_ATTR_DEF_Z = "deformZ";
@@ -24,7 +25,6 @@ function Web3DContext(canvas) {
     var textures;
     var gl;
     var textTextures;
-    var textCtx = document.createElement("canvas").getContext("2d");
     gl = create3DContext(canvas, null);
     if (!gl) {
         throw "Could not create 3D Context";
@@ -34,6 +34,7 @@ function Web3DContext(canvas) {
     textures = initTextures();
     textTextures = initTextTextures();
     function createTextCanvas(text, width, height) {
+        let textCtx = document.createElement("canvas").getContext("2d");
         textCtx.canvas.width = width;
         textCtx.canvas.height = height;
         textCtx.font = "25px Arial";
@@ -427,28 +428,23 @@ function Web3DContext(canvas) {
                 id: 6,
                 vxProgram: "\
                     attribute vec3 vertex;\n\
-                    attribute vec2 texCoord;\n\
+                    attribute float size;\n\
                     \n\
                     uniform mat4 mvpMatrix;\n\
                     \n\
-                    varying vec2 varTexCoord;\n\
-                    \n\
                     void main() {\n\
                         gl_Position = mvpMatrix * vec4(vertex,1.0);\n\
+                        gl_PointSize = size;\n\
                         \n\
-                        varTexCoord = texCoord;\n\
                 }",
                 pxProgram: "\
                     precision mediump float;\n\
-                    \n\
                     uniform sampler2D texSampler;\n\
                     \n\
-                    varying vec2 varTexCoord;\n\
-                    \n\
                     void main() {\n\
-                        gl_FragColor = texture2D(texSampler, varTexCoord);\n\
+                        gl_FragColor = texture2D(texSampler, gl_PointCoord);\n\
                     }",
-                attributes: [GL_ATTR_VTX, GL_ATTR_TEX],
+                attributes: [GL_ATTR_VTX, GL_ATTR_SIZE],
                 uniforms: [GL_UNI_MVP, GL_UNI_TEX]
             }
         ];
@@ -650,16 +646,21 @@ function Web3DContext(canvas) {
         return texArray;
     }
     function initTextTextures() {
-        let textTexArray;
-        let textCanvas = createTextCanvas('X', 50, 25);
-        textTexArray = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, textTexArray);
-        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.bindTexture(gl.TEXTURE_2D, null);
+        let textTexArray = [];
+        let textCanvas = [];
+        textCanvas.push(createTextCanvas('x', 40, 40));
+        textCanvas.push(createTextCanvas('y', 40, 40));
+        textCanvas.push(createTextCanvas('z', 40, 40));
+        for (let i = 0; i < textCanvas.length; i++) {
+            textTexArray[i] = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, textTexArray[i]);
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas[i]);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.bindTexture(gl.TEXTURE_2D, null);
+        }
         return textTexArray;
     }
     this.setupArrayBuffer = function (binFloatArray) {

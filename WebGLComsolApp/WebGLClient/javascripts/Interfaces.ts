@@ -58,12 +58,8 @@ interface ColorLegend {
 interface CoordSys {
     vertexBuf: WebGLBuffer;
     idxBuf: WebGLBuffer;
-}
-
-interface Axis {
-    vertexBuf: WebGLBuffer;
-    textureBuf: WebGLBuffer;
-    indexBuf: WebGLBuffer;
+    axisBuf: WebGLBuffer;
+    axisPointSize: WebGLBuffer;
 }
 
 interface Renderer {
@@ -93,6 +89,7 @@ interface Renderer {
     setXPosition(eyeX: number): void;
     setYPosition(eyeY: number): void;
     setZPosition(eyeZ: number): void;
+    setAxisSize(fontsize: number): void;
 
     toggleLight(): boolean;
     toggleVR(): boolean;

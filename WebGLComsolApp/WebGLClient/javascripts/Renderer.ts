@@ -53,17 +53,17 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     //Vectors
     //Bounding Box Data set by Model
-    var scale: Float32Array;    // to scale the model to (-1,1)x(-1,1)x(-1,1)
-    var offset: Float32Array;   // Offset to positionate the model in the middle
+    var scale:         Float32Array;    // to scale the model to (-1,1)x(-1,1)x(-1,1)
+    var offset:        Float32Array;   // Offset to positionate the model in the middle
     //Light Position
     var lightPosition: Float32Array;    //Position of the Ligth source
     //Center of the Modell: mostly 0,0,0
-    var center: Float32Array;       
+    var center:         Float32Array;       
     //Vector to the up of the canvas
-    var up: Float32Array;
+    var up:             Float32Array;
     //Position of the Viewer
-    var eye:        Float32Array;
-    var transVec:   Float32Array;
+    var eye:            Float32Array;
+    var transVec:       Float32Array;
 
     //3D Matrices and Quaternions
     var mvpBackground:  Float32Array;       // Model View Projection Matrix of Background
@@ -80,13 +80,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var vpFront:        Float32Array;       // View Projection Matrix of Foreground
     var mvpFront:       Float32Array;       // Model View Projection Matrix of Foreground
     var mvpColorLegend: Float32Array;       // Model View Projection Matrix of color legend
-
-    var mText: Float32Array;       // Model Matrix of text
-    var translateText: Float32Array;
-    var pText: Float32Array;
-    var vpText: Float32Array;       // View Projection Matrx of text
-    var mvpText: Float32Array;       // Model View Projection Matrix of text
-    var rotText: Float32Array;
     
     //Background
     var background: Background;
@@ -96,8 +89,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     //x,y,z Axis
     var coordSys: CoordSys;
-
-    var axisText: Axis;
+    var axisSize: number = 32;
 
     //init constant Render Data
     initMatrices();
@@ -157,16 +149,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), center, up);
         mat4.multiply(vpFront, pScene, vpFront);
         mvpFront = mat4.create();
-
-        //Text Matrix
-        translateText = vec3.create();
-        mText = mat4.create();
-        pText = mat4.create();
-        vpText = mat4.create();
-        mat4.lookAt(vpText, new Float32Array([0, 0, 1]), center, up);
-        mat4.multiply(vpText, pText, vpText);
-        mvpText = mat4.create();
-        rotText = mat4.create();
     }
 
     /*  This function initize static data, like Backgroup and the Axis
@@ -220,19 +202,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 22, 38, 38, 22, 39, 39, 22, 40, 40, 22, 41, 41, 22, 42, 42, 22, 23, 44, 45, 46, 44, 46, 47, 44, 47, 48, 44, 48, 49, 44, 49, 50, 44, 50, 51, 44, 51, 52, 44, 52, 53, 44,
                 53, 54, 44, 54, 55, 44, 55, 56, 44, 56, 57, 44, 57, 58, 44, 58, 59, 44, 59, 60, 44, 60, 61, 44, 61, 62, 44, 62, 63, 44, 43, 45, 45, 43, 46, 46, 43, 47, 47, 43, 48, 48,
                 43, 49, 49, 43, 50, 50, 43, 51, 51, 43, 52, 52, 43, 53, 53, 43, 54, 54, 43, 55, 55, 43, 56, 56, 43, 57, 57, 43, 58, 58, 43, 59, 59, 43, 60, 60, 43, 61, 61, 43, 62, 62,
-                43, 63, 63, 43, 44]))
-        };
-
-        axisText = {
-            vertexBuf: glc.setupArrayBuffer(new Float32Array([0.09, 0.025,
-                0.014, 0.025,
-                0.09, -0.025,
-                0.014, -0.025])),
-            textureBuf: glc.setupArrayBuffer(new Float32Array([0.0, 0.0,
-                1.0, 0.0,
-                0.0, 1.0,
-                1.0, 1.0])),
-            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3]))
+                43, 63, 63, 43, 44])),
+            axisBuf: glc.setupArrayBuffer(new Float32Array([0.11, 0,0,
+                0, 0.115,0,
+                0.0, 0.0,0.11])),
+            axisPointSize: glc.setupArrayBuffer(new Float32Array([axisSize, axisSize, axisSize]))
         };
     }
 
@@ -411,6 +385,12 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         drawCallRequest = true;
     }
 
+    //sets the font-size of axis
+    this.setAxisSize = function (fontsize: number) {
+        axisSize = fontsize;
+        drawCallRequest = true;
+    }
+
     //rotate Object x and y in degrees
     //Changes the rotMatrix, and normalMatrix
     this.rotateObject = function (x: number, y: number) {
@@ -464,16 +444,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.identity(vpFront);
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
         mat4.multiply(vpFront, pScene, vpFront);
-
-        mat4.identity(mText);
-        mat4.translate(mText, mText, new Float32Array([-0.2 * width / height, -0.3, 0]));
-
-        mat4.identity(vpText);
-        pText[0] = pScene[0];
-        pText[1] = pScene[1];
-        pText[2] = 0;
-        mat4.lookAt(vpText, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
-        mat4.multiply(vpText, pText, vpText);
 
         drawCallRequest = true;
     }
@@ -1043,25 +1013,27 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.depthMask(false);
-        let prog = programs[6];
-        let size = Float32Array.BYTES_PER_ELEMENT;
-        gl.useProgram(prog.gl);
-        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpText);
-        gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextTexture());
+        let textures = glContext.getTextTexture();
+        for (let i = 0; i < 3; i++) {
+            let prog = programs[6];
+            gl.useProgram(prog.gl);
+            gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpFront);
+            gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, textures[i]);
 
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_TEX]);
+            gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, coordSys.axisBuf);
+            gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, axisText.vertexBuf);
-        gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, axisText.textureBuf);
-        gl.vertexAttribPointer(prog.attributes[GL_ATTR_TEX], 2, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(prog.attributes[GL_ATTR_SIZE]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, coordSys.axisPointSize);
+            gl.vertexAttribPointer(prog.attributes[GL_ATTR_SIZE], 1, gl.FLOAT, false, 0, 0);
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, axisText.indexBuf);
-        gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
+            gl.drawArrays(gl.POINTS, i, 1);
+        }
         gl.depthMask(true);
+        
     }
 
     //paint the complete Scene
@@ -1085,10 +1057,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.multiply(mvpScene, pScene, mvScene);
 
         mat4.multiply(mvpFront, mFront, rotScene);
-        
         mat4.multiply(mvpFront, vpFront, mvpFront);
-        mat4.getTranslation(translateText, mvpFront);
-        mat4.translate(mvpText, mvpText, translateText);
+
 
         drawBackground();
         if (activeModel && activePlotgroup) {

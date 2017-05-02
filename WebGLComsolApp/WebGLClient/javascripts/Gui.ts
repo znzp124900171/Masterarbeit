@@ -6,6 +6,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
     var canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('webgl');
 
+    var fontSize: number = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size')) * 2;
+
     var jqModelList = $("#model");
     var jqResultList = $("#result");
     var jqPlotList = $("#plot");
@@ -213,7 +215,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             renderer.setZPosition(eyeZ);
         }
 
-        handleResize = function () {   
+        handleResize = function () {
+            renderer.setAxisSize(fontSize);
             //Size of the browser
             width = window.innerWidth
                 || document.documentElement.clientWidth

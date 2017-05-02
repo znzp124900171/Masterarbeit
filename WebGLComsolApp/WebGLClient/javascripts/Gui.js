@@ -2,6 +2,7 @@ function Gui(modelData, renderer, glContext) {
     var self = this;
     var gl = glContext.getContext();
     var canvas = document.getElementById('webgl');
+    var fontSize = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size')) * 2;
     var jqModelList = $("#model");
     var jqResultList = $("#result");
     var jqPlotList = $("#plot");
@@ -174,6 +175,7 @@ function Gui(modelData, renderer, glContext) {
             renderer.setZPosition(eyeZ);
         };
         handleResize = function () {
+            renderer.setAxisSize(fontSize);
             width = window.innerWidth
                 || document.documentElement.clientWidth
                 || document.body.clientWidth;

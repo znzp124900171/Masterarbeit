@@ -16,6 +16,7 @@ var GL_ATTR_POS = "position";
 var GL_ATTR_NRM = "normal";
 var GL_ATTR_COL = "color";
 var GL_ATTR_TEX = "texCoord";
+var GL_ATTR_SIZE = "size";
 var GL_ATTR_DEF_X = "deformX";
 var GL_ATTR_DEF_Y = "deformY";
 var GL_ATTR_DEF_Z = "deformZ";
@@ -71,7 +72,6 @@ function Web3DContext(canvas: HTMLElement) {
     var textures: WebGLTexture;
     var gl: WebGLRenderingContext;
     var textTextures: WebGLTexture[];
-    var textCtx: CanvasRenderingContext2D = document.createElement("canvas").getContext("2d");
 
     gl = create3DContext(canvas, null);
     if (!gl) {
@@ -84,6 +84,7 @@ function Web3DContext(canvas: HTMLElement) {
     textTextures = initTextTextures();
 
     function createTextCanvas(text, width, height) {
+        let textCtx: CanvasRenderingContext2D = document.createElement("canvas").getContext("2d");
         textCtx.canvas.width = width;
         textCtx.canvas.height = height;
         textCtx.font = "25px Arial";
@@ -501,29 +502,24 @@ function Web3DContext(canvas: HTMLElement) {
                 id: 6,
                 vxProgram: "\
                     attribute vec3 vertex;\n\
-                    attribute vec2 texCoord;\n\
+                    attribute float size;\n\
                     \n\
                     uniform mat4 mvpMatrix;\n\
                     \n\
-                    varying vec2 varTexCoord;\n\
-                    \n\
                     void main() {\n\
                         gl_Position = mvpMatrix * vec4(vertex,1.0);\n\
+                        gl_PointSize = size;\n\
                         \n\
-                        varTexCoord = texCoord;\n\
                 }",
                 pxProgram: "\
                     precision mediump float;\n\
-                    \n\
                     uniform sampler2D texSampler;\n\
                     \n\
-                    varying vec2 varTexCoord;\n\
-                    \n\
                     void main() {\n\
-                        gl_FragColor = texture2D(texSampler, varTexCoord);\n\
+                        gl_FragColor = texture2D(texSampler, gl_PointCoord);\n\
                     }",
-                attributes: [GL_ATTR_VTX,GL_ATTR_TEX],
-                uniforms: [GL_UNI_MVP,GL_UNI_TEX]
+                attributes: [GL_ATTR_VTX,GL_ATTR_SIZE],
+                uniforms: [GL_UNI_MVP, GL_UNI_TEX]
             }
         ]
 
@@ -769,18 +765,23 @@ function Web3DContext(canvas: HTMLElement) {
     }
 
     function initTextTextures(): WebGLTexture[] {
-        let textTexArray;
-        let textCanvas = createTextCanvas('X', 50, 25);
+        let textTexArray = [];
+        let textCanvas = [];
+        textCanvas.push(createTextCanvas('x', 40, 40));
+        textCanvas.push(createTextCanvas('y', 40, 40));
+        textCanvas.push(createTextCanvas('z', 40, 40));
 
-        textTexArray = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, textTexArray);     //bind Texture Buffer
-        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1); // not to unpremultiply,Multiplies the alpha channel into the other color channels
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
-        // with these following parameters, compatible WebGL devices will automatically accept any resolution for that texture (up to their maximum dimensions).
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); // linear minification
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); //s in texture coordinate means x-axis
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); //t in texture coordinate means y-axis
-        gl.bindTexture(gl.TEXTURE_2D, null);            //unbound Texture Buffer
+        for (let i = 0; i < textCanvas.length; i++) {
+            textTexArray[i] = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, textTexArray[i]);     //bind Texture Buffer
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1); // not to unpremultiply,Multiplies the alpha channel into the other color channels
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas[i]);
+            // with these following parameters, compatible WebGL devices will automatically accept any resolution for that texture (up to their maximum dimensions).
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); // linear minification
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); //s in texture coordinate means x-axis
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); //t in texture coordinate means y-axis
+            gl.bindTexture(gl.TEXTURE_2D, null);            //unbound Texture Buffer
+        }
 
         return textTexArray;
     }

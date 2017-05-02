@@ -45,16 +45,10 @@ function Renderer(modelData, glc) {
     var vpFront;
     var mvpFront;
     var mvpColorLegend;
-    var mText;
-    var translateText;
-    var pText;
-    var vpText;
-    var mvpText;
-    var rotText;
     var background;
     var colorLegend;
     var coordSys;
-    var axisText;
+    var axisSize = 32;
     initMatrices();
     initStaticData();
     function initMatrices() {
@@ -91,14 +85,6 @@ function Renderer(modelData, glc) {
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), center, up);
         mat4.multiply(vpFront, pScene, vpFront);
         mvpFront = mat4.create();
-        translateText = vec3.create();
-        mText = mat4.create();
-        pText = mat4.create();
-        vpText = mat4.create();
-        mat4.lookAt(vpText, new Float32Array([0, 0, 1]), center, up);
-        mat4.multiply(vpText, pText, vpText);
-        mvpText = mat4.create();
-        rotText = mat4.create();
     }
     function initStaticData() {
         background = {
@@ -142,18 +128,11 @@ function Renderer(modelData, glc) {
                 22, 38, 38, 22, 39, 39, 22, 40, 40, 22, 41, 41, 22, 42, 42, 22, 23, 44, 45, 46, 44, 46, 47, 44, 47, 48, 44, 48, 49, 44, 49, 50, 44, 50, 51, 44, 51, 52, 44, 52, 53, 44,
                 53, 54, 44, 54, 55, 44, 55, 56, 44, 56, 57, 44, 57, 58, 44, 58, 59, 44, 59, 60, 44, 60, 61, 44, 61, 62, 44, 62, 63, 44, 43, 45, 45, 43, 46, 46, 43, 47, 47, 43, 48, 48,
                 43, 49, 49, 43, 50, 50, 43, 51, 51, 43, 52, 52, 43, 53, 53, 43, 54, 54, 43, 55, 55, 43, 56, 56, 43, 57, 57, 43, 58, 58, 43, 59, 59, 43, 60, 60, 43, 61, 61, 43, 62, 62,
-                43, 63, 63, 43, 44]))
-        };
-        axisText = {
-            vertexBuf: glc.setupArrayBuffer(new Float32Array([0.09, 0.025,
-                0.014, 0.025,
-                0.09, -0.025,
-                0.014, -0.025])),
-            textureBuf: glc.setupArrayBuffer(new Float32Array([0.0, 0.0,
-                1.0, 0.0,
-                0.0, 1.0,
-                1.0, 1.0])),
-            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3]))
+                43, 63, 63, 43, 44])),
+            axisBuf: glc.setupArrayBuffer(new Float32Array([0.11, 0, 0,
+                0, 0.115, 0,
+                0.0, 0.0, 0.11])),
+            axisPointSize: glc.setupArrayBuffer(new Float32Array([axisSize, axisSize, axisSize]))
         };
     }
     this.renderScene = function () {
@@ -292,6 +271,10 @@ function Renderer(modelData, glc) {
         eyeSeperation = seperation;
         drawCallRequest = true;
     };
+    this.setAxisSize = function (fontsize) {
+        axisSize = fontsize;
+        drawCallRequest = true;
+    };
     this.rotateObject = function (x, y) {
         quat.identity(quatTmp);
         quat.rotateX(quatTmp, quatTmp, y * degToRad);
@@ -328,14 +311,6 @@ function Renderer(modelData, glc) {
         mat4.identity(vpFront);
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
         mat4.multiply(vpFront, pScene, vpFront);
-        mat4.identity(mText);
-        mat4.translate(mText, mText, new Float32Array([-0.2 * width / height, -0.3, 0]));
-        mat4.identity(vpText);
-        pText[0] = pScene[0];
-        pText[1] = pScene[1];
-        pText[2] = 0;
-        mat4.lookAt(vpText, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
-        mat4.multiply(vpText, pText, vpText);
         drawCallRequest = true;
     };
     this.resizeVRCanvas = function (width, height) {
@@ -804,21 +779,22 @@ function Renderer(modelData, glc) {
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.depthMask(false);
-        let prog = programs[6];
-        let size = Float32Array.BYTES_PER_ELEMENT;
-        gl.useProgram(prog.gl);
-        gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpText);
-        gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, glContext.getTextTexture());
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
-        gl.enableVertexAttribArray(prog.attributes[GL_ATTR_TEX]);
-        gl.bindBuffer(gl.ARRAY_BUFFER, axisText.vertexBuf);
-        gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 2, gl.FLOAT, false, 0, 0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, axisText.textureBuf);
-        gl.vertexAttribPointer(prog.attributes[GL_ATTR_TEX], 2, gl.FLOAT, false, 0, 0);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, axisText.indexBuf);
-        gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
+        let textures = glContext.getTextTexture();
+        for (let i = 0; i < 3; i++) {
+            let prog = programs[6];
+            gl.useProgram(prog.gl);
+            gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpFront);
+            gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, textures[i]);
+            gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, coordSys.axisBuf);
+            gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(prog.attributes[GL_ATTR_SIZE]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, coordSys.axisPointSize);
+            gl.vertexAttribPointer(prog.attributes[GL_ATTR_SIZE], 1, gl.FLOAT, false, 0, 0);
+            gl.drawArrays(gl.POINTS, i, 1);
+        }
         gl.depthMask(true);
     };
     function drawScene(seperation) {
@@ -837,8 +813,6 @@ function Renderer(modelData, glc) {
         mat4.multiply(mvpScene, pScene, mvScene);
         mat4.multiply(mvpFront, mFront, rotScene);
         mat4.multiply(mvpFront, vpFront, mvpFront);
-        mat4.getTranslation(translateText, mvpFront);
-        mat4.translate(mvpText, mvpText, translateText);
         drawBackground();
         if (activeModel && activePlotgroup) {
             gl.enable(gl.DEPTH_TEST);
