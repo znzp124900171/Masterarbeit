@@ -1,0 +1,41 @@
+\begin{thebibliography}{COMSOL}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+
+\bibitem{DF}
+Projektseite \textsc{DockingFrames}.
+\newblock \urlprefix\url{http://dock.javaforge.com/}.
+\newblock Eingesehen am 12.11.2014
+
+\bibitem{JFC}
+Projektseite \textsc{JFreeChart}.
+\newblock \urlprefix\url{http://www.jfree.org/jfreechart/}.
+\newblock Eingesehen am 12.11.2014
+
+\bibitem{SIG}
+Projektseite \textsc{Sigar}.
+\newblock \urlprefix\url{https://support.hyperic.com/display/SIGAR/Home}.
+\newblock Eingesehen am 12.11.2014
+
+\bibitem{IKo}
+Icon der konsole.
+\newblock
+  \urlprefix\url{http://upload.wikimedia.org/wikipedia/commons/8/82/Konsole-icon.png}.
+\newblock Eingesehen am 12.11.2014
+
+\bibitem{IMo}
+Icon des status-monitors.
+\newblock
+  \urlprefix\url{http://findicons.com/files/icons/2166/oxygen/128/utilities\_system\_monitor.png}.
+\newblock Eingesehen am 12.11.2014
+
+\bibitem{COMSOL}
+Projektseite \textsc{Comsol}.
+\newblock \urlprefix\url{http://www.comsol.com/comsol-multiphysics}.
+\newblock Eingesehen am 12.11.2014
+
+\end{thebibliography}

@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2014/Arch Linux)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: Urls.aux
+The style file: urls.bst
+Database file #1: Urls.bib
+You've used 6 entries,
+            2359 wiz_defined-function locations,
+            540 strings with 4788 characters,
+and the built_in function-call counts, 1168 in all, are:
+= -- 72
+> -- 6
+< -- 0
++ -- 0
+- -- 0
+* -- 32
+:= -- 79
+add.period$ -- 12
+call.type$ -- 6
+change.case$ -- 12
+chr.to.int$ -- 0
+cite$ -- 12
+duplicate$ -- 132
+empty$ -- 157
+format.name$ -- 0
+if$ -- 271
+int.to.chr$ -- 0
+int.to.str$ -- 0
+missing$ -- 36
+newline$ -- 38
+num.names$ -- 0
+pop$ -- 120
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 40
+stack$ -- 0
+substring$ -- 12
+swap$ -- 60
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 0
+width$ -- 9
+write$ -- 61
