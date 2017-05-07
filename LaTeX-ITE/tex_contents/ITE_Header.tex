@@ -1,0 +1,107 @@
+\documentclass[a4paper,12pt,oneside,openright,onecolumn,final,titlepage,fleqn,ngerman]{scrreprt}
+
+% Gliederungsebenen:
+% \part{}
+% \chapter{}
+% \section{}
+% \subsection{}
+% \subsubsection{}
+% \paragraph{}
+% \subparagraph{}
+
+% Package definitions
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+
+% package to control enumerations
+\usepackage{enumerate}
+
+% package to make the shorting table
+\usepackage{longtable}
+\renewcommand{\arraystretch}{1.5}
+
+% use graphix
+\usepackage{graphicx}
+
+% for mathematical formula
+\usepackage{amsmath}
+
+% flushleft for caption
+\usepackage{caption}
+
+% use colors
+\usepackage{color}
+\definecolor{orange}{rgb}{1,0.784,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+
+% package for killing borders at title page
+\usepackage{geometry}
+
+% Quotations
+% \usepackage[numbers]{natbib}
+\usepackage{multibib}
+% \bibliographystyle{alphadin}
+
+% other useful packages
+\usepackage{tabularx}
+
+% syntax highlighting
+\usepackage{scrhack}		% makes a warning disappearing, but does dirty things!
+\usepackage[final]{listings}
+\lstset{
+	frame=single,
+	language=Java
+}
+\renewcommand{\lstlistingname}{Quelltext}
+\renewcommand{\lstlistlistingname}{Quelltextverzeichnis}
+
+% for links, LOAD AT LAST!
+\usepackage[colorlinks,
+pdfpagelabels,
+pdfstartview = FitH,
+bookmarksopen = true,
+bookmarksnumbered = true,
+linkcolor = black,
+plainpages = false,
+hypertexnames = false,
+citecolor = black] {hyperref}
+
+% set bibliographies
+\newcommand{\refver}{Literaturverzeichnis}
+\newcommand{\webver}{Verzeichnis der Webadressen}
+\newcites{Refs,Urls}{\refver, \webver}
+
+% disable indents for new paragraphs
+\setlength{\parindent}{0cm}
+
+% set header/footer
+\usepackage{scrpage2}
+\pagestyle{scrheadings}
+% \setkomafont{pageheadfoot}{}		% set heading not italic
+\automark{chapter}
+
+\usepackage{tocloft}
+\renewcommand{\cftfigpresnum}{Abb. }
+\renewcommand{\cftfigaftersnum}{:}
+\settowidth{\cftfignumwidth}{Abb. 8.88\quad}
+
+% set new symbol for itemize-environment
+\renewcommand{\labelitemi}{--}
+
+% set depth of toc (depth=3, starts at 0!)
+\setcounter{tocdepth}{2}
+
+% important commands
+\newcommand{\parag}{\\[2ex]}
+\newcommand{\zB}{z.\,B.}
+\newcommand{\abkEntry}[2]{\textbf{#1} & #2\\}
+\newcommand{\imgCaption}[2]{\caption[#1]{#1 (\textit{Quelle:} #2)}}			% to define the sources of images
+
+% set some constants
+\newcommand{\calcag}{Berechnungsagent}
+\newcommand{\coordag}{Koordinationsagent}
+\newcommand{\repag}{Darstellungsagent}
+\newcommand{\numag}{Numerikagent}
+\newcommand{\iteag}{ITE-Agent}
+
+\renewcommand{\ttdefault}{pcr}
