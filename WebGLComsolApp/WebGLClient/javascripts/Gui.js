@@ -139,28 +139,30 @@ function Gui(modelData, renderer, glContext) {
             }
         };
         keydown = function (evt) {
-            if (evt.preventDefault) {
-                evt.preventDefault();
-            }
-            if (renderer.getSeperation() > 0.01) {
-                switch (evt.keyCode) {
-                    case 37:
-                        renderer.setSeperation(renderer.getSeperation() - 0.01);
-                        break;
-                    case 39:
-                        renderer.setSeperation(renderer.getSeperation() + 0.01);
-                        break;
-                    case 38:
-                        renderer.setZPosition(renderer.getPosition()[2] + 0.2);
-                        break;
-                    case 40:
-                        renderer.setZPosition(renderer.getPosition()[2] - 0.2);
-                        break;
+            if (vrOn) {
+                if (renderer.getSeperation() > 0.01) {
+                    switch (evt.keyCode) {
+                        case 37:
+                            renderer.setSeperation(renderer.getSeperation() - 0.01);
+                            break;
+                        case 39:
+                            renderer.setSeperation(renderer.getSeperation() + 0.01);
+                            break;
+                        case 38:
+                            renderer.setZPosition(renderer.getPosition()[2] + 0.2);
+                            break;
+                        case 40:
+                            renderer.setZPosition(renderer.getPosition()[2] - 0.2);
+                            break;
+                    }
                 }
-            }
-            else {
-                renderer.setSeperation(renderer.getSeperation() + 0.01);
-                alert('values are beyond the bondary');
+                else {
+                    renderer.setSeperation(renderer.getSeperation() + 0.01);
+                    alert('values are beyond the bondary');
+                }
+                if (evt.keyCode === 69) {
+                    vrButton.click();
+                }
             }
         };
         handleMouseWheel = function (evt) {
@@ -186,10 +188,12 @@ function Gui(modelData, renderer, glContext) {
             if (vrOn) {
                 canvas.height = height;
                 renderer.resizeVRCanvas(canvas.width, canvas.height);
+                $('.text-box').hide();
             }
             else {
                 canvas.height = height - navHeader.outerHeight();
                 renderer.resizeCanvas(canvas.width, canvas.height);
+                $('.text-box').show();
             }
         };
         handleRangeX = function (evt) {
@@ -260,19 +264,6 @@ function Gui(modelData, renderer, glContext) {
         fullScreenButton.click(toggleFullScreen);
         lightButton.click(toggleLight);
         vrButton.click(toggleVR);
-        document.onkeypress = function (event) {
-            let isEscape = false;
-            let docElement, request;
-            if ('key' in event) {
-                isEscape = (event.key == "E" || event.key == "e");
-            }
-            else {
-                isEscape = (event.keyCode === 27);
-            }
-            if (isEscape && vrOn) {
-                vrButton.click();
-            }
-        };
         handleResize();
     }());
     jqModelList.on('click', 'a.active', function () {

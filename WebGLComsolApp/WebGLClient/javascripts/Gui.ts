@@ -174,28 +174,32 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
         //add the keyboard control
         keydown = function (evt) {
-            if (evt.preventDefault) {
-                evt.preventDefault();
-            }
-            if (renderer.getSeperation() > 0.01) {
-                switch (evt.keyCode) {
-                    case 37: // left arrow key
-                        renderer.setSeperation(renderer.getSeperation() - 0.01);
-                        break;
-                    case 39: // right arrow key
-                        renderer.setSeperation(renderer.getSeperation() + 0.01);
-                        break;
-                    case 38: //up arrow key
-                        renderer.setZPosition(renderer.getPosition()[2] + 0.2);
-                        break;
-                    case 40: //bottom arrow key
-                        renderer.setZPosition(renderer.getPosition()[2] - 0.2);
-                        break;
+            if (vrOn) {
+                if (renderer.getSeperation() > 0.01) {//change the seperation of plots in two viewports
+                    switch (evt.keyCode) {
+                        case 37: // left arrow key
+                            renderer.setSeperation(renderer.getSeperation() - 0.01);
+                            break;
+                        case 39: // right arrow key
+                            renderer.setSeperation(renderer.getSeperation() + 0.01);
+                            break;
+                        case 38: //up arrow key
+                            renderer.setZPosition(renderer.getPosition()[2] + 0.2);
+                            break;
+                        case 40: //bottom arrow key
+                            renderer.setZPosition(renderer.getPosition()[2] - 0.2);
+                            break;
+                    }
+                } else {
+                    renderer.setSeperation(renderer.getSeperation() + 0.01);
+                    alert('values are beyond the bondary')
                 }
-            } else {
-                renderer.setSeperation(renderer.getSeperation() + 0.01);
-                alert('values are beyond the bondary')
+
+                if (evt.keyCode === 69) {//exit the VR mode
+                    vrButton.click()
+                }
             }
+            
         }
 
 
@@ -209,8 +213,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             var eyeZ = renderer.getPosition()[2];
             eyeZ = Math.log(-eyeZ + 1) * 50
             eyeZ += delta / 120;
-            //rangeZ.val(eyeZ);
-            //rangeZ.slider('refresh');
             eyeZ = - Math.exp(eyeZ / 50) + 1;
             renderer.setZPosition(eyeZ);
         }
@@ -228,13 +230,16 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
             //Size of the canvas
             canvas.width = width;
+
+            //adjust the layout in VR mode
             if (vrOn) {
                 canvas.height = height;
                 renderer.resizeVRCanvas(canvas.width, canvas.height);
-                
+                $('.text-box').hide();
             } else {
                 canvas.height = height - navHeader.outerHeight();
                 renderer.resizeCanvas(canvas.width, canvas.height);
+                $('.text-box').show();
             }
         }
         handleRangeX = function (evt) {
@@ -314,20 +319,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
         lightButton.click(toggleLight);
         vrButton.click(toggleVR);
-
-        //exit the VR mode from full screen
-        document.onkeypress = function (event) {
-            let isEscape = false;
-            let docElement, request;
-            if ('key' in event) {
-                isEscape = (event.key == "E" || event.key == "e");
-            } else {
-                isEscape = (event.keyCode === 27);
-            }
-            if (isEscape && vrOn) {
-                vrButton.click();
-            }
-        };
 
         //initial canvas size
         handleResize();
