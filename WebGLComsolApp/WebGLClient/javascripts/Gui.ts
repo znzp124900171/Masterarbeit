@@ -172,7 +172,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             }
         }
 
-        //add the keyboard control to adjust plot in fullscrene
+        //add the keyboard control
         keydown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
@@ -306,7 +306,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         canvas.addEventListener('pointerdown', pointerDown, false);
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
-        //document.addEventListener('keydown', keydown, false);
+        document.addEventListener('keydown', keydown, false);
 
         window.onresize = handleResize;
         resetButton.click(handleResetView);
@@ -315,11 +315,12 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         lightButton.click(toggleLight);
         vrButton.click(toggleVR);
 
+        //exit the VR mode from full screen
         document.onkeypress = function (event) {
             let isEscape = false;
             let docElement, request;
             if ('key' in event) {
-                isEscape = (event.key == "Escape" || event.key == "Esc");
+                isEscape = (event.key == "E" || event.key == "e");
             } else {
                 isEscape = (event.keyCode === 27);
             }

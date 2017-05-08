@@ -254,6 +254,7 @@ function Gui(modelData, renderer, glContext) {
         canvas.addEventListener('pointerdown', pointerDown, false);
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
+        document.addEventListener('keydown', keydown, false);
         window.onresize = handleResize;
         resetButton.click(handleResetView);
         fullScreenButton.click(toggleFullScreen);
@@ -263,7 +264,7 @@ function Gui(modelData, renderer, glContext) {
             let isEscape = false;
             let docElement, request;
             if ('key' in event) {
-                isEscape = (event.key == "Escape" || event.key == "Esc");
+                isEscape = (event.key == "E" || event.key == "e");
             }
             else {
                 isEscape = (event.keyCode === 27);

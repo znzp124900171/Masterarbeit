@@ -149,8 +149,7 @@ function _init() {
         },
         fix: function () {
             //Get window height and the wrapper height
-            let footer_height = $('.main-footer').outerHeight() || 0;
-            let neg = $('.main-header').outerHeight() + footer_height;
+            let neg = $('.main-header').outerHeight();
             let window_height = $(window).height();
             let sidebar_height = $(".sidebar").height() || 0;
             
@@ -405,12 +404,10 @@ function _init() {
     $.GUI.SideBySide = {
         activate: function() {
             let header = $('.main-header');
-            let footer = $('.main-footer');
             let leftSidebar = $('.main-sidebar');
             let rightSidebar = $('.control-sidebar');
 
             header.css('display', 'none');
-            footer.css('display', 'none');
             leftSidebar.css('display', 'none');
             rightSidebar.css('display', 'none');
         }
