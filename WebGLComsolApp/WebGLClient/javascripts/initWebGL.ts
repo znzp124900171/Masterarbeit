@@ -51,6 +51,7 @@ interface Shader {
 interface Web3DContext {
     setupArrayBuffer(binFloatArray: Float32Array): WebGLBuffer;
     setupElementBuffer(binShortArray: Uint16Array): WebGLBuffer;
+    setLegendScalaTextures(scalaValue: string[]): void;
 
     getContext(): WebGLRenderingContext;
     getCanvas(): HTMLElement;
@@ -61,6 +62,7 @@ interface Web3DContext {
     getColorByName(name: string): number[];
     getTextureByName(name: string): number;
     getTextTexture();
+    getLegendScalaTextures();
 
 }
 
@@ -72,6 +74,7 @@ function Web3DContext(canvas: HTMLElement) {
     var textures: WebGLTexture;
     var gl: WebGLRenderingContext;
     var textTextures: WebGLTexture[];
+    var legendScala: WebGLTexture = [];
 
     gl = create3DContext(canvas, null);
     if (!gl) {
@@ -83,11 +86,11 @@ function Web3DContext(canvas: HTMLElement) {
     textures = initTextures();
     textTextures = initTextTextures();
 
-    function createTextCanvas(text, width, height) {
+    function createTextCanvas(text, width, height,fontSize) {
         let textCtx: CanvasRenderingContext2D = document.createElement("canvas").getContext("2d");
         textCtx.canvas.width = width;
         textCtx.canvas.height = height;
-        textCtx.font = "25px Arial";
+        textCtx.font = fontSize + "px Arial";
         textCtx.textAlign = "center";
         textCtx.textBaseline = "middle";
         textCtx.fillStyle = "black";
@@ -767,9 +770,9 @@ function Web3DContext(canvas: HTMLElement) {
     function initTextTextures(): WebGLTexture[] {
         let textTexArray = [];
         let textCanvas = [];
-        textCanvas.push(createTextCanvas('x', 40, 40));
-        textCanvas.push(createTextCanvas('y', 40, 40));
-        textCanvas.push(createTextCanvas('z', 40, 40));
+        textCanvas.push(createTextCanvas('x', 40, 40, 25));
+        textCanvas.push(createTextCanvas('y', 40, 40, 25));
+        textCanvas.push(createTextCanvas('z', 40, 40, 25));
 
         for (let i = 0; i < textCanvas.length; i++) {
             textTexArray[i] = gl.createTexture();
@@ -784,6 +787,31 @@ function Web3DContext(canvas: HTMLElement) {
         }
 
         return textTexArray;
+    }
+
+    this.setLegendScalaTextures = function (scalaValue: string[]) {
+        let textCanvas = [];
+
+        // create text canvas for each scala value
+        for (let i = 0; i < scalaValue.length; i++) {
+            textCanvas.push(createTextCanvas(scalaValue[i], 60, 60, 18));
+        }
+
+        for (let j = 0; j < textCanvas.length; j++) {
+            legendScala[j] = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, legendScala[j]);
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1); // not to unpremultiply,Multiplies the alpha channel into the other color channels
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas[j]);
+            // with these following parameters, compatible WebGL devices will automatically accept any resolution for that texture (up to their maximum dimensions).
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); // linear minification
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); //s in texture coordinate means x-axis
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); //t in texture coordinate means y-axis
+            gl.bindTexture(gl.TEXTURE_2D, null);            //unbound Texture Buffer
+        }
+    }
+
+    this.getLegendScalaTextures = function () {
+        return legendScala;
     }
 
     this.setupArrayBuffer = function (binFloatArray): WebGLBuffer {

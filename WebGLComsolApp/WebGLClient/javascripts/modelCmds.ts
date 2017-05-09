@@ -222,7 +222,6 @@ function ModelCmds() {
     function requestModel(modelId: string, callback: (model: Model) => void) {
         var request = new XMLHttpRequest();
         request.open("GET", MODEL_PATH + "/" + modelId + ".json", true);
-        //request.responseType = "json";
         request.onload = function (e) {
 
             var model = JSON.parse(request.response);
@@ -253,7 +252,6 @@ function ModelCmds() {
     function requestModelList(callback: (modelList: { modelId: string; name: string }[]) => void) {
         var request = new XMLHttpRequest();
         request.open("GET", MODEL_PATH + "/" + MODEL_LIST, true);
-        //request.responseType = "json";
         request.onload = function () {
             try {
                 modelList = JSON.parse(request.response);

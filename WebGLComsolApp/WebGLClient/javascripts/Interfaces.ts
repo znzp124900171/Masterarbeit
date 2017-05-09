@@ -53,6 +53,8 @@ interface ColorLegend {
     vertexBuf: WebGLBuffer;
     indexBuf?: WebGLBuffer;
     colorBuf?: WebGLBuffer;
+    scalaBuf?: WebGLBuffer;
+    scalaPointSize?: WebGLBuffer;
 }
 
 interface CoordSys {

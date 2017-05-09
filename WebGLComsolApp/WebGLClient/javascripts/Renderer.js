@@ -103,7 +103,9 @@ function Renderer(modelData, glc) {
                 -0.85, 0.0,
                 -0.82, 0.0,])),
             colorBuf: glc.setupArrayBuffer(new Float32Array([1.0, 1.0, 0.0, 0.0])),
-            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3]))
+            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3])),
+            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85, 0])),
+            scalaPointSize: glc.setupArrayBuffer(new Float32Array([50]))
         };
         coordSys = {
             vertexBuf: glc.setupArrayBuffer(new Float32Array([0, 0, 0, 0.1, 0, 0, 0.09, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085,
@@ -328,7 +330,6 @@ function Renderer(modelData, glc) {
         if (!activePlotgroup.noData) {
             for (var i = 0; i < activePlotgroup.renderGroup.length; i++) {
                 drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], activePlotgroup.usrColor);
-                console.log('usrColor: ' + activePlotgroup.usrColor);
             }
         }
     };
@@ -740,6 +741,10 @@ function Renderer(modelData, glc) {
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
     var drawLegend = function (renderGroup, usrText) {
+        let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
+        let minValue = colAttr.min;
+        let maxValue = colAttr.max;
+        glContext.setLegendScalaTextures(scalaValue(minValue, maxValue));
         let prog = programs[3];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
@@ -754,6 +759,29 @@ function Renderer(modelData, glc) {
         gl.vertexAttribPointer(prog.attributes[GL_ATTR_COL], 1, gl.FLOAT, false, 0, 0);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorLegend.indexBuf);
         gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
+        drawScala();
+    };
+    var drawScala = function () {
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        gl.depthMask(false);
+        let textures = glContext.getLegendScalaTextures();
+        for (let i = 0; i < 1; i++) {
+            let prog = programs[6];
+            gl.useProgram(prog.gl);
+            gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
+            gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, textures[i]);
+            gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.scalaBuf);
+            gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(prog.attributes[GL_ATTR_SIZE]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.scalaPointSize);
+            gl.vertexAttribPointer(prog.attributes[GL_ATTR_SIZE], 1, gl.FLOAT, false, 0, 0);
+            gl.drawArrays(gl.POINTS, i, 1);
+        }
+        gl.depthMask(true);
     };
     var drawFront = function () {
         gl.useProgram(programs[1].gl);
@@ -832,6 +860,16 @@ function Renderer(modelData, glc) {
         gl.viewport(glWidth / 2, 0, glWidth / 2, glHeight);
         drawScene(-eyeSeperation);
     }
+    var scalaValue = function legendScala(min, max) {
+        let maxDigits = min.toString().split('.')[1].length;
+        let minDigits = max.toString().split('.')[1].length;
+        let digits = Math.max(minDigits, maxDigits);
+        let scalaValue = [];
+        if (digits > 1) {
+            scalaValue.push('10E-' + digits.toString());
+        }
+        return scalaValue;
+    };
     function checkGLerror() {
         var error = gl.getError();
         if (error) {

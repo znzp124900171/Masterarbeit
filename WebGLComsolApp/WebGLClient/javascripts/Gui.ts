@@ -468,6 +468,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         resetPlot();
         var modelId = renderer.getActiveModelId();
         var plotGroupId = renderer.getActivePlotGroupId();
+
         console.log("modelId: " + modelId + " \nplotGroupId: " + plotGroupId);
         var result = modelData.getPlot(modelId, plotGroupId, plotTag, function (_result: Result) {
             if (activeHandle) {

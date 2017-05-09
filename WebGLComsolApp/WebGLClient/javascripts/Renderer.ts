@@ -176,7 +176,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
             colorBuf: glc.setupArrayBuffer(new Float32Array([1.0,1.0,0.0,0.0])),
 
-            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3]))
+            indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3])),
+
+            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85,0])),
+
+            scalaPointSize: glc.setupArrayBuffer(new Float32Array([50]))
         };
 
         coordSys = {
@@ -469,9 +473,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var drawPlotGroup = function () {
         if (!activePlotgroup.noData) {
             for (var i = 0; i < activePlotgroup.renderGroup.length; i++) {
-                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], activePlotgroup.usrColor);
-                console.log('usrColor: ' + activePlotgroup.usrColor);
-                
+                drawRenderGroupShader1Lines(activePlotgroup.renderGroup[i], activePlotgroup.usrColor);              
             }
         }
     }
@@ -479,12 +481,14 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     //draw all active Plots
     var drawPlots = function () {
         for (var i = 0; i < activePlots.length; i++) {
-            var result = activePlots[i];
+            var result = activePlots[i];      
+
             if (!result.noData) {
                 for (var j = 0; j < result.renderGroup.length; j++) {
                     var renderGroup = result.renderGroup[j];
                     var shaderId = getShaderType(result.type, light, renderGroup.attributes);
                     var geomType = getGeoType(result.type);
+
                     switch (shaderId) {
                         case 1:
                             if (geomType === 2) {
@@ -959,6 +963,13 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawLegend = function (renderGroup: RenderGroup, usrText: string) {
+
+        let colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
+        let minValue: number = colAttr.min;
+        let maxValue: number = colAttr.max;
+
+        glContext.setLegendScalaTextures(scalaValue(minValue, maxValue));
+
         //reset View
         let prog = programs[3];
         gl.useProgram(prog.gl);
@@ -980,6 +991,34 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorLegend.indexBuf);
         gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
 
+        drawScala();
+
+    }
+
+    var drawScala = function () {
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        gl.depthMask(false);
+        let textures = glContext.getLegendScalaTextures();
+        for (let i = 0; i < 1; i++) {
+            let prog = programs[6];
+            gl.useProgram(prog.gl);
+            gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
+            gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, textures[i]);
+
+            gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.scalaBuf);
+            gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
+
+            gl.enableVertexAttribArray(prog.attributes[GL_ATTR_SIZE]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.scalaPointSize);
+            gl.vertexAttribPointer(prog.attributes[GL_ATTR_SIZE], 1, gl.FLOAT, false, 0, 0);
+
+            gl.drawArrays(gl.POINTS, i, 1);
+        }
+        gl.depthMask(true);
     }
 
     //paint the foreground i.e coordination system
@@ -1033,7 +1072,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             gl.drawArrays(gl.POINTS, i, 1);
         }
         gl.depthMask(true);
-        
     }
 
     //paint the complete Scene
@@ -1082,6 +1120,18 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         drawScene(eyeSeperation);
         gl.viewport(glWidth / 2, 0, glWidth / 2, glHeight);
         drawScene(-eyeSeperation);
+    }
+
+    //set legend scala array
+    var scalaValue = function legendScala(min:number,max:number) {
+        let maxDigits = min.toString().split('.')[1].length;
+        let minDigits = max.toString().split('.')[1].length;
+        let digits = Math.max(minDigits, maxDigits);
+        let scalaValue = [];
+        if (digits > 1) {
+            scalaValue.push('10E-' + digits.toString());
+        }
+        return scalaValue;
     }
 
     function checkGLerror() : boolean{
