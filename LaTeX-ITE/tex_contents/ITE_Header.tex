@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt,oneside,openright,onecolumn,final,titlepage,fleqn,ngerman]{scrreprt}
+\documentclass[a4paper,12pt,oneside,openright,onecolumn, fleqn, final,titlepage,ngerman]{scrreprt}
 
 % Gliederungsebenen:
 % \part{}
@@ -47,13 +47,6 @@
 
 % syntax highlighting
 \usepackage{scrhack}		% makes a warning disappearing, but does dirty things!
-\usepackage[final]{listings}
-\lstset{
-	frame=single,
-	language=Java
-}
-\renewcommand{\lstlistingname}{Quelltext}
-\renewcommand{\lstlistlistingname}{Quelltextverzeichnis}
 
 % for links, LOAD AT LAST!
 \usepackage[colorlinks,
@@ -67,9 +60,8 @@ hypertexnames = false,
 citecolor = black] {hyperref}
 
 % set bibliographies
-\newcommand{\refver}{Literaturverzeichnis}
-\newcommand{\webver}{Verzeichnis der Webadressen}
-\newcites{Refs,Urls}{\refver, \webver}
+\newcommand{\refver}{Bibliography}
+\newcites{Refs,Urls}{\refver}
 
 % disable indents for new paragraphs
 \setlength{\parindent}{0cm}

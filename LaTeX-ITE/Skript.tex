@@ -2,7 +2,6 @@
 % Document
 \begin{document}
 \bibliographystyleRefs{plaindin}
-\bibliographystyleUrls{urls}
 	% setting roman counter for toc,...
 	\pagenumbering{Roman}
 
@@ -21,8 +20,8 @@
 			\begin{tabularx}{\textwidth}{rXcXl}
 				\begin{tabular}{c}\includegraphics[keepaspectratio=true,height=0.15\textwidth]{res/unilogo.png} \end{tabular} & &
 				\large\begin{tabular}{c}
-					Universität Stuttgart\\
-					Institut für Theorie der Elektrotechnik\\
+					University of Stuttgart\\
+					Institute for Theory of Electrical Engineering\\
 					Prof. Dr. techn. Wolfgang M. Rucker
 				\end{tabular}
 				& & \begin{tabular}{c} \includegraphics[keepaspectratio=true,height=0.15\textwidth]{res/itelogo.png} \end{tabular}
@@ -76,14 +75,9 @@
 
 	Stuttgart, den 24.07.2017
 
-	\newpage
+	% abstract
+	\include{tex_contents/Abstract}
 	
-	\include{tex_contents/abstractname.tex}
-
-	\chapter*{\abstractname}
-	\addcontentsline{toc}{chapter}{\abstractname}
-	In der folgenden Arbeit wird ein Programm zur Erfassung und Darstellung von Prozessparametern einer Rechner-Plattform zur Lösung numerischer Simulationen vorgestellt. Dieses soll möglichst einfach in der Bedienung sein, einen guten Überblick über die gesamte Plattform bieten und die erfassten Prozessparameter in geeigneter Weise darstellen.\parag{}
-	Im Folgenden wird ein möglicher Lösungsansatz für diese Anforderungen beschrieben. Da das hier entwickelte Programm die Schnittstelle zwischen Benutzer und Rechner darstellt, wird auf eine gute Bedienbarkeit der Benutzeroberfläche besonderen Wert gelegt. Es gelingt, die Prozessparameter intuitiv interpretierbar zu präsentieren. Die Entwicklung des Programms geschieht nach dem Wasserfallmodell\footnote{lineares Vorgehensmodell in der Softwaretechnik (siehe \citeRefs{info2})}.
 
 	% table of contents
 	\clearpage		% flush page before printing toc -> toc to new page
@@ -95,25 +89,22 @@
 	
 	
 	%%%%%%%%%%%%%%% Start including your chapters below %%%%%%%%%%%%%
-	\include{tex_contents/introduction}
-	\include{tex_contents/fundamentals}
-	\include{tex_contents/design}
-	\include{tex_contents/appendix}
+	\include{tex_contents/Introduction}
+	\include{tex_contents/Chapter_2}
+	\include{tex_contents/Chapter_3}
+	\include{tex_contents/Chapter_4}
+	\include{tex_contents/Chapter_5}
+	\include{tex_contents/Conclusion}
+	% \include{tex_contents/appendix}
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%% Compulsory declaration. %%%%%%%%%%%%%%%%%%%%%%%%
 	%%%% Fill in the hand in date in the file tex_contents/Declaration.tex %%%%%%%%%
 	
 	
-	% ---------------------------------  list of source codes   ---------------------------------------
-	\lstlistoflistings{}
-	\addcontentsline{toc}{chapter}{\lstlistlistingname} % entry to toc
 	
 	% -----------------------------------   bibliographies   ------------------------------------------
 	\begin{flushleft}
 	\bibliographyRefs{Refs}
 	\addcontentsline{toc}{chapter}{\refver} % entry to toc
-	
-	\bibliographyUrls{Urls}
-	\addcontentsline{toc}{chapter}{\webver} % entry to toc
 	\end{flushleft}
 \end{document}
