@@ -104,8 +104,19 @@ function Renderer(modelData, glc) {
                 -0.82, 0.0,])),
             colorBuf: glc.setupArrayBuffer(new Float32Array([1.0, 1.0, 0.0, 0.0])),
             indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3])),
-            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85, 0])),
-            scalaPointSize: glc.setupArrayBuffer(new Float32Array([50]))
+            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85, 0,
+                -0.78, 0.78, 0,
+                -0.78, 0.70, 0,
+                -0.78, 0.62, 0,
+                -0.78, 0.54, 0,
+                -0.78, 0.46, 0,
+                -0.78, 0.38, 0,
+                -0.78, 0.30, 0,
+                -0.78, 0.22, 0,
+                -0.78, 0.14, 0,
+                -0.78, 0.06, 0
+            ])),
+            scalaPointSize: glc.setupArrayBuffer(new Float32Array([50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50]))
         };
         coordSys = {
             vertexBuf: glc.setupArrayBuffer(new Float32Array([0, 0, 0, 0.1, 0, 0, 0.09, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085,
@@ -766,7 +777,7 @@ function Renderer(modelData, glc) {
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.depthMask(false);
         let textures = glContext.getLegendScalaTextures();
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 11; i++) {
             let prog = programs[6];
             gl.useProgram(prog.gl);
             gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
@@ -861,12 +872,27 @@ function Renderer(modelData, glc) {
         drawScene(-eyeSeperation);
     }
     var scalaValue = function legendScala(min, max) {
+        let maxDecade = max.toString().split('.')[0].length;
+        let minDecade = min.toString().split('.')[0].length;
         let maxDigits = min.toString().split('.')[1].length;
         let minDigits = max.toString().split('.')[1].length;
         let digits = Math.max(minDigits, maxDigits);
+        let decade = maxDecade - 1;
         let scalaValue = [];
-        if (digits > 1) {
+        let value = Math.floor(max / Math.pow(10, decade));
+        let stepLengthDigits = (max - min) * digits;
+        if (decade <= 1 && digits > 1) {
             scalaValue.push('10E-' + digits.toString());
+            for (let i = 0; i < 10; i++) {
+                scalaValue.push((max * digits - stepLengthDigits).toFixed(1).toString());
+            }
+        }
+        else if (decade >= 1) {
+            scalaValue.push('x10' + decade.toString().sup());
+            for (let i = 0; i < 10; i++) {
+                scalaValue.push(value.toFixed(1).toString());
+                value = value - 0.2;
+            }
         }
         return scalaValue;
     };

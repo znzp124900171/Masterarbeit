@@ -789,7 +789,7 @@ function Web3DContext(canvas: HTMLElement) {
         return textTexArray;
     }
 
-    this.setLegendScalaTextures = function (scalaValue: string[]) {
+    this.setLegendScalaTextures = function (scalaValue:any[]) {
         let textCanvas = [];
 
         // create text canvas for each scala value
