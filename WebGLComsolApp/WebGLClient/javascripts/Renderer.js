@@ -755,7 +755,7 @@ function Renderer(modelData, glc) {
         let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         let minValue = colAttr.min;
         let maxValue = colAttr.max;
-        glContext.setLegendScalaTextures(scalaValue(minValue, maxValue));
+        glContext.setLegendScalaTextures(scalaValue(minValue, maxValue, false));
         let prog = programs[3];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
@@ -871,14 +871,18 @@ function Renderer(modelData, glc) {
         gl.viewport(glWidth / 2, 0, glWidth / 2, glHeight);
         drawScene(-eyeSeperation);
     }
-    var scalaValue = function legendScala(min, max) {
-        let maxDecade = max.toString().split('.')[0].length;
-        let minDecade = min.toString().split('.')[0].length;
+    var scalaValue = function legendScala(min, max, normalization) {
+        let scalaValue = [];
+        let normalizedValue = [];
+        let maxDecade, minDecade, maxDigit, minDigit;
+        let range = max - min;
+        if (max > 0 && min > 0) {
+            maxDecade = max.toString().split('.')[0].length;
+        }
         let maxDigits = min.toString().split('.')[1].length;
         let minDigits = max.toString().split('.')[1].length;
         let digits = Math.max(minDigits, maxDigits);
         let decade = maxDecade - 1;
-        let scalaValue = [];
         let value = Math.floor(max / Math.pow(10, decade));
         let stepLengthDigits = (max - min) * digits;
         if (decade <= 1 && digits > 1) {
@@ -888,13 +892,17 @@ function Renderer(modelData, glc) {
             }
         }
         else if (decade >= 1) {
-            scalaValue.push('x10' + decade.toString().sup());
+            scalaValue.push('10E' + decade.toString());
             for (let i = 0; i < 10; i++) {
                 scalaValue.push(value.toFixed(1).toString());
                 value = value - 0.2;
             }
         }
-        return scalaValue;
+        if (normalization) {
+        }
+        else {
+            return scalaValue;
+        }
     };
     function checkGLerror() {
         var error = gl.getError();
