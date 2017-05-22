@@ -10,7 +10,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <TypeScriptToolsVersion>2.0</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -57,33 +57,34 @@
     <Content Include="stylesheets\fonts\fontawesome-webfont.woff" />
     <Content Include="stylesheets\fonts\fontawesome-webfont.woff2" />
     <Content Include="stylesheets\fonts\FontAwesome.otf" />
-    <Content Include="visual\capacitive_pressure_sensor_2017-05-02 21-27-34.json" />
-    <Content Include="visual\capacitive_pressure_sensor_2017-05-02 21-27-34\pg1.0.0.bin" />
-    <Content Include="visual\capacitive_pressure_sensor_2017-05-02 21-27-34\pg1\surf1.0.0.bin" />
-    <Content Include="visual\capacitive_pressure_sensor_2017-05-02 21-27-34\pg2.0.0.bin" />
-    <Content Include="visual\capacitive_pressure_sensor_2017-05-02 21-27-34\pg2\slc1.0.0.bin" />
-    <Content Include="visual\capacitive_pressure_sensor_2017-05-02 21-27-34\pg5.0.0.bin" />
-    <Content Include="visual\capacitive_pressure_sensor_2017-05-02 21-27-34\pg5\surf1.0.0.bin" />
-    <Content Include="visual\capacitive_pressure_sensor_2017-05-02 21-27-34\pg6.0.0.bin" />
-    <Content Include="visual\capacitive_pressure_sensor_2017-05-02 21-27-34\pg6\slc1.0.0.bin" />
-    <Content Include="visual\generator_2d_2017-05-02 21-28-14.json" />
-    <Content Include="visual\generator_2d_2017-05-02 21-28-14\pg1.0.0.bin" />
-    <Content Include="visual\generator_2d_2017-05-02 21-28-14\pg1\surf1.0.0.bin" />
+    <Content Include="visual\electrochemical_polishing_2017-05-18 20-56-59.json" />
+    <Content Include="visual\electrochemical_polishing_2017-05-18 20-56-59\pg1.0.0.bin" />
+    <Content Include="visual\electrochemical_polishing_2017-05-18 20-56-59\pg1\surf1.0.0.bin" />
+    <Content Include="visual\electrochemical_polishing_2017-05-18 20-56-59\pg2.0.0.bin" />
+    <Content Include="visual\electrochemical_polishing_2017-05-18 20-56-59\pg2\surf1.0.0.bin" />
+    <Content Include="visual\electrochemical_polishing_2017-05-18 20-56-59\pg3.0.0.bin" />
+    <Content Include="visual\electrochemical_polishing_2017-05-18 20-56-59\pg3\surf1.0.0.bin" />
+    <Content Include="visual\feeder_clamp_2017-05-18 20-57-27.json" />
+    <Content Include="visual\feeder_clamp_2017-05-18 20-57-27\pg1.0.0.bin" />
+    <Content Include="visual\feeder_clamp_2017-05-18 20-57-27\pg1\surf1.0.0.bin" />
+    <Content Include="visual\feeder_clamp_2017-05-18 20-57-27\pg2.0.0.bin" />
+    <Content Include="visual\feeder_clamp_2017-05-18 20-57-27\pg2\surf1.0.0.bin" />
+    <Content Include="visual\feeder_clamp_2017-05-18 20-57-27\pg3.0.0.bin" />
+    <Content Include="visual\feeder_clamp_2017-05-18 20-57-27\pg3\surf1.0.0.bin" />
     <Content Include="visual\list.json" />
-    <Content Include="visual\multiturn_coil_asymmetric_conductor_2017-05-02 21-27-57.json" />
-    <Content Include="visual\multiturn_coil_asymmetric_conductor_2017-05-02 21-27-57\pg1.0.0.bin" />
-    <Content Include="visual\multiturn_coil_asymmetric_conductor_2017-05-02 21-27-57\pg1\arwv1.0.0.bin" />
-    <Content Include="visual\multiturn_coil_asymmetric_conductor_2017-05-02 21-27-57\pg1\arwv2.0.0.bin" />
-    <Content Include="visual\multiturn_coil_asymmetric_conductor_2017-05-02 21-27-57\pg1\surf1.0.0.bin" />
-    <Content Include="visual\multiturn_coil_asymmetric_conductor_2017-05-02 21-27-57\pg2.0.0.bin" />
-    <Content Include="visual\multiturn_coil_asymmetric_conductor_2017-05-02 21-27-57\pg2\arwv1.0.0.bin" />
-    <Content Include="visual\multiturn_coil_asymmetric_conductor_2017-05-02 21-27-57\pg2\arwv2.0.0.bin" />
-    <Content Include="visual\multiturn_coil_asymmetric_conductor_2017-05-02 21-27-57\pg2\surf1.0.0.bin" />
-    <Content Include="visual\mutual_inductance_multiturn_2017-05-02 21-28-27.json" />
-    <Content Include="visual\mutual_inductance_multiturn_2017-05-02 21-28-27\pg1.0.0.bin" />
-    <Content Include="visual\mutual_inductance_multiturn_2017-05-02 21-28-27\pg1\str1.0.0.bin" />
-    <Content Include="visual\mutual_inductance_multiturn_2017-05-02 21-28-27\pg2.0.0.bin" />
-    <Content Include="visual\mutual_inductance_multiturn_2017-05-02 21-28-27\pg2\str1.0.0.bin" />
+    <Content Include="visual\mast_diagonal_mounting_2017-05-18 20-57-34.json" />
+    <Content Include="visual\mast_diagonal_mounting_2017-05-18 20-57-34\pg1.0.0.bin" />
+    <Content Include="visual\mast_diagonal_mounting_2017-05-18 20-57-34\pg1\surf1.0.0.bin" />
+    <Content Include="visual\mast_diagonal_mounting_2017-05-18 20-57-34\pg2.0.0.bin" />
+    <Content Include="visual\mast_diagonal_mounting_2017-05-18 20-57-34\pg2\surf1.0.0.bin" />
+    <Content Include="visual\thin_film_resistance_2017-05-18 20-57-45.json" />
+    <Content Include="visual\thin_film_resistance_2017-05-18 20-57-45\pg1.0.0.bin" />
+    <Content Include="visual\thin_film_resistance_2017-05-18 20-57-45\pg1\surf1.0.0.bin" />
+    <Content Include="visual\wrench_2017-05-18 20-57-54.json" />
+    <Content Include="visual\wrench_2017-05-18 20-57-54\pg1.0.0.bin" />
+    <Content Include="visual\wrench_2017-05-18 20-57-54\pg1\surf1.0.0.bin" />
+    <Content Include="visual\wrench_2017-05-18 20-57-54\pg2.0.0.bin" />
+    <Content Include="visual\wrench_2017-05-18 20-57-54\pg2\surf1.0.0.bin" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
