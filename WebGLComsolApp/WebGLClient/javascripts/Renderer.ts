@@ -42,7 +42,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     // Viewing Angle
     var viewAngle = 45 * degToRad;
     // Pupillary distance
-    var eyeSeperation: number = 0.03;
+    var eyeSeperation: number = 0.1;
     // Render Items:
     // active Model, only one Model is selected at one time
     var activeModel: Model = null;

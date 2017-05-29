@@ -1,4 +1,4 @@
-﻿var GL_UNI_MVP = "mvpMatrix";
+var GL_UNI_MVP = "mvpMatrix";
 var GL_UNI_MV = "mvMatrix";
 var GL_UNI_P = "pMatrix";
 var GL_UNI_NORM = "normMatrix";
@@ -6,21 +6,17 @@ var GL_UNI_COL = "color";
 var GL_UNI_LIG = "lightPosition";
 var GL_UNI_SCL = "scale";
 var GL_UNI_TEX = "texSampler";
-
 var GL_ATTR_VTX = "vertex";
 var GL_ATTR_POS = "position";
 var GL_ATTR_NRM = "normal";
 var GL_ATTR_COL = "color";
+var GL_ATTR_TEX = "texCoord";
+var GL_ATTR_SIZE = "size";
 var GL_ATTR_DEF_X = "deformX";
-var GL_ATTR_DEF_Y = "deformX";
-var GL_ATTR_DEF_Z = "deformX";
-
-var ShaderProgram = (function () {
-    function ShaderProgram() {
-    }
-    return ShaderProgram;
-})();
-
+var GL_ATTR_DEF_Y = "deformY";
+var GL_ATTR_DEF_Z = "deformZ";
+class ShaderProgram {
+}
 function Web3DContext(canvas) {
     var shaders;
     var colorList;
@@ -28,24 +24,36 @@ function Web3DContext(canvas) {
     var programs;
     var textures;
     var gl;
-
+    var textTextures;
+    var legendScala = [];
     gl = create3DContext(canvas, null);
     if (!gl) {
         throw "Could not create 3D Context";
     }
-
     initStaticData();
     programs = initShaders();
     textures = initTextures();
-
+    textTextures = initTextTextures();
+    function createTextCanvas(text, width, height, fontSize) {
+        let textCtx = document.createElement("canvas").getContext("2d");
+        textCtx.canvas.width = width;
+        textCtx.canvas.height = height;
+        textCtx.font = fontSize + "px Arial";
+        textCtx.textAlign = "center";
+        textCtx.textBaseline = "middle";
+        textCtx.fillStyle = "black";
+        textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
+        textCtx.fillText(text, width / 2, height / 2);
+        return textCtx.canvas;
+    }
     function create3DContext(canvas, opt_attribs) {
         var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
         var context = null;
-        for (var ii = 0; ii < names.length; ++ii) {
-            try  {
+        for (let ii = 0; ii < names.length; ++ii) {
+            try {
                 context = canvas.getContext(names[ii], opt_attribs);
-            } catch (e) {
             }
+            catch (e) { }
             if (context) {
                 break;
             }
@@ -53,23 +61,22 @@ function Web3DContext(canvas) {
         return context;
     }
     function initStaticData() {
-        shaders = [
-            {
+        shaders = [{
                 name: "unifiedColorShader",
                 id: 1,
                 vxProgram: "attribute vec3 vertex;\n\
-                    uniform mat4 mvpMatrix;\n\
-                    \n\
-                    void main(void) {\n\
-                        gl_Position = mvpMatrix * vec4(vertex, 1.0);\n\
-                    }",
+                        uniform mat4 mvpMatrix;\n\
+                        \n\
+                        void main(void) {\n\
+                            gl_Position = mvpMatrix * vec4(vertex, 1.0);\n\
+                        }",
                 pxProgram: "precision mediump float;\n\
-        	        \n\
-                    uniform vec3 color;\n\
-                    \n\
-        	        void main(void) {\n\
-                        gl_FragColor = vec4(color,1.0);\n\
-                    }",
+        	            \n\
+                        uniform vec3 color;\n\
+                        \n\
+        	            void main(void) {\n\
+                            gl_FragColor = vec4(color,1.0);\n\
+                        }",
                 attributes: [GL_ATTR_VTX],
                 uniforms: [GL_UNI_MVP, GL_UNI_COL]
             },
@@ -416,9 +423,32 @@ function Web3DContext(canvas) {
                     }",
                 attributes: [GL_ATTR_VTX, GL_ATTR_COL, GL_ATTR_NRM, GL_ATTR_DEF_X, GL_ATTR_DEF_Y, GL_ATTR_DEF_Z],
                 uniforms: [GL_UNI_MV, GL_UNI_P, GL_UNI_NORM, GL_UNI_LIG, GL_UNI_TEX, GL_UNI_SCL]
+            },
+            {
+                name: 'textCanvasShader',
+                id: 6,
+                vxProgram: "\
+                    attribute vec3 vertex;\n\
+                    attribute float size;\n\
+                    \n\
+                    uniform mat4 mvpMatrix;\n\
+                    \n\
+                    void main() {\n\
+                        gl_Position = mvpMatrix * vec4(vertex,1.0);\n\
+                        gl_PointSize = size;\n\
+                        \n\
+                }",
+                pxProgram: "\
+                    precision mediump float;\n\
+                    uniform sampler2D texSampler;\n\
+                    \n\
+                    void main() {\n\
+                        gl_FragColor = texture2D(texSampler, gl_PointCoord);\n\
+                    }",
+                attributes: [GL_ATTR_VTX, GL_ATTR_SIZE],
+                uniforms: [GL_UNI_MVP, GL_UNI_TEX]
             }
         ];
-
         colorList = [
             { name: 'black', value: [0.1, 0.1, 0.1] },
             { name: 'red', value: [0.5, 0.0, 0.0] },
@@ -429,27 +459,25 @@ function Web3DContext(canvas) {
             { name: 'yellow', value: [0.5, 0.5, 0.0] },
             { name: 'yellow green', value: [0.4, 0.5, 0.0] },
             { name: 'grey dark', value: [0.3, 0.3, 0.3] },
-            { name: 'grey light', value: [0.6, 0.6, 0.6] }];
-
+            { name: 'grey light', value: [0.6, 0.6, 0.6] }
+        ];
         colorTables = [
             {
                 name: "Cyclic",
                 size: 7,
-                tex: new Uint8Array([
-                    255, 0, 0,
+                tex: new Uint8Array([255, 0, 0,
                     255, 255, 0,
                     0, 255, 0,
                     0, 255, 255,
                     0, 0, 255,
                     255, 0, 255,
                     255, 0, 0,
-                    255, 0, 0])
+                    255, 0, 0]),
             },
             {
                 name: "Disco",
                 size: 9,
-                tex: new Uint8Array([
-                    0, 0, 128,
+                tex: new Uint8Array([0, 0, 128,
                     0, 0, 255,
                     0, 128, 255,
                     0, 255, 255,
@@ -462,8 +490,7 @@ function Web3DContext(canvas) {
             {
                 name: 'DiscoLight',
                 size: 9,
-                tex: new Uint8Array([
-                    0, 0, 128,
+                tex: new Uint8Array([0, 0, 128,
                     0, 0, 255,
                     0, 128, 255,
                     0, 255, 255,
@@ -472,28 +499,24 @@ function Web3DContext(canvas) {
                     255, 128, 255,
                     255, 64, 128,
                     255, 0, 0,
-                    128, 0, 0])
+                    128, 0, 0]),
             },
             {
                 name: 'GrayPrint',
                 size: 2,
-                tex: new Uint8Array([
-                    130, 130, 130,
+                tex: new Uint8Array([130, 130, 130,
                     242, 242, 242]),
-                scale: 1
             },
             {
                 name: 'GrayScale',
                 size: 2,
-                tex: new Uint8Array([
-                    0, 0, 0,
-                    255, 255, 255])
+                tex: new Uint8Array([0, 0, 0,
+                    255, 255, 255]),
             },
             {
                 name: 'Rainbow',
                 size: 9,
-                tex: new Uint8Array([
-                    0, 0, 128,
+                tex: new Uint8Array([0, 0, 128,
                     0, 0, 255,
                     0, 128, 255,
                     0, 255, 255,
@@ -506,8 +529,7 @@ function Web3DContext(canvas) {
             {
                 name: 'RainbowLight',
                 size: 4,
-                tex: new Uint8Array([
-                    0, 0, 255,
+                tex: new Uint8Array([0, 0, 255,
                     0, 255, 255,
                     255, 255, 0,
                     255, 0, 0])
@@ -515,8 +537,7 @@ function Web3DContext(canvas) {
             {
                 name: 'Thermal',
                 size: 17,
-                tex: new Uint8Array([
-                    0, 0, 0, 64, 0, 0, 128, 0, 0,
+                tex: new Uint8Array([0, 0, 0, 64, 0, 0, 128, 0, 0,
                     192, 0, 0, 255, 0, 0, 255, 37, 0,
                     255, 73, 0, 255, 110, 0, 255, 146, 0,
                     255, 183, 0, 255, 219, 0, 255, 255, 0,
@@ -526,13 +547,12 @@ function Web3DContext(canvas) {
             {
                 name: 'ThermalEquidistant',
                 size: 4,
-                tex: new Uint8Array([0, 0, 0, 255, 0, 0, 255, 255, 0, 255, 255, 255])
+                tex: new Uint8Array([0, 0, 0, 255, 0, 0, 255, 255, 0, 255, 255, 255]),
             },
             {
                 name: 'Traffic',
                 size: 9,
-                tex: new Uint8Array([
-                    0, 170, 0,
+                tex: new Uint8Array([0, 170, 0,
                     0, 255, 0,
                     85, 255, 0,
                     170, 255, 0,
@@ -540,55 +560,60 @@ function Web3DContext(canvas) {
                     255, 170, 0,
                     255, 85, 0,
                     255, 0, 0,
-                    170, 0, 0])
+                    170, 0, 0]),
             },
             {
                 name: 'TrafficLight',
                 size: 3,
-                tex: new Uint8Array([
-                    0, 255, 0,
+                tex: new Uint8Array([0, 255, 0,
                     255, 255, 0,
-                    0, 255, 0])
+                    0, 255, 0]),
+            },
+            {
+                name: 'Wave',
+                size: 5,
+                tex: new Uint8Array([0, 0, 128,
+                    0, 0, 255,
+                    204, 204, 204,
+                    255, 0, 0,
+                    128, 0, 0]),
+            },
+            {
+                name: 'WaveLight',
+                size: 3,
+                tex: new Uint8Array([0, 0, 255,
+                    255, 255, 255,
+                    255, 0, 0]),
             }
         ];
     }
-
     function initShaders() {
         var shaderPrograms = [];
         var vxShader, pxShader;
-
         for (var i = 0; i < shaders.length; i++) {
             var program = new ShaderProgram();
-
             program.gl = gl.createProgram();
             program.attributes = [];
             program.uniforms = [];
             var programId = shaders[i].id;
-
             vxShader = gl.createShader(gl.VERTEX_SHADER);
             gl.shaderSource(vxShader, shaders[i].vxProgram);
             gl.compileShader(vxShader);
-
             if (!gl.getShaderParameter(vxShader, gl.COMPILE_STATUS)) {
                 handleError({ name: "Vertex Shader Complilation", message: "Error while compiling VX Shader: " + shaders[i].name + ":\t" + gl.getShaderInfoLog(vxShader) });
             }
-
             pxShader = gl.createShader(gl.FRAGMENT_SHADER);
             gl.shaderSource(pxShader, shaders[i].pxProgram);
             gl.compileShader(pxShader);
-
             if (!gl.getShaderParameter(pxShader, gl.COMPILE_STATUS)) {
                 handleError({ name: "Vertex Shader Complilation", message: "Error while compiling PX Shader: " + shaders[i].name + ":\t" + gl.getShaderInfoLog(pxShader) });
             }
-
             gl.attachShader(program.gl, vxShader);
             gl.attachShader(program.gl, pxShader);
             gl.linkProgram(program.gl);
-
             if (!gl.getProgramParameter(program.gl, gl.LINK_STATUS)) {
                 handleError({ name: "Shader Program Linking", message: "Error while linking Shader: " + shaders[i].name + ":\t" + gl.getProgramInfoLog(program.gl) });
             }
-
             for (var j = 0; j < shaders[i].attributes.length; j++) {
                 var attrName = shaders[i].attributes[j];
                 var attr = gl.getAttribLocation(program.gl, attrName);
@@ -607,12 +632,10 @@ function Web3DContext(canvas) {
             }
             shaderPrograms[programId] = program;
         }
-
         return shaderPrograms;
     }
     function initTextures() {
         var texArray = [];
-
         for (var i = 0; i < colorTables.length; i++) {
             texArray[i] = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, texArray[i]);
@@ -622,10 +645,45 @@ function Web3DContext(canvas) {
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
             gl.bindTexture(gl.TEXTURE_2D, null);
         }
-
         return texArray;
     }
-
+    function initTextTextures() {
+        let textTexArray = [];
+        let textCanvas = [];
+        textCanvas.push(createTextCanvas('x', 40, 40, 25));
+        textCanvas.push(createTextCanvas('y', 40, 40, 25));
+        textCanvas.push(createTextCanvas('z', 40, 40, 25));
+        for (let i = 0; i < textCanvas.length; i++) {
+            textTexArray[i] = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, textTexArray[i]);
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas[i]);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.bindTexture(gl.TEXTURE_2D, null);
+        }
+        return textTexArray;
+    }
+    this.setLegendScalaTextures = function (scalaValue) {
+        let textCanvas = [];
+        for (let i = 0; i < scalaValue.length; i++) {
+            textCanvas.push(createTextCanvas(scalaValue[i], 60, 60, 18));
+        }
+        for (let j = 0; j < textCanvas.length; j++) {
+            legendScala[j] = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, legendScala[j]);
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas[j]);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.bindTexture(gl.TEXTURE_2D, null);
+        }
+    };
+    this.getLegendScalaTextures = function () {
+        return legendScala;
+    };
     this.setupArrayBuffer = function (binFloatArray) {
         var tmpBuf = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, tmpBuf);
@@ -633,7 +691,6 @@ function Web3DContext(canvas) {
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         return tmpBuf;
     };
-
     this.setupElementBuffer = function (binShortArray) {
         var tmpBuf = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, tmpBuf);
@@ -641,19 +698,15 @@ function Web3DContext(canvas) {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
         return tmpBuf;
     };
-
     this.getContext = function () {
         return gl;
     };
-
     this.getCanvas = function () {
         return canvas;
     };
-
     this.getPrograms = function () {
         return programs;
     };
-
     this.getTextureName = function () {
         var names = [];
         for (var i = 0; i < colorTables.length; i++) {
@@ -661,7 +714,6 @@ function Web3DContext(canvas) {
         }
         return names;
     };
-
     this.getColorNames = function () {
         var names = [];
         for (var i = 0; i < colorList.length; i++) {
@@ -669,7 +721,6 @@ function Web3DContext(canvas) {
         }
         return names;
     };
-
     this.getColorByName = function (name) {
         for (var i = 0; i < colorList.length; i++) {
             if (colorList[i].name === name) {
@@ -677,7 +728,6 @@ function Web3DContext(canvas) {
             }
         }
     };
-
     this.getTextureByName = function (name) {
         for (var i = 0; i < colorTables.length; i++) {
             if (colorTables[i].name === name) {
@@ -685,5 +735,7 @@ function Web3DContext(canvas) {
             }
         }
     };
+    this.getTextTexture = function () {
+        return textTextures;
+    };
 }
-//# sourceMappingURL=initWebGL.js.map

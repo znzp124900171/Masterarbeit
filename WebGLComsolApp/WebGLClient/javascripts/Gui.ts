@@ -1,10 +1,18 @@
 ﻿/// <reference path="libs/gl-matrix.d.ts"/>
 /// <reference path="libs/jquery.d.ts"/>
+
+interface OrientationPosition {
+    x: number,
+    y: number
+}
+
 function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) {
     var self = this;
     var gl = glContext.getContext();
 
-    var canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('webgl');
+    var canvas = <HTMLCanvasElement>document.getElementById('webgl');
+    var canvas2D = <HTMLCanvasElement>document.getElementById('canvas2D');
+    var ctx: CanvasRenderingContext2D = canvas2D.getContext('2d');
 
     var fontSize: number = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size')) * 2;
 
@@ -19,6 +27,11 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     modelData.getModelList(updateModelList);
 
     var reset = $('#reset');
+
+    var oldOrientation: OrientationPosition = {
+        x: 0,
+        y: 0
+    };
 
     //Input Handler
     (function () {
@@ -58,6 +71,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var handleResetView;
         var toggleLight;
         var toggleVR;
+        var orientation;
 
         pointerDown = function (evt) {
             if (evt.preventDefault) {
@@ -122,11 +136,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         renderPosi[1] += deltaY;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.setPositionV(renderPosi);
-
-                        //rangeX.val(renderPosi[0] * 50);
-                        //rangeX.slider('refresh');
-                        //rangeY.val(renderPosi[1] * 50);
-                        //rangeY.slider('refresh');
                     } else if ((evt.button === 2 || evt.buttons & 2) && renderer.getActivePlotGroupType() === 3) { //right Button => rotate
 
                         var position = lastPosition[evt.pointerId];
@@ -136,7 +145,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         var deltaY = (newPosition.y - position.y) * 100 / height;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.rotateObject(deltaX, deltaY);
-                        
+
+                        console.log('delatX: ' + deltaX + ';  deltaY: ' + deltaY + ';  newPosition.x: ' + newPosition.x + '; position.x' + position.x + ';  newPosition.y: ' + newPosition.y + '; position.y' + position.y);
+
                     } else if (evt.button === 1 || evt.button & 1) { //middle Button => zoom
                         var position = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
@@ -153,8 +164,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         var eyeZ = renderer.getPosition()[2];
                         eyeZ = Math.log(-eyeZ + 1) * 50
                         eyeZ += dist;
-                        //rangeZ.val(eyeZ);
-                        //rangeZ.slider('refresh');
                         eyeZ = - Math.exp(eyeZ / 50) + 1;
                         renderer.setZPosition(eyeZ);
                     }
@@ -202,6 +211,39 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             
         }
 
+        orientation = function(event) {
+            let horizonalPosition: number = event.alpha;        // horizonal position
+            let verticalPosition: number = event.gamma;         // vertical position
+
+            let orientationDeltaX: number;                      // horizonal change                      
+            let orientationDeltaY: number;                      // vertical change
+            
+
+            if (verticalPosition < 0) {
+                verticalPosition = 180 + verticalPosition;
+            }
+
+            if (verticalPosition > 90 && horizonalPosition>270) {
+                horizonalPosition = horizonalPosition - 180;
+            } else if (verticalPosition > 90 && horizonalPosition < 90) {
+                horizonalPosition = horizonalPosition + 180;
+            }
+
+            orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 8 / width;
+            orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 4 / height; // 
+
+            renderer.rotateObject(orientationDeltaX, orientationDeltaY);
+
+            oldOrientation.x = horizonalPosition;
+            oldOrientation.y = verticalPosition;
+
+            
+
+            ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
+            ctx.font = '20px arial';
+            ctx.fillStyle = 'white';
+            ctx.fillText('X: ' + horizonalPosition.toFixed(0) + '; Y: '+verticalPosition.toFixed(0)+ '; Z:  ' + event.beta.toFixed(0), 10, 90);
+        }
 
         //mouse Wheel Event => prevent default and zoom instead
         handleMouseWheel = function (evt) {
@@ -312,6 +354,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
         document.addEventListener('keydown', keydown, false);
+        window.addEventListener('deviceorientation',orientation, false);
 
         window.onresize = handleResize;
         resetButton.click(handleResetView);

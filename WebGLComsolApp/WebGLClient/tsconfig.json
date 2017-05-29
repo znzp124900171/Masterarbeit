@@ -2,7 +2,8 @@
   "compilerOptions": {
     "module": "amd",
     "removeComments": true,
-    "target": "ES6"
+    "target": "ES6",
+    "outDir": "../../WebServer\\ServerScript\\public\\javascripts"
   },
     "files": [
         "./javascripts/main.ts",

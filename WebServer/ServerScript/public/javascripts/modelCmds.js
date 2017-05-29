@@ -1,26 +1,20 @@
-﻿var MODEL_PATH = "visual";
+var MODEL_PATH = "visual";
 var MODEL_LIST = "list.json";
-
 function ModelCmds() {
     var self = this;
     var modelList;
     var modelArray = {};
     var postProcessor;
-
     var getGuiConfig = function (result) {
         var guiType;
-
         guiType.uniColor = false;
-
         guiType.isoTexture = false;
         guiType.colorTexture = false;
-
         guiType.arrowScale = false;
         guiType.radiusScale = false;
         guiType.deformationScale = false;
-
-        for (var group in result.renderGroup) {
-            for (var attr in group.attributes) {
+        for (let group of result.renderGroup) {
+            for (let attr in group.attributes) {
                 switch (attr) {
                     case ATTR_VECTORX:
                         guiType.arrowScale = true;
@@ -31,14 +25,12 @@ function ModelCmds() {
                     case ATTR_DEFX:
                         guiType.deformationScale = true;
                         break;
-
                     case ATTR_COLOR:
                         guiType.colorTexture = true;
                         break;
                     case ATTR_ISO:
                         guiType.isoTexture = true;
                         break;
-
                     default:
                         guiType.uniColor = true;
                         break;
@@ -47,19 +39,17 @@ function ModelCmds() {
         }
         return guiType;
     };
-
     this.setPostProcessor = function (postProc) {
         postProcessor = postProc;
     };
-
     this.getModel = function (modelId, callback) {
         if (!modelArray[modelId]) {
             requestModel(modelId, callback);
-        } else {
+        }
+        else {
             callback(modelArray[modelId]);
         }
     };
-
     this.getPlotGroup = function (modelId, plotGroupTag, callback) {
         self.getModel(modelId, function (model) {
             for (var i in model.results) {
@@ -69,7 +59,6 @@ function ModelCmds() {
                         var counter = 0;
                         plotGroup.requested = true;
                         postProcessor.initResultSize(plotGroup);
-
                         plotGroup.renderGroup.forEach(function (renderGroup, k) {
                             renderGroup.renderData.forEach(function (renderData, j) {
                                 counter++;
@@ -85,14 +74,14 @@ function ModelCmds() {
                             });
                         });
                         break;
-                    } else if (plotGroup.ready) {
+                    }
+                    else if (plotGroup.ready) {
                         callback(plotGroup);
                     }
                 }
             }
         });
     };
-
     this.getPlot = function (modelId, plotGroupTag, plotTag, callback) {
         self.getModel(modelId, function (model) {
             model.results.forEach(function (plotGroup) {
@@ -116,7 +105,8 @@ function ModelCmds() {
                                         });
                                     });
                                 });
-                            } else if (plot.ready) {
+                            }
+                            else if (plot.ready) {
                                 callback(plot);
                             }
                         }
@@ -125,15 +115,14 @@ function ModelCmds() {
             });
         });
     };
-
     this.getModelList = function (callback) {
         if (modelList == null) {
             requestModelList(callback);
-        } else {
+        }
+        else {
             callback(modelList);
         }
     };
-
     this.getPlotGroupMap = function (modelId, callback) {
         self.getModel(modelId, function (model) {
             var plotGroupList = [];
@@ -143,7 +132,6 @@ function ModelCmds() {
             callback(plotGroupList);
         });
     };
-
     this.getPlotMap = function (modelId, plotGroupId, callback) {
         self.getModel(modelId, function (model) {
             var plotList = [];
@@ -158,21 +146,17 @@ function ModelCmds() {
             callback(plotList);
         });
     };
-
     function requestModel(modelId, callback) {
         var request = new XMLHttpRequest();
         request.open("GET", MODEL_PATH + "/" + modelId + ".json", true);
-
         request.onload = function (e) {
             var model = JSON.parse(request.response);
             model.id = modelId;
-
             modelArray[modelId] = model;
             callback(model);
         };
         request.send();
     }
-
     function requestPlot(result, renderGroup, renderData, plotURI, callback) {
         var request = new XMLHttpRequest();
         request.open("GET", plotURI, true);
@@ -183,20 +167,18 @@ function ModelCmds() {
         };
         request.send();
     }
-
     function requestModelList(callback) {
         var request = new XMLHttpRequest();
         request.open("GET", MODEL_PATH + "/" + MODEL_LIST, true);
-
         request.onload = function () {
-            try  {
+            try {
                 modelList = JSON.parse(request.response);
                 callback(modelList);
-            } catch (e) {
+            }
+            catch (e) {
                 handleError(e);
             }
         };
         request.send();
     }
 }
-//# sourceMappingURL=modelCmds.js.map

@@ -2,6 +2,8 @@ function Gui(modelData, renderer, glContext) {
     var self = this;
     var gl = glContext.getContext();
     var canvas = document.getElementById('webgl');
+    var canvas2D = document.getElementById('canvas2D');
+    var ctx = canvas2D.getContext('2d');
     var fontSize = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size')) * 2;
     var jqModelList = $("#model");
     var jqResultList = $("#result");
@@ -10,6 +12,7 @@ function Gui(modelData, renderer, glContext) {
     var jqColorTable = $('#colorTable');
     modelData.getModelList(updateModelList);
     var reset = $('#reset');
+    var position = [0, 0, 0];
     (function () {
         var fullScreenButton = $('#fullScreen');
         var lightButton = $('#light');
@@ -40,6 +43,7 @@ function Gui(modelData, renderer, glContext) {
         var handleResetView;
         var toggleLight;
         var toggleVR;
+        var orientation;
         pointerDown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
@@ -107,6 +111,7 @@ function Gui(modelData, renderer, glContext) {
                         var deltaY = (newPosition.y - position.y) * 100 / height;
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.rotateObject(deltaX, deltaY);
+                        console.log('delatX: ' + deltaX + ';  deltaY: ' + deltaY + ';  newPosition.x: ' + newPosition.x + '; position.x' + position.x + ';  newPosition.y: ' + newPosition.y + '; position.y' + position.y);
                     }
                     else if (evt.button === 1 || evt.button & 1) {
                         var position = lastPosition[evt.pointerId];
@@ -164,6 +169,21 @@ function Gui(modelData, renderer, glContext) {
                     vrButton.click();
                 }
             }
+        };
+        orientation = function (event) {
+            let gamma = event.gamma;
+            let beta = event.beta;
+            let alpha = event.alpha;
+            let gammaChange = Math.round((gamma - position[1]) * 10);
+            var deltaX = (beta - position[0]) / width;
+            var deltaY = gammaChange / height;
+            renderer.rotateObject(deltaX, deltaY);
+            position[0] = beta;
+            position[1] = gamma;
+            ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
+            ctx.font = '20px arial';
+            ctx.fillStyle = 'white';
+            ctx.fillText('gamma: ' + gammaChange, 10, 90);
         };
         handleMouseWheel = function (evt) {
             if (evt.preventDefault) {
@@ -259,6 +279,7 @@ function Gui(modelData, renderer, glContext) {
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
         document.addEventListener('keydown', keydown, false);
+        window.addEventListener('deviceorientation', orientation, false);
         window.onresize = handleResize;
         resetButton.click(handleResetView);
         fullScreenButton.click(toggleFullScreen);

@@ -1,8 +1,1 @@
-[
-    { "modelId": "inductor_3d_2015-12-01 18-56-26", "name": "Root: inductor_3d.mph (root)" },
-    { "modelId": "capacitor_ac_2015-12-01 18-50-09", "name": "Root: capacitor_ac.mph (root)" },
-    { "modelId": "capacitor_fringing_fields_2015-12-01 18-51-10", "name": "Root: capacitor_fringing_fields.mph (root)" },
-    { "modelId": "capacitor_tunable_2015-12-01 18-52-37", "name": "Root: capacitor_tunable.mph (root)" },
-    { "modelId": "coil_above_plate_2015-12-01 18-54-11", "name": "Root: coil_above_plate.mph (root)" },
-    { "modelId": "inductive_heating_2015-12-01 18-54-49", "name": "Root: inductive_heating.mph (root)" }
-]
+[{"modelId":"electrochemical_polishing_2017-05-18 21-10-01","name":"electrochemical_polishing.mph (root)"},{"modelId":"feeder_clamp_2017-05-18 21-10-10","name":"feeder_clamp.mph (root)"},{"modelId":"mast_diagonal_mounting_2017-05-18 21-10-17","name":"mast_diagonal_mounting.mph (root)"},{"modelId":"multiturn_coil_asymmetric_conductor_2017-05-18 21-10-26","name":"multiturn_coil_asymmetric_conductor.mph (root)"},{"modelId":"piezoacoustic_transducer_2017-05-18 21-10-34","name":"piezoacoustic_transducer.mph (root)"},{"modelId":"wrench_2017-05-18 21-10-41","name":"wrench.mph (root)"}]
