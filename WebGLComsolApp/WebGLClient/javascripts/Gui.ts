@@ -218,31 +218,49 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             let orientationDeltaX: number;                      // horizonal change                      
             let orientationDeltaY: number;                      // vertical change
             
-
+            // set the vertical range from 180 grad to 0 grad
             if (verticalPosition < 0) {
                 verticalPosition = 180 + verticalPosition;
             }
 
-            if (verticalPosition > 90 && horizonalPosition>270) {
-                horizonalPosition = horizonalPosition - 180;
-            } else if (verticalPosition > 90 && horizonalPosition < 90) {
-                horizonalPosition = horizonalPosition + 180;
+            // detect the boundary change of vertical position
+            if (Math.abs(verticalPosition - oldOrientation.y) > 170) {
+                orientationDeltaY = 0;
+            } else {
+                orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 4 / height; //gain the rotation speed
             }
 
-            orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 8 / width;
-            orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 4 / height; // 
+            // set the horizonal range from 270 grad to 90 grad
+            if (verticalPosition > 90) {
+                if (horizonalPosition > 270) {
+                    horizonalPosition = horizonalPosition - 180;
+                } else if (horizonalPosition < 90) {
+                    horizonalPosition = horizonalPosition + 180;
+                }
+            } if (verticalPosition < 90) {
+                if (horizonalPosition > 270) {
+                    horizonalPosition = horizonalPosition - 180;
+                } else if (horizonalPosition < 90) {
+                    horizonalPosition = horizonalPosition + 180;
+                }
+            }
+            // detect the boundary change of horizonal position
+            if (Math.abs(horizonalPosition - oldOrientation.x) > 170) {
+                orientationDeltaX = 0;
+            } else {
+                orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 8 / width; //gain the rotation speed
+            }
 
             renderer.rotateObject(orientationDeltaX, orientationDeltaY);
 
+            // store the position for next comparation
             oldOrientation.x = horizonalPosition;
             oldOrientation.y = verticalPosition;
-
-            
 
             ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
             ctx.font = '20px arial';
             ctx.fillStyle = 'white';
-            ctx.fillText('X: ' + horizonalPosition.toFixed(0) + '; Y: '+verticalPosition.toFixed(0)+ '; Z:  ' + event.beta.toFixed(0), 10, 90);
+            ctx.fillText('X: ' + horizonalPosition.toFixed(0) + '; Y: ' + verticalPosition.toFixed(0), 10, 90);
         }
 
         //mouse Wheel Event => prevent default and zoom instead

@@ -181,21 +181,41 @@ function Gui(modelData, renderer, glContext) {
             if (verticalPosition < 0) {
                 verticalPosition = 180 + verticalPosition;
             }
-            if (verticalPosition > 90 && horizonalPosition > 270) {
-                horizonalPosition = horizonalPosition - 180;
+            if (Math.abs(verticalPosition - oldOrientation.y) > 170) {
+                orientationDeltaY = 0;
             }
-            else if (verticalPosition > 90 && horizonalPosition < 90) {
-                horizonalPosition = horizonalPosition + 180;
+            else {
+                orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 4 / height;
             }
-            orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 8 / width;
-            orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 4 / height;
+            if (verticalPosition > 90) {
+                if (horizonalPosition > 270) {
+                    horizonalPosition = horizonalPosition - 180;
+                }
+                else if (horizonalPosition < 90) {
+                    horizonalPosition = horizonalPosition + 180;
+                }
+            }
+            if (verticalPosition < 90) {
+                if (horizonalPosition > 270) {
+                    horizonalPosition = horizonalPosition - 180;
+                }
+                else if (horizonalPosition < 90) {
+                    horizonalPosition = horizonalPosition + 180;
+                }
+            }
+            if (Math.abs(horizonalPosition - oldOrientation.x) > 170) {
+                orientationDeltaX = 0;
+            }
+            else {
+                orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 8 / width;
+            }
             renderer.rotateObject(orientationDeltaX, orientationDeltaY);
             oldOrientation.x = horizonalPosition;
             oldOrientation.y = verticalPosition;
             ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
             ctx.font = '20px arial';
             ctx.fillStyle = 'white';
-            ctx.fillText('X: ' + horizonalPosition.toFixed(0) + '; Y: ' + verticalPosition.toFixed(0) + '; Z:  ' + event.beta.toFixed(0), 10, 90);
+            ctx.fillText('X: ' + horizonalPosition.toFixed(0) + '; Y: ' + verticalPosition.toFixed(0), 10, 90);
         };
         handleMouseWheel = function (evt) {
             if (evt.preventDefault) {
