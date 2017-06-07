@@ -1,63 +1,20 @@
 \BOOKMARK [0][]{chapter*.1}{Erkl\344rung}{}% 1
-\BOOKMARK [0][]{chapter*.2}{Abk\374rzungsverzeichnis}{}% 2
-\BOOKMARK [0][]{chapter*.4}{Zusammenfassung}{}% 3
-\BOOKMARK [0][]{chapter.6}{1 Einleitung}{}% 4
-\BOOKMARK [1][]{section.8}{1.1 Software-Agenten}{chapter.6}% 5
-\BOOKMARK [1][]{section.11}{1.2 Java}{chapter.6}% 6
-\BOOKMARK [1][]{section.12}{1.3 JADE}{chapter.6}% 7
-\BOOKMARK [1][]{section.14}{1.4 Struktur der existierenden Plattform}{chapter.6}% 8
-\BOOKMARK [2][]{subsection.17}{1.4.1 Nachrichtensystem}{section.14}% 9
-\BOOKMARK [0][]{chapter.19}{2 Prozessparameter}{}% 10
-\BOOKMARK [0][]{chapter.21}{3 Analyse}{}% 11
-\BOOKMARK [1][]{section.25}{3.1 Benutzeroberfl\344che}{chapter.21}% 12
-\BOOKMARK [0][]{chapter.26}{4 Entwurf des Agenten}{}% 13
-\BOOKMARK [1][]{section.27}{4.1 Einsatz von Komponenten}{chapter.26}% 14
-\BOOKMARK [1][]{section.29}{4.2 Benutzeroberfl\344che}{chapter.26}% 15
-\BOOKMARK [1][]{section.31}{4.3 Datenerhebung}{chapter.26}% 16
-\BOOKMARK [1][]{section.32}{4.4 Prozessparameter-Verwaltung}{chapter.26}% 17
-\BOOKMARK [0][]{chapter.34}{5 Implementierung des Agenten}{}% 18
-\BOOKMARK [1][]{section.35}{5.1 Eingesetzte Komponenten}{chapter.34}% 19
-\BOOKMARK [2][]{subsection.36}{5.1.1 DockingFrames}{section.35}% 20
-\BOOKMARK [2][]{subsection.40}{5.1.2 JFreeChart}{section.35}% 21
-\BOOKMARK [2][]{subsection.43}{5.1.3 SIGAR}{section.35}% 22
-\BOOKMARK [1][]{section.45}{5.2 Benutzeroberfl\344che}{chapter.34}% 23
-\BOOKMARK [2][]{subsection.46}{5.2.1 Hauptfenster}{section.45}% 24
-\BOOKMARK [2][]{subsection.48}{5.2.2 Agentenfenster}{section.45}% 25
-\BOOKMARK [2][]{subsection.49}{5.2.3 Anzeigefl\344che}{section.45}% 26
-\BOOKMARK [1][]{section.64}{5.3 Datenerhebung}{chapter.34}% 27
-\BOOKMARK [2][]{subsection.65}{5.3.1 Fortschritt}{section.64}% 28
-\BOOKMARK [2][]{subsection.66}{5.3.2 PC-Status-Monitor}{section.64}% 29
-\BOOKMARK [2][]{subsection.69}{5.3.3 Mesh-Daten}{section.64}% 30
-\BOOKMARK [2][]{subsection.72}{5.3.4 Konvergenzdaten}{section.64}% 31
-\BOOKMARK [1][]{section.74}{5.4 Prozessparameter-Verwaltung}{chapter.34}% 32
-\BOOKMARK [2][]{subsection.75}{5.4.1 Registrierung}{section.74}% 33
-\BOOKMARK [2][]{subsection.78}{5.4.2 Update}{section.74}% 34
-\BOOKMARK [2][]{subsection.79}{5.4.3 Deregistrierung}{section.74}% 35
-\BOOKMARK [0][]{chapter.81}{6 Anwendungsbeispiel}{}% 36
-\BOOKMARK [1][]{section.82}{6.1 Problem}{chapter.81}% 37
-\BOOKMARK [1][]{section.83}{6.2 Modell}{chapter.81}% 38
-\BOOKMARK [1][]{section.86}{6.3 Berechnung}{chapter.81}% 39
-\BOOKMARK [1][]{section.91}{6.4 Ergebnis}{chapter.81}% 40
-\BOOKMARK [0][]{chapter.92}{7 Zusammenfassung und Ausblick}{}% 41
-\BOOKMARK [1][]{section.93}{7.1 Auswerten der Daten}{chapter.92}% 42
-\BOOKMARK [1][]{section.94}{7.2 Weitere Funktionen}{chapter.92}% 43
-\BOOKMARK [2][]{subsection.95}{7.2.1 Ausgliederung der Tabs}{section.94}% 44
-\BOOKMARK [2][]{subsection.96}{7.2.2 Filterfunktion der Konsole}{section.94}% 45
-\BOOKMARK [2][]{subsection.97}{7.2.3 Suchfunktion der Konsole}{section.94}% 46
-\BOOKMARK [2][]{subsection.98}{7.2.4 Export der Konsole}{section.94}% 47
-\BOOKMARK [2][]{subsection.99}{7.2.5 Export der Diagramme}{section.94}% 48
-\BOOKMARK [0][]{appendix.101}{A Datenmanagement}{}% 49
-\BOOKMARK [1][]{section.102}{A.1 Text-Level}{appendix.101}% 50
-\BOOKMARK [1][]{section.110}{A.2 Wichtige Klassen}{appendix.101}% 51
-\BOOKMARK [1][]{section.114}{A.3 Das \334bertragungsprotokoll}{appendix.101}% 52
-\BOOKMARK [1][]{section.120}{A.4 Austausch der Daten}{appendix.101}% 53
-\BOOKMARK [2][]{subsection.121}{A.4.1 Sendeseite}{section.120}% 54
-\BOOKMARK [2][]{subsection.122}{A.4.2 Empfangsseite}{section.120}% 55
-\BOOKMARK [0][]{appendix.124}{B Hinzuf\374gen von Prozessparametern}{}% 56
-\BOOKMARK [1][]{section.125}{B.1 Weiterleitung an den Darstellungsagenten}{appendix.124}% 57
-\BOOKMARK [1][]{section.134}{B.2 Parameter}{appendix.124}% 58
-\BOOKMARK [1][]{section.156}{B.3 Update-Messages}{appendix.124}% 59
-\BOOKMARK [0][]{lstnumber.167}{Abbildungsverzeichnis}{}% 60
-\BOOKMARK [0][]{appendix*.168}{Quelltextverzeichnis}{}% 61
-\BOOKMARK [0][]{appendix*.169}{Literaturverzeichnis}{}% 62
-\BOOKMARK [0][]{appendix*.170}{Verzeichnis der Webadressen}{}% 63
+\BOOKMARK [0][]{chapter*.2}{Abstract}{}% 2
+\BOOKMARK [0][]{chapter.3}{1 Introduction}{}% 3
+\BOOKMARK [1][]{section.4}{1.1 Motivation}{chapter.3}% 4
+\BOOKMARK [1][]{section.5}{1.2 Outline of this thesis}{chapter.3}% 5
+\BOOKMARK [0][]{chapter.10}{2 Visualization System}{}% 6
+\BOOKMARK [1][]{section.11}{2.1 System architecture}{chapter.10}% 7
+\BOOKMARK [1][]{section.13}{2.2 Data processing}{chapter.10}% 8
+\BOOKMARK [0][]{chapter.15}{3 Data Extraction and Conversion}{}% 9
+\BOOKMARK [1][]{section.16}{3.1 Data-structure of COMSOL file}{chapter.15}% 10
+\BOOKMARK [1][]{section.17}{3.2 Data-format after conversion}{chapter.15}% 11
+\BOOKMARK [0][]{chapter.18}{4 Rendering using WebGL}{}% 12
+\BOOKMARK [1][]{section.20}{4.1 WebGL graphics pipeline}{chapter.18}% 13
+\BOOKMARK [1][]{section.21}{4.2 2D translation, rotation, scale and matrix math}{chapter.18}% 14
+\BOOKMARK [1][]{section.22}{4.3 3D Orthographic, Perspective, Cameras}{chapter.18}% 15
+\BOOKMARK [1][]{section.23}{4.4 Rendering text using sprites}{chapter.18}% 16
+\BOOKMARK [0][]{chapter.24}{5 Virtual Reality}{}% 17
+\BOOKMARK [0][]{chapter.25}{6 Conclusion}{}% 18
+\BOOKMARK [0][]{chapter*.26}{Bibliography}{}% 19
+\BOOKMARK [0][]{chapter*.27}{Index of web address}{}% 20
