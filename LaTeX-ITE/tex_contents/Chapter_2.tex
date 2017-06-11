@@ -15,10 +15,14 @@ To render the graphics in the web client, the source data need to be extracted a
 
 \section{Data processing}
 
- The core task of a visualization system is about data processing, the graphics data needs to be extracted from original file and converted correctly for the usage of web client. All algorithms and data structures of a model object is accessible via CJAPI. 
- 
+ The core task of a visualization system is about data processing, the graphics data needs to be extracted from original file and converted correctly for the usage of web client before presenting. All results or plot data can be retrieved directly through the COMSOL API\cite{COMSOL Programming reference manual}. In the figure 2, the data convert process is shown.
+
  \begin{figure}[htb]
   \centering
   \includegraphics[width=.9\textwidth]{Assets/Data_convert}
   \caption{Data flow}
 \end{figure}
+
+The model is organized in tree structure and CJAPI provides direct access through the model object.
+
+The detailed model structure are detail in COMSOL Multiphysics Programming Reference Manual\cite{} 

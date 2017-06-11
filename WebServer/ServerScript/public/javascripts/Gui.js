@@ -16,6 +16,10 @@ function Gui(modelData, renderer, glContext) {
         x: 0,
         y: 0
     };
+    var oldMotion = {
+        t: 0,
+        a: 0
+    };
     (function () {
         var fullScreenButton = $('#fullScreen');
         var lightButton = $('#light');
@@ -46,7 +50,8 @@ function Gui(modelData, renderer, glContext) {
         var handleResetView;
         var toggleLight;
         var toggleVR;
-        var orientation;
+        var deviceOrientation;
+        var deviceMotion;
         pointerDown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
@@ -173,7 +178,7 @@ function Gui(modelData, renderer, glContext) {
                 }
             }
         };
-        orientation = function (event) {
+        deviceOrientation = function (event) {
             let horizonalPosition = event.alpha;
             let verticalPosition = event.gamma;
             let orientationDeltaX;
@@ -185,7 +190,7 @@ function Gui(modelData, renderer, glContext) {
                 orientationDeltaY = 0;
             }
             else {
-                orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 4 / height;
+                orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 6 / height;
             }
             if (verticalPosition > 90) {
                 if (horizonalPosition > 270) {
@@ -207,15 +212,41 @@ function Gui(modelData, renderer, glContext) {
                 orientationDeltaX = 0;
             }
             else {
-                orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 8 / width;
+                orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 12 / width;
             }
             renderer.rotateObject(orientationDeltaX, orientationDeltaY);
             oldOrientation.x = horizonalPosition;
             oldOrientation.y = verticalPosition;
+        };
+        deviceMotion = function (event) {
+            let currentTime = new Date().getTime();
+            let currentAcceleration;
+            let eyeZ = renderer.getPosition()[2];
+            let diffTime = currentTime - oldMotion.t;
+            let maxAcceleration;
+            if (event.acceleration.x > event.acceleration.y) {
+                if (event.acceleration.x > event.acceleration.z) {
+                    maxAcceleration = event.acceleration.x;
+                }
+                else {
+                    maxAcceleration = event.acceleration.z;
+                }
+            }
+            else {
+                if (event.acceleration.y > event.acceleration.z) {
+                    maxAcceleration = event.acceleration.y;
+                }
+                else {
+                    maxAcceleration = event.acceleration.z;
+                }
+            }
+            currentAcceleration = maxAcceleration;
             ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
             ctx.font = '20px arial';
             ctx.fillStyle = 'white';
-            ctx.fillText('X: ' + horizonalPosition.toFixed(0) + '; Y: ' + verticalPosition.toFixed(0), 10, 90);
+            ctx.fillText('A: ' + currentAcceleration.toFixed(1) + 'Time: ' + diffTime.toFixed(1), 10, 90);
+            oldMotion.a = currentAcceleration;
+            oldMotion.t = currentTime;
         };
         handleMouseWheel = function (evt) {
             if (evt.preventDefault) {
@@ -311,7 +342,8 @@ function Gui(modelData, renderer, glContext) {
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
         document.addEventListener('keydown', keydown, false);
-        window.addEventListener('deviceorientation', orientation, false);
+        window.addEventListener('deviceorientation', deviceOrientation, false);
+        window.addEventListener('devicemotion', deviceMotion, false);
         window.onresize = handleResize;
         resetButton.click(handleResetView);
         fullScreenButton.click(toggleFullScreen);

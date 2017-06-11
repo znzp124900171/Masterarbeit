@@ -6,6 +6,11 @@ interface OrientationPosition {
     y: number
 }
 
+interface MotionPosition {
+    t: number;  //time
+    a: number;  //acceleration
+}
+
 function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) {
     var self = this;
     var gl = glContext.getContext();
@@ -31,6 +36,11 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var oldOrientation: OrientationPosition = {
         x: 0,
         y: 0
+    };
+
+    var oldMotion: MotionPosition = {
+        t: 0,
+        a: 0
     };
 
     //Input Handler
@@ -71,7 +81,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var handleResetView;
         var toggleLight;
         var toggleVR;
-        var orientation;
+        var deviceOrientation;
+        var deviceMotion;
 
         pointerDown = function (evt) {
             if (evt.preventDefault) {
@@ -211,7 +222,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             
         }
 
-        orientation = function(event) {
+        deviceOrientation = function(event) {
             let horizonalPosition: number = event.alpha;        // horizonal position
             let verticalPosition: number = event.gamma;         // vertical position
 
@@ -227,7 +238,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             if (Math.abs(verticalPosition - oldOrientation.y) > 170) {
                 orientationDeltaY = 0;
             } else {
-                orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 4 / height; //gain the rotation speed
+                orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 6 / height; //gain the rotation speed
             }
 
             // set the horizonal range from 270 grad to 90 grad
@@ -248,7 +259,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             if (Math.abs(horizonalPosition - oldOrientation.x) > 170) {
                 orientationDeltaX = 0;
             } else {
-                orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 8 / width; //gain the rotation speed
+                orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 12 / width; //gain the rotation speed
             }
 
             renderer.rotateObject(orientationDeltaX, orientationDeltaY);
@@ -256,13 +267,48 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             // store the position for next comparation
             oldOrientation.x = horizonalPosition;
             oldOrientation.y = verticalPosition;
+        }
+
+        deviceMotion = function (event) {
+            let currentTime = new Date().getTime();
+            let currentAcceleration: number;
+            let eyeZ = renderer.getPosition()[2];
+            let diffTime = currentTime - oldMotion.t;
+            let maxAcceleration: number;
+
+            if (event.acceleration.x > event.acceleration.y) {
+                if (event.acceleration.x > event.acceleration.z) {
+                    maxAcceleration = event.acceleration.x;
+                } else {
+                    maxAcceleration = event.acceleration.z;
+                }
+            } else {
+                if (event.acceleration.y > event.acceleration.z) {
+                    maxAcceleration = event.acceleration.y;
+                } else {
+                    maxAcceleration = event.acceleration.z;
+                }
+            }
+           
+            
+            currentAcceleration = maxAcceleration;
+            /*
+            if (Math.abs(currentAcceleration) > 0.15) {
+                eyeZ = Math.log(-eyeZ + 1) * 50
+                eyeZ += currentAcceleration;
+                eyeZ = - Math.exp(eyeZ / 50) + 1;
+                renderer.setZPosition(eyeZ);
+            }
+            */
 
             ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
             ctx.font = '20px arial';
             ctx.fillStyle = 'white';
-            ctx.fillText('X: ' + horizonalPosition.toFixed(0) + '; Y: ' + verticalPosition.toFixed(0), 10, 90);
-        }
+            ctx.fillText('A: ' + currentAcceleration.toFixed(1) + 'Time: ' + diffTime.toFixed(1), 10, 90);
 
+            oldMotion.a = currentAcceleration;
+            oldMotion.t = currentTime;
+        }
         //mouse Wheel Event => prevent default and zoom instead
         handleMouseWheel = function (evt) {
             if (evt.preventDefault) {
@@ -372,7 +418,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
         document.addEventListener('keydown', keydown, false);
-        window.addEventListener('deviceorientation',orientation, false);
+        window.addEventListener('deviceorientation', deviceOrientation, false);
+        window.addEventListener('devicemotion', deviceMotion, false);
 
         window.onresize = handleResize;
         resetButton.click(handleResetView);
