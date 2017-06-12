@@ -11,6 +11,7 @@ interface MotionPosition {
     a: number;  //acceleration
 }
 
+
 function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) {
     var self = this;
     var gl = glContext.getContext();
@@ -42,6 +43,24 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         t: 0,
         a: 0
     };
+
+    var target = {
+        latitude: 0,
+        longitude: 0
+    };
+
+    var options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+    };
+
+    navigator.geolocation.getCurrentPosition(function (pos) {
+        target.latitude = pos.coords.latitude;
+        target.longitude = pos.coords.longitude;
+    }, function (err) {
+        alert('Error occurred. Error code: ' + err.code);
+        });
 
     //Input Handler
     (function () {
@@ -83,6 +102,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var toggleVR;
         var deviceOrientation;
         var deviceMotion;
+
+        var geolocationID: number;
 
         pointerDown = function (evt) {
             if (evt.preventDefault) {
@@ -157,8 +178,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         lastPosition[evt.pointerId] = newPosition;
                         renderer.rotateObject(deltaX, deltaY);
 
-                        console.log('delatX: ' + deltaX + ';  deltaY: ' + deltaY + ';  newPosition.x: ' + newPosition.x + '; position.x' + position.x + ';  newPosition.y: ' + newPosition.y + '; position.y' + position.y);
-
                     } else if (evt.button === 1 || evt.button & 1) { //middle Button => zoom
                         var position = lastPosition[evt.pointerId];
                         var newPosition = { x: evt.clientX, y: evt.clientY };
@@ -177,6 +196,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                         eyeZ += dist;
                         eyeZ = - Math.exp(eyeZ / 50) + 1;
                         renderer.setZPosition(eyeZ);
+
+                        alert('EyeZ: ' + eyeZ);
                     }
                 }
             }
@@ -301,11 +322,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             }
             */
 
-            ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
-            ctx.font = '20px arial';
-            ctx.fillStyle = 'white';
-            ctx.fillText('A: ' + currentAcceleration.toFixed(1) + 'Time: ' + diffTime.toFixed(1), 10, 90);
-
             oldMotion.a = currentAcceleration;
             oldMotion.t = currentTime;
         }
@@ -405,6 +421,21 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             }
         }
 
+        function getDistance(latitude1, longitude1, latitude2, longitude2) {
+            var R = 6371;
+            var deltaLatitude = (latitude2 - latitude1)*Math.PI/180;
+            var deltaLongitude = (longitude2 - longitude1) * Math.PI / 180;
+            var a = Math.sin(deltaLatitude / 2) *
+                Math.sin(deltaLatitude / 2) +
+                Math.cos(latitude1) *
+                Math.cos(latitude2) *
+                Math.sin(deltaLongitude / 2) *
+                Math.sin(deltaLongitude / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
+            return d;
+        }
+
         // attach handlers
         canvas.addEventListener("contextmenu", function (e) {
             e.preventDefault(); //no Context menu in webGL
@@ -420,6 +451,22 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         document.addEventListener('keydown', keydown, false);
         window.addEventListener('deviceorientation', deviceOrientation, false);
         window.addEventListener('devicemotion', deviceMotion, false);
+        navigator.geolocation.watchPosition(function (pos) {
+            let distance: number;
+            distance = getDistance(target.latitude, target.longitude, pos.coords.latitude, pos.coords.longitude)*1000;
+
+            let eyeZ = renderer.getPosition()[2];
+            
+            eyeZ = Math.log(-eyeZ + 1) * 50
+            eyeZ += distance;
+            eyeZ = - Math.exp(eyeZ / 50) + 1;
+            renderer.setZPosition(eyeZ);
+
+            ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
+            ctx.font = '20px arial';
+            ctx.fillStyle = 'white';
+            ctx.fillText('EyeZ: ' + eyeZ.toFixed(1), 10, 90);
+        }, function () { },options);
 
         window.onresize = handleResize;
         resetButton.click(handleResetView);
@@ -430,7 +477,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
         //initial canvas size
         handleResize();
-    } ());
+    }());
 
     //change Model
     jqModelList.on('click', 'a.active', function () {

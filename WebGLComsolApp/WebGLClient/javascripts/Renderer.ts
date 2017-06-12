@@ -1184,7 +1184,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     //The continous Loop for Rendering
-    (function renderLoop() {
+    (function renderLoop() {    
         if (drawCallRequest) {
             drawCallRequest = false;
             if (vr) {

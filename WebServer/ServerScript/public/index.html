@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>ITE WebGL</title>
     <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1,minimum-scale = 1.0 ,maximum-scale=1.0, user-scalable=no,minimal-u" name="viewport">
+    <meta content="width=device-width, initial-scale=1,minimum-scale = 1.0 ,maximum-scale=1.0, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
     <!-- Font Awesome -->
@@ -30,6 +30,11 @@
     <script src="javascripts/Gui.js"></script>
     <script src="javascripts/Geometries.js"></script>
     <script src="javascripts/app.js"></script>
+    <script>
+        (function () { var script = document.createElement('script'); script.onload = function () { var stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop() { stats.update(); requestAnimationFrame(loop) }); }; script.src = '//rawgit.com/mrdoob/stats.js/master/build/stats.min.js'; document.head.appendChild(script); })()
+
+    </script>
+
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
