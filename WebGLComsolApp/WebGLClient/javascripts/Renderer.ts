@@ -91,6 +91,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var coordSys: CoordSys;
     var axisSize: number = 32;
 
+    //property of legend calibration
+    var calibrationTextWidth: number;
+    var calibrationTextHeight: number;
+    var calibrationTextFontSize: number;
+
     //init constant Render Data
     initMatrices();
     initStaticData();
@@ -178,20 +183,21 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
             indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3])),
 
-            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85, 0,
-                -0.78, 0.78, 0,
-                -0.78, 0.70, 0,
-                -0.78, 0.62, 0,
-                -0.78, 0.54, 0,
-                -0.78, 0.46, 0,
-                -0.78, 0.38, 0,
-                -0.78, 0.30, 0,
-                -0.78, 0.22, 0,
-                -0.78, 0.14, 0,
-                -0.78, 0.06, 0
+            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.76, 0.85, 0,
+                -0.76, 0.78, 0,
+                -0.76, 0.70, 0,
+                -0.76, 0.62, 0,
+                -0.76, 0.54, 0,
+                -0.76, 0.46, 0,
+                -0.76, 0.38, 0,
+                -0.76, 0.30, 0,
+                -0.76, 0.22, 0,
+                -0.76, 0.14, 0,
+                -0.76, 0.06, 0,
+                -0.76, -0.02, 0
             ])),
 
-            scalaPointSize: glc.setupArrayBuffer(new Float32Array([50,50,50,50,50,50,50,50,50,50,50]))
+            scalaPointSize: glc.setupArrayBuffer(new Float32Array([axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize]))
         };
 
         coordSys = {
@@ -406,6 +412,13 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         drawCallRequest = true;
     }
 
+    this.setCalibrationText = function (textWidth: number, textHeight: number, textFontSize:number) {
+        calibrationTextWidth = textWidth;
+        calibrationTextHeight = textHeight;
+        calibrationTextFontSize = textFontSize;
+        drawCallRequest = true;
+    }
+
     //rotate Object x and y in degrees
     //Changes the rotMatrix, and normalMatrix
     this.rotateObject = function (x: number, y: number) {
@@ -471,7 +484,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         mat4.perspective(pScene, viewAngle, width / height, 0.05, 100.0);
 
         mat4.identity(mFront);
-        mat4.translate(mFront, mFront, new Float32Array([-0.3 * width / height, -0.3, 0]));
+        mat4.translate(mFront, mFront, new Float32Array([-0.2 * width / height, -0.3, 0]));
 
         mat4.identity(vpFront);
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
@@ -979,7 +992,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         let minValue: number = colAttr.min;
         let maxValue: number = colAttr.max;
 
-        glContext.setLegendScalaTextures(scalaValue(minValue, maxValue,false));
+        glContext.setLegendCalibrationTextures(scalaValue(minValue, maxValue, false), calibrationTextWidth, calibrationTextHeight, calibrationTextFontSize);
 
         //reset View
         let prog = programs[3];
@@ -1010,8 +1023,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.depthMask(false);
-        let textures = glContext.getLegendScalaTextures();
-        for (let i = 0; i < 11; i++) {
+        let textures = glContext.getLegendCalibrationTextures();
+        for (let i = 0; i < 12; i++) {
             let prog = programs[6];
             gl.useProgram(prog.gl);
             gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
@@ -1140,11 +1153,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         let maxDecade: number, minDecade: number, maxDigit: number, minDigit: number;
         let range: number = max - min;
 
-
-        if (max > 0 && min > 0) {
-            maxDecade = max.toString().split('.')[0].length;
-        }
-
         let maxDigits = min.toString().split('.')[1].length;
         let minDigits = max.toString().split('.')[1].length;
         let digits = Math.max(minDigits, maxDigits);
@@ -1154,14 +1162,23 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
         let stepLengthDigits = (max - min) * digits;
 
+        if (min > 0) {
+            if (decade < 1) {
+                scalaValue.push(' ');
+                for (let i = 0; i < 11; i++) {
+                    scalaValue.push()
+                }
+            }
+        }
+
         if (decade<=1 && digits > 1) {
             scalaValue.push('10E-' + digits.toString());
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 11; i++) {
                 scalaValue.push((max * digits - stepLengthDigits).toFixed(1).toString());
             }
-        } else if (decade >= 1) {
+        } else if (decade > 1) {
             scalaValue.push('10E' + decade.toString());
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 11; i++) {
                 scalaValue.push(value.toFixed(1).toString());
                 value = value - 0.2;
             }
@@ -1192,7 +1209,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             } else {
                 drawScene();
             }
-            
         }
         if (!checkGLerror()) {
             requestAnimationFrame(renderLoop);

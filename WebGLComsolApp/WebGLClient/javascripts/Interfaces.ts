@@ -92,6 +92,7 @@ interface Renderer {
     setYPosition(eyeY: number): void;
     setZPosition(eyeZ: number): void;
     setAxisSize(fontsize: number): void;
+    setCalibrationText(textWidth: number, textHeight: number, textFontSize:number): void;
 
     toggleLight(): boolean;
     toggleVR(): boolean;

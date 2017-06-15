@@ -11,8 +11,9 @@ interface MotionPosition {
     a: number;  //acceleration
 }
 
-
 function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) {
+    let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); //agent check
+
     var self = this;
     var gl = glContext.getContext();
 
@@ -20,7 +21,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var canvas2D = <HTMLCanvasElement>document.getElementById('canvas2D');
     var ctx: CanvasRenderingContext2D = canvas2D.getContext('2d');
 
-    var fontSize: number = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size')) * 2;
+    var fontSize: number = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size'));
 
     var jqModelList = $("#model");
     var jqResultList = $("#result");
@@ -89,9 +90,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
         var handleMouseWheel;
         var handleResize;
-        var handleRangeX;
-        var handleRangeY;
-        var handleRangeZ;
 
         var vrOn = false;
 
@@ -353,6 +351,12 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             //Size of the canvas
             canvas.width = width;
 
+            if (isMobile) {
+                renderer.setCalibrationText(40, 40, 16);
+            } else {
+                renderer.setCalibrationText(50, 50, 24);
+            }
+            
             //adjust the layout in VR mode
             if (vrOn) {
                 canvas.height = height;
@@ -364,19 +368,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 $('.text-box').show();
             }
         }
-        handleRangeX = function (evt) {
-            var eyeX = parseFloat(evt.currentTarget.value);
-            renderer.setXPosition(eyeX/50);
-        };
-        handleRangeY = function (evt) {
-            var eyeY = parseFloat(evt.currentTarget.value);
-            renderer.setYPosition(eyeY/50);
-        };
-        handleRangeZ = function (evt) {
-            var eyeZ = parseFloat(evt.currentTarget.value);
-            eyeZ = - Math.exp(eyeZ/50) + 1;
-            renderer.setZPosition(eyeZ);
-        };
 
         toggleFullScreen = function () {
             var docElement, request;

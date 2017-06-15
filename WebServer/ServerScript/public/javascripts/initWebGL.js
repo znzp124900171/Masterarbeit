@@ -25,7 +25,7 @@ function Web3DContext(canvas) {
     var textures;
     var gl;
     var textTextures;
-    var legendScala = [];
+    var legendCalibration = [];
     gl = create3DContext(canvas, null);
     if (!gl) {
         throw "Could not create 3D Context";
@@ -35,16 +35,16 @@ function Web3DContext(canvas) {
     textures = initTextures();
     textTextures = initTextTextures();
     function createTextCanvas(text, width, height, fontSize) {
-        let textCtx = document.createElement("canvas").getContext("2d");
-        textCtx.canvas.width = width;
-        textCtx.canvas.height = height;
-        textCtx.font = fontSize + "px Arial";
-        textCtx.textAlign = "center";
-        textCtx.textBaseline = "middle";
-        textCtx.fillStyle = "black";
-        textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
-        textCtx.fillText(text, width / 2, height / 2);
-        return textCtx.canvas;
+        let ctx = document.createElement("canvas").getContext("2d");
+        ctx.canvas.width = width;
+        ctx.canvas.height = height;
+        ctx.font = fontSize + 'px Arial';
+        ctx.fillStyle = 'black';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.fillText(text, width / 2, height / 2);
+        return ctx.canvas;
     }
     function create3DContext(canvas, opt_attribs) {
         var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
@@ -665,14 +665,15 @@ function Web3DContext(canvas) {
         }
         return textTexArray;
     }
-    this.setLegendScalaTextures = function (scalaValue) {
+    this.setLegendCalibrationTextures = function (scalaValue, textWidth, textHeight, textFontSize) {
         let textCanvas = [];
-        for (let i = 0; i < scalaValue.length; i++) {
-            textCanvas.push(createTextCanvas(scalaValue[i], 60, 60, 18));
+        textCanvas.push(createTextCanvas(scalaValue[0], textWidth + 30, textHeight + 15, textFontSize + 2));
+        for (let i = 1; i < scalaValue.length; i++) {
+            textCanvas.push(createTextCanvas(scalaValue[i], textWidth, textHeight, textFontSize));
         }
         for (let j = 0; j < textCanvas.length; j++) {
-            legendScala[j] = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, legendScala[j]);
+            legendCalibration[j] = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, legendCalibration[j]);
             gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas[j]);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -681,8 +682,8 @@ function Web3DContext(canvas) {
             gl.bindTexture(gl.TEXTURE_2D, null);
         }
     };
-    this.getLegendScalaTextures = function () {
-        return legendScala;
+    this.getLegendCalibrationTextures = function () {
+        return legendCalibration;
     };
     this.setupArrayBuffer = function (binFloatArray) {
         var tmpBuf = gl.createBuffer();
