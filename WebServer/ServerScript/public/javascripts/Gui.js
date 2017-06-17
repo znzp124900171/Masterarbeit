@@ -39,6 +39,7 @@ function Gui(modelData, renderer, glContext) {
         var handleMouseWheel;
         var handleResize;
         var vrOn = false;
+        var voiceControlOn = false;
         var toggleFullScreen;
         var handleFullScreenChange;
         var handleResetView;
@@ -46,12 +47,6 @@ function Gui(modelData, renderer, glContext) {
         var toggleVR;
         var deviceOrientation;
         var deviceMotion;
-        var deviceLight;
-        var tapParams = {
-            timer: {},
-            element: {},
-            startTime: 0,
-        };
         pointerDown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
@@ -177,6 +172,10 @@ function Gui(modelData, renderer, glContext) {
                 }
             }
         };
+        deviceMotion = function (event) {
+            let interval = event.interval;
+            console.log('Interval: ' + interval);
+        };
         deviceOrientation = function (event) {
             let horizonalPosition = event.alpha;
             let verticalPosition = event.gamma;
@@ -300,6 +299,7 @@ function Gui(modelData, renderer, glContext) {
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
         document.addEventListener('keydown', keydown, false);
+        window.addEventListener('devicemotion', deviceMotion, false);
         if (window.DeviceOrientationEvent) {
             window.addEventListener('deviceorientation', deviceOrientation, false);
         }
@@ -307,7 +307,9 @@ function Gui(modelData, renderer, glContext) {
             alert('Device does not support orientation detection');
         }
         if (window.hasOwnProperty('webkitSpeechRecognition')) {
-            voiceControl('en-US');
+            if (voiceControlOn) {
+                voiceControl('en-US');
+            }
         }
         else {
             alert("Voice control feature is disable, it's supported by Chrome");
@@ -473,6 +475,7 @@ function Gui(modelData, renderer, glContext) {
         eyeZ += scale;
         eyeZ = -Math.exp(eyeZ / 50) + 1;
         renderer.setZPosition(eyeZ);
+        console.log(eyeZ);
     }
     function voiceControl(language) {
         let recognition = new webkitSpeechRecognition();
@@ -487,10 +490,10 @@ function Gui(modelData, renderer, glContext) {
                 if (event.results[i].isFinal) {
                     final_transcript += event.results[i][0].transcript;
                     console.log(event.results[i][0].transcript);
-                    if (event.results[i][0].transcript.indexOf('zoom in') >= 0) {
+                    if (event.results[i][0].transcript.indexOf('in') >= 0) {
                         zoom(2);
                     }
-                    else if (event.results[i][0].transcript.indexOf('zoom out') >= 0) {
+                    else if (event.results[i][0].transcript.indexOf('out') >= 0) {
                         zoom(-2);
                     }
                 }

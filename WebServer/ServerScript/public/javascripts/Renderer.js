@@ -20,7 +20,7 @@ function Renderer(modelData, glc) {
     var glHeight;
     var degToRad = Math.PI / 180;
     var viewAngle = 45 * degToRad;
-    var eyeSeperation = 0.05;
+    var eyeSeperation = 0.1;
     var activeModel = null;
     var activePlotgroup = null;
     var activePlots = [];
@@ -336,11 +336,6 @@ function Renderer(modelData, glc) {
     };
     this.resizeVRCanvas = function () {
         mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / 2 / gl.drawingBufferHeight, 0.05, 100.0);
-        mat4.identity(mFront);
-        mat4.translate(mFront, mFront, new Float32Array([-0.2 * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.3, 0]));
-        mat4.identity(vpFront);
-        mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
-        mat4.multiply(vpFront, pScene, vpFront);
         drawCallRequest = true;
     };
     var drawPlotGroup = function () {
@@ -491,7 +486,6 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader3Trias = function (renderGroup, usrText) {
-        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var prog = programs[3];
         gl.useProgram(prog.gl);
@@ -867,6 +861,13 @@ function Renderer(modelData, glc) {
         }
         gl.disable(gl.DEPTH_TEST);
         if (plotType === 3) {
+            if (seperation) {
+                mat4.identity(mFront);
+                mat4.translate(mFront, mFront, new Float32Array([(-0.3 - seperation / 3) * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.2, 0]));
+                mat4.identity(vpFront);
+                mat4.lookAt(vpFront, new Float32Array([0, 0, 2]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+                mat4.multiply(vpFront, pScene, vpFront);
+            }
             drawFront();
         }
         gl.clear(gl.DEPTH_BUFFER_BIT);

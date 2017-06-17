@@ -42,7 +42,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     // Viewing Angle
     var viewAngle = 45 * degToRad;
     // Pupillary distance
-    var eyeSeperation: number = 0.05;
+    var eyeSeperation: number = 0.1;
     // Render Items:
     // active Model, only one Model is selected at one time
     var activeModel: Model = null;
@@ -475,13 +475,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     // when VR feature is actived, full screen the canvas and update the Render engine
     this.resizeVRCanvas = function () {
-        mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth/2 / gl.drawingBufferHeight, 0.05, 100.0);
-
-        mat4.identity(mFront);
-        mat4.translate(mFront, mFront, new Float32Array([-0.2 * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.3, 0]));
-        mat4.identity(vpFront);
-        mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
-        mat4.multiply(vpFront, pScene, vpFront);
+        mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / 2 / gl.drawingBufferHeight, 0.05, 100.0);
 
         drawCallRequest = true;
     }
@@ -660,7 +654,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader3Trias = function (renderGroup: RenderGroup, usrText: string) {
-        drawLegend(renderGroup, usrText);
+        //drawLegend(renderGroup, usrText);
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
 
         var prog = programs[3];
@@ -1125,6 +1119,13 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.disable(gl.DEPTH_TEST);
 
         if (plotType === 3) {
+            if (seperation) {
+                mat4.identity(mFront);
+                mat4.translate(mFront, mFront, new Float32Array([(-0.3 -seperation/3) * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.2, 0]));
+                mat4.identity(vpFront);
+                mat4.lookAt(vpFront, new Float32Array([0, 0, 2]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+                mat4.multiply(vpFront, pScene, vpFront);
+            }
             drawFront();
         }
         gl.clear(gl.DEPTH_BUFFER_BIT);
