@@ -17,25 +17,6 @@ function Gui(modelData, renderer, glContext) {
         x: 0,
         y: 0
     };
-    var oldMotion = {
-        t: 0,
-        a: 0
-    };
-    var target = {
-        latitude: 0,
-        longitude: 0
-    };
-    var options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-    };
-    navigator.geolocation.getCurrentPosition(function (pos) {
-        target.latitude = pos.coords.latitude;
-        target.longitude = pos.coords.longitude;
-    }, function (err) {
-        alert('Error occurred. Error code: ' + err.code);
-    });
     (function () {
         var fullScreenButton = $('#fullScreen');
         var lightButton = $('#light');
@@ -65,7 +46,12 @@ function Gui(modelData, renderer, glContext) {
         var toggleVR;
         var deviceOrientation;
         var deviceMotion;
-        var geolocationID;
+        var deviceLight;
+        var tapParams = {
+            timer: {},
+            element: {},
+            startTime: 0,
+        };
         pointerDown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
@@ -78,12 +64,16 @@ function Gui(modelData, renderer, glContext) {
                 pointerTwo = evt.pointerId;
                 lastPosition[pointerTwo] = { x: evt.clientX, y: evt.clientY };
             }
+            if (isMobile) {
+            }
         };
         pointerUp = function (evt) {
             lastPosition[pointerOne] = null;
             lastPosition[pointerTwo] = null;
             pointerOne = null;
             pointerTwo = null;
+            if (isMobile) {
+            }
         };
         pointerMove = function (evt) {
             if (pointerOne) {
@@ -145,12 +135,7 @@ function Gui(modelData, renderer, glContext) {
                         else {
                             var dist = deltaY;
                         }
-                        var eyeZ = renderer.getPosition()[2];
-                        eyeZ = Math.log(-eyeZ + 1) * 50;
-                        eyeZ += dist;
-                        eyeZ = -Math.exp(eyeZ / 50) + 1;
-                        renderer.setZPosition(eyeZ);
-                        alert('EyeZ: ' + eyeZ);
+                        zoom(dist);
                     }
                 }
             }
@@ -204,7 +189,7 @@ function Gui(modelData, renderer, glContext) {
                 orientationDeltaY = 0;
             }
             else {
-                orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 6 / height;
+                orientationDeltaY = (verticalPosition - oldOrientation.y) * 100 * 6 / height;
             }
             if (verticalPosition > 90) {
                 if (horizonalPosition > 270) {
@@ -226,48 +211,18 @@ function Gui(modelData, renderer, glContext) {
                 orientationDeltaX = 0;
             }
             else {
-                orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 12 / width;
+                orientationDeltaX = (horizonalPosition - oldOrientation.x) * 100 * 12 / width;
             }
             renderer.rotateObject(orientationDeltaX, orientationDeltaY);
             oldOrientation.x = horizonalPosition;
             oldOrientation.y = verticalPosition;
         };
-        deviceMotion = function (event) {
-            let currentTime = new Date().getTime();
-            let currentAcceleration;
-            let eyeZ = renderer.getPosition()[2];
-            let diffTime = currentTime - oldMotion.t;
-            let maxAcceleration;
-            if (event.acceleration.x > event.acceleration.y) {
-                if (event.acceleration.x > event.acceleration.z) {
-                    maxAcceleration = event.acceleration.x;
-                }
-                else {
-                    maxAcceleration = event.acceleration.z;
-                }
-            }
-            else {
-                if (event.acceleration.y > event.acceleration.z) {
-                    maxAcceleration = event.acceleration.y;
-                }
-                else {
-                    maxAcceleration = event.acceleration.z;
-                }
-            }
-            currentAcceleration = maxAcceleration;
-            oldMotion.a = currentAcceleration;
-            oldMotion.t = currentTime;
-        };
         handleMouseWheel = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
             }
-            var delta = evt.detail ? evt.detail * (-120) : evt.wheelDelta;
-            var eyeZ = renderer.getPosition()[2];
-            eyeZ = Math.log(-eyeZ + 1) * 50;
-            eyeZ += delta / 120;
-            eyeZ = -Math.exp(eyeZ / 50) + 1;
-            renderer.setZPosition(eyeZ);
+            let delta = evt.detail ? evt.detail * (-120) : evt.wheelDelta;
+            zoom(delta / 120);
         };
         handleResize = function () {
             renderer.setAxisSize(fontSize);
@@ -286,12 +241,12 @@ function Gui(modelData, renderer, glContext) {
             }
             if (vrOn) {
                 canvas.height = height;
-                renderer.resizeVRCanvas(canvas.width, canvas.height);
+                renderer.resizeVRCanvas();
                 $('.text-box').hide();
             }
             else {
                 canvas.height = height - navHeader.outerHeight();
-                renderer.resizeCanvas(canvas.width, canvas.height);
+                renderer.resizeCanvas();
                 $('.text-box').show();
             }
         };
@@ -335,20 +290,6 @@ function Gui(modelData, renderer, glContext) {
                 handleResize();
             }
         };
-        function getDistance(latitude1, longitude1, latitude2, longitude2) {
-            var R = 6371;
-            var deltaLatitude = (latitude2 - latitude1) * Math.PI / 180;
-            var deltaLongitude = (longitude2 - longitude1) * Math.PI / 180;
-            var a = Math.sin(deltaLatitude / 2) *
-                Math.sin(deltaLatitude / 2) +
-                Math.cos(latitude1) *
-                    Math.cos(latitude2) *
-                    Math.sin(deltaLongitude / 2) *
-                    Math.sin(deltaLongitude / 2);
-            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            var d = R * c;
-            return d;
-        }
         canvas.addEventListener("contextmenu", function (e) {
             e.preventDefault();
         }, false);
@@ -359,21 +300,18 @@ function Gui(modelData, renderer, glContext) {
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
         document.addEventListener('keydown', keydown, false);
-        window.addEventListener('deviceorientation', deviceOrientation, false);
-        window.addEventListener('devicemotion', deviceMotion, false);
-        navigator.geolocation.watchPosition(function (pos) {
-            let distance;
-            distance = getDistance(target.latitude, target.longitude, pos.coords.latitude, pos.coords.longitude) * 1000;
-            let eyeZ = renderer.getPosition()[2];
-            eyeZ = Math.log(-eyeZ + 1) * 50;
-            eyeZ += distance;
-            eyeZ = -Math.exp(eyeZ / 50) + 1;
-            renderer.setZPosition(eyeZ);
-            ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
-            ctx.font = '20px arial';
-            ctx.fillStyle = 'white';
-            ctx.fillText('EyeZ: ' + eyeZ.toFixed(1), 10, 90);
-        }, function () { }, options);
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', deviceOrientation, false);
+        }
+        else {
+            alert('Device does not support orientation detection');
+        }
+        if (window.hasOwnProperty('webkitSpeechRecognition')) {
+            voiceControl('en-US');
+        }
+        else {
+            alert("Voice control feature is disable, it's supported by Chrome");
+        }
         window.onresize = handleResize;
         resetButton.click(handleResetView);
         fullScreenButton.click(toggleFullScreen);
@@ -528,5 +466,46 @@ function Gui(modelData, renderer, glContext) {
     function resetPlot() {
         jqColor.off('click');
         jqColorTable.off('click');
+    }
+    function zoom(scale) {
+        let eyeZ = renderer.getPosition()[2];
+        eyeZ = Math.log(-eyeZ + 1) * 50;
+        eyeZ += scale;
+        eyeZ = -Math.exp(eyeZ / 50) + 1;
+        renderer.setZPosition(eyeZ);
+    }
+    function voiceControl(language) {
+        let recognition = new webkitSpeechRecognition();
+        let final_transcript = ' ';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = language;
+        recognition.start();
+        recognition.onresult = function (event) {
+            let interim_transcript = ' ';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    final_transcript += event.results[i][0].transcript;
+                    console.log(event.results[i][0].transcript);
+                    if (event.results[i][0].transcript.indexOf('zoom in') >= 0) {
+                        zoom(2);
+                    }
+                    else if (event.results[i][0].transcript.indexOf('zoom out') >= 0) {
+                        zoom(-2);
+                    }
+                }
+                else {
+                    interim_transcript += event.results[i][0].transcript;
+                }
+            }
+        };
+        recognition.onend = function () {
+            if (isMobile) {
+                recognition.start();
+            }
+        };
+        recognition.onerror = function (event) {
+            alert('Error occurs, recognition is currently unavailable');
+        };
     }
 }

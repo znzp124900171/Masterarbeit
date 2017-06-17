@@ -98,8 +98,8 @@ interface Renderer {
     toggleVR(): boolean;
     rotateObject(x: number, y: number): void;
     resetView(): void;
-    resizeCanvas(width: number, height: number): void;
-    resizeVRCanvas(width: number, height: number): void;
+    resizeCanvas(): void;
+    resizeVRCanvas(): void;
 
     //VR feature
     getSeperation(): number;

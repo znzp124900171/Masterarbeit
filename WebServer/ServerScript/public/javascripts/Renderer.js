@@ -20,7 +20,7 @@ function Renderer(modelData, glc) {
     var glHeight;
     var degToRad = Math.PI / 180;
     var viewAngle = 45 * degToRad;
-    var eyeSeperation = 0.1;
+    var eyeSeperation = 0.05;
     var activeModel = null;
     var activePlotgroup = null;
     var activePlots = [];
@@ -324,24 +324,20 @@ function Renderer(modelData, glc) {
         drawCallRequest = true;
         return vr;
     };
-    this.resizeCanvas = function (width, height) {
-        glWidth = width;
-        glHeight = height;
-        gl.viewport(0, 0, width, height);
-        mat4.perspective(pScene, viewAngle, width / height, 0.05, 100.0);
+    this.resizeCanvas = function () {
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.05, 100.0);
         mat4.identity(mFront);
-        mat4.translate(mFront, mFront, new Float32Array([-0.3 * width / height, -0.3, 0]));
+        mat4.translate(mFront, mFront, new Float32Array([-0.3 * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.3, 0]));
         mat4.identity(vpFront);
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
         mat4.multiply(vpFront, pScene, vpFront);
         drawCallRequest = true;
     };
-    this.resizeVRCanvas = function (width, height) {
-        glWidth = width;
-        glHeight = height;
-        mat4.perspective(pScene, viewAngle, width / height, 0.05, 100.0);
+    this.resizeVRCanvas = function () {
+        mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / 2 / gl.drawingBufferHeight, 0.05, 100.0);
         mat4.identity(mFront);
-        mat4.translate(mFront, mFront, new Float32Array([-0.2 * width / height, -0.3, 0]));
+        mat4.translate(mFront, mFront, new Float32Array([-0.2 * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.3, 0]));
         mat4.identity(vpFront);
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
         mat4.multiply(vpFront, pScene, vpFront);
@@ -876,9 +872,9 @@ function Renderer(modelData, glc) {
         gl.clear(gl.DEPTH_BUFFER_BIT);
     }
     function drawSceneVR() {
-        gl.viewport(0, 0, glWidth / 2, glHeight);
+        gl.viewport(0, 0, gl.drawingBufferWidth / 2, gl.drawingBufferHeight);
         drawScene(eyeSeperation);
-        gl.viewport(glWidth / 2, 0, glWidth / 2, glHeight);
+        gl.viewport(gl.drawingBufferWidth / 2, 0, gl.drawingBufferWidth / 2, gl.drawingBufferHeight);
         drawScene(-eyeSeperation);
     }
     var scalaValue = function legendScala(min, max, normalization) {
@@ -886,22 +882,27 @@ function Renderer(modelData, glc) {
         let normalizedValue = [];
         let maxDecade, minDecade, maxDigit, minDigit;
         let range = max - min;
-        if (max > 0 && min > 0) {
-            maxDecade = max.toString().split('.')[0].length;
-        }
         let maxDigits = min.toString().split('.')[1].length;
         let minDigits = max.toString().split('.')[1].length;
         let digits = Math.max(minDigits, maxDigits);
         let decade = maxDecade - 1;
         let value = Math.floor(max / Math.pow(10, decade));
         let stepLengthDigits = (max - min) * digits;
+        if (min > 0) {
+            if (decade < 1) {
+                scalaValue.push(' ');
+                for (let i = 0; i < 11; i++) {
+                    scalaValue.push();
+                }
+            }
+        }
         if (decade <= 1 && digits > 1) {
             scalaValue.push('10E-' + digits.toString());
             for (let i = 0; i < 11; i++) {
                 scalaValue.push((max * digits - stepLengthDigits).toFixed(1).toString());
             }
         }
-        else if (decade >= 1) {
+        else if (decade > 1) {
             scalaValue.push('10E' + decade.toString());
             for (let i = 0; i < 11; i++) {
                 scalaValue.push(value.toFixed(1).toString());

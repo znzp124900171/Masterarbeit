@@ -650,9 +650,9 @@ function Web3DContext(canvas) {
     function initTextTextures() {
         let textTexArray = [];
         let textCanvas = [];
-        textCanvas.push(createTextCanvas('x', 40, 40, 25));
         textCanvas.push(createTextCanvas('y', 40, 40, 25));
         textCanvas.push(createTextCanvas('z', 40, 40, 25));
+        textCanvas.push(createTextCanvas('x', 40, 40, 25));
         for (let i = 0; i < textCanvas.length; i++) {
             textTexArray[i] = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, textTexArray[i]);

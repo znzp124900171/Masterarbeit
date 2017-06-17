@@ -42,7 +42,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     // Viewing Angle
     var viewAngle = 45 * degToRad;
     // Pupillary distance
-    var eyeSeperation: number = 0.1;
+    var eyeSeperation: number = 0.05;
     // Render Items:
     // active Model, only one Model is selected at one time
     var activeModel: Model = null;
@@ -458,16 +458,13 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     // when the Canvas is resized, the Render engine must be updated
-    this.resizeCanvas = function (width: number, height: number) {
-        glWidth = width;
-        glHeight = height;
+    this.resizeCanvas = function () {
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
-        gl.viewport(0, 0, width, height);
-        
-        mat4.perspective(pScene, viewAngle, width / height, 0.05, 100.0);
+        mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.05, 100.0);
 
         mat4.identity(mFront);
-        mat4.translate(mFront, mFront, new Float32Array([-0.3 * width / height, -0.3, 0]));
+        mat4.translate(mFront, mFront, new Float32Array([-0.3 * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.3, 0]));
 
         mat4.identity(vpFront);
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
@@ -477,15 +474,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     // when VR feature is actived, full screen the canvas and update the Render engine
-    this.resizeVRCanvas = function (width: number, height: number) {
-        glWidth = width;
-        glHeight = height;
-
-        mat4.perspective(pScene, viewAngle, width / height, 0.05, 100.0);
+    this.resizeVRCanvas = function () {
+        mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth/2 / gl.drawingBufferHeight, 0.05, 100.0);
 
         mat4.identity(mFront);
-        mat4.translate(mFront, mFront, new Float32Array([-0.2 * width / height, -0.3, 0]));
-
+        mat4.translate(mFront, mFront, new Float32Array([-0.2 * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.3, 0]));
         mat4.identity(vpFront);
         mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
         mat4.multiply(vpFront, pScene, vpFront);
@@ -1140,9 +1133,10 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     //paint the stereoscopic 3D with two viewplot
     function drawSceneVR() {
-        gl.viewport(0, 0, glWidth / 2, glHeight);
+        gl.viewport(0, 0, gl.drawingBufferWidth / 2, gl.drawingBufferHeight);
         drawScene(eyeSeperation);
-        gl.viewport(glWidth / 2, 0, glWidth / 2, glHeight);
+
+        gl.viewport(gl.drawingBufferWidth / 2, 0, gl.drawingBufferWidth / 2, gl.drawingBufferHeight);
         drawScene(-eyeSeperation);
     }
 

@@ -6,13 +6,10 @@ interface OrientationPosition {
     y: number
 }
 
-interface MotionPosition {
-    t: number;  //time
-    a: number;  //acceleration
-}
+declare function webkitSpeechRecognition(): void; // use Web Speech API, only works in Chrome
 
 function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) {
-    let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); //agent check
+    let isMobile: boolean = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); //agent check
 
     var self = this;
     var gl = glContext.getContext();
@@ -21,7 +18,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var canvas2D = <HTMLCanvasElement>document.getElementById('canvas2D');
     var ctx: CanvasRenderingContext2D = canvas2D.getContext('2d');
 
-    var fontSize: number = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size'));
+    var fontSize: number = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size'));  //get the root fontSize of Body
 
     var jqModelList = $("#model");
     var jqResultList = $("#result");
@@ -35,33 +32,11 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
     var reset = $('#reset');
 
+    // init orientation position of rendered object
     var oldOrientation: OrientationPosition = {
         x: 0,
         y: 0
     };
-
-    var oldMotion: MotionPosition = {
-        t: 0,
-        a: 0
-    };
-
-    var target = {
-        latitude: 0,
-        longitude: 0
-    };
-
-    var options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-    };
-
-    navigator.geolocation.getCurrentPosition(function (pos) {
-        target.latitude = pos.coords.latitude;
-        target.longitude = pos.coords.longitude;
-    }, function (err) {
-        alert('Error occurred. Error code: ' + err.code);
-        });
 
     //Input Handler
     (function () {
@@ -100,8 +75,13 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var toggleVR;
         var deviceOrientation;
         var deviceMotion;
+        var deviceLight;
 
-        var geolocationID: number;
+        var tapParams = {
+            timer: {},
+            element: {},
+            startTime: 0,
+        };
 
         pointerDown = function (evt) {
             if (evt.preventDefault) {
@@ -114,12 +94,20 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 pointerTwo = evt.pointerId;
                 lastPosition[pointerTwo] = { x: evt.clientX, y: evt.clientY };
             }
+
+            if (isMobile) {
+
+            }
         }
         pointerUp = function (evt) {
             lastPosition[pointerOne] = null;
             lastPosition[pointerTwo] = null;
             pointerOne = null;
             pointerTwo = null;
+
+            if (isMobile) {
+
+            }
         }
         pointerMove = function (evt) {
             if (pointerOne) {   //first Pointer
@@ -149,8 +137,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
                     var zVal = renderer.getPosition()[2];
                     zVal += (lastDist - newDist) * 0.05;
-                    //rangeZ.val(zVal * 50);
-                    //rangeZ.slider('refresh');
                     renderer.setZPosition(zVal);
 
                 } else {    //only first Pointer
@@ -189,13 +175,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                             var dist = deltaY;
                         }
 
-                        var eyeZ = renderer.getPosition()[2];
-                        eyeZ = Math.log(-eyeZ + 1) * 50
-                        eyeZ += dist;
-                        eyeZ = - Math.exp(eyeZ / 50) + 1;
-                        renderer.setZPosition(eyeZ);
-
-                        alert('EyeZ: ' + eyeZ);
+                        zoom(dist);
                     }
                 }
             }
@@ -257,7 +237,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             if (Math.abs(verticalPosition - oldOrientation.y) > 170) {
                 orientationDeltaY = 0;
             } else {
-                orientationDeltaY = Math.round((verticalPosition - oldOrientation.y) * 100) * 6 / height; //gain the rotation speed
+                orientationDeltaY = (verticalPosition - oldOrientation.y) * 100 * 6 / height; //gain the rotation speed
             }
 
             // set the horizonal range from 270 grad to 90 grad
@@ -278,7 +258,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             if (Math.abs(horizonalPosition - oldOrientation.x) > 170) {
                 orientationDeltaX = 0;
             } else {
-                orientationDeltaX = Math.round((horizonalPosition - oldOrientation.x) * 100) * 12 / width; //gain the rotation speed
+                orientationDeltaX = (horizonalPosition - oldOrientation.x) * 100 * 12 / width; //gain the rotation speed
             }
 
             renderer.rotateObject(orientationDeltaX, orientationDeltaY);
@@ -288,53 +268,14 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             oldOrientation.y = verticalPosition;
         }
 
-        deviceMotion = function (event) {
-            let currentTime = new Date().getTime();
-            let currentAcceleration: number;
-            let eyeZ = renderer.getPosition()[2];
-            let diffTime = currentTime - oldMotion.t;
-            let maxAcceleration: number;
-
-            if (event.acceleration.x > event.acceleration.y) {
-                if (event.acceleration.x > event.acceleration.z) {
-                    maxAcceleration = event.acceleration.x;
-                } else {
-                    maxAcceleration = event.acceleration.z;
-                }
-            } else {
-                if (event.acceleration.y > event.acceleration.z) {
-                    maxAcceleration = event.acceleration.y;
-                } else {
-                    maxAcceleration = event.acceleration.z;
-                }
-            }
-           
-            
-            currentAcceleration = maxAcceleration;
-            /*
-            if (Math.abs(currentAcceleration) > 0.15) {
-                eyeZ = Math.log(-eyeZ + 1) * 50
-                eyeZ += currentAcceleration;
-                eyeZ = - Math.exp(eyeZ / 50) + 1;
-                renderer.setZPosition(eyeZ);
-            }
-            */
-
-            oldMotion.a = currentAcceleration;
-            oldMotion.t = currentTime;
-        }
         //mouse Wheel Event => prevent default and zoom instead
         handleMouseWheel = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
             }
-            var delta = evt.detail ? evt.detail * (-120) : evt.wheelDelta; // rotation degree of Mousewheel
+            let delta:number = evt.detail ? evt.detail * (-120) : evt.wheelDelta; // rotation degree of Mousewheel
 
-            var eyeZ = renderer.getPosition()[2];
-            eyeZ = Math.log(-eyeZ + 1) * 50
-            eyeZ += delta / 120;
-            eyeZ = - Math.exp(eyeZ / 50) + 1;
-            renderer.setZPosition(eyeZ);
+            zoom(delta/120);
         }
 
         handleResize = function () {
@@ -360,11 +301,11 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             //adjust the layout in VR mode
             if (vrOn) {
                 canvas.height = height;
-                renderer.resizeVRCanvas(canvas.width, canvas.height);
+                renderer.resizeVRCanvas();
                 $('.text-box').hide();
             } else {
                 canvas.height = height - navHeader.outerHeight();
-                renderer.resizeCanvas(canvas.width, canvas.height);
+                renderer.resizeCanvas();
                 $('.text-box').show();
             }
         }
@@ -412,21 +353,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             }
         }
 
-        function getDistance(latitude1, longitude1, latitude2, longitude2) {
-            var R = 6371;
-            var deltaLatitude = (latitude2 - latitude1)*Math.PI/180;
-            var deltaLongitude = (longitude2 - longitude1) * Math.PI / 180;
-            var a = Math.sin(deltaLatitude / 2) *
-                Math.sin(deltaLatitude / 2) +
-                Math.cos(latitude1) *
-                Math.cos(latitude2) *
-                Math.sin(deltaLongitude / 2) *
-                Math.sin(deltaLongitude / 2);
-            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            var d = R * c;
-            return d;
-        }
-
         // attach handlers
         canvas.addEventListener("contextmenu", function (e) {
             e.preventDefault(); //no Context menu in webGL
@@ -440,24 +366,18 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         document.addEventListener('pointerup', pointerUp, false);
         document.addEventListener('pointermove', pointerMove, false);
         document.addEventListener('keydown', keydown, false);
-        window.addEventListener('deviceorientation', deviceOrientation, false);
-        window.addEventListener('devicemotion', deviceMotion, false);
-        navigator.geolocation.watchPosition(function (pos) {
-            let distance: number;
-            distance = getDistance(target.latitude, target.longitude, pos.coords.latitude, pos.coords.longitude)*1000;
 
-            let eyeZ = renderer.getPosition()[2];
-            
-            eyeZ = Math.log(-eyeZ + 1) * 50
-            eyeZ += distance;
-            eyeZ = - Math.exp(eyeZ / 50) + 1;
-            renderer.setZPosition(eyeZ);
+        if ((<any>window).DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', deviceOrientation, false);
+        } else {
+            alert('Device does not support orientation detection');
+        }
 
-            ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
-            ctx.font = '20px arial';
-            ctx.fillStyle = 'white';
-            ctx.fillText('EyeZ: ' + eyeZ.toFixed(1), 10, 90);
-        }, function () { },options);
+        if (window.hasOwnProperty('webkitSpeechRecognition')) {
+            voiceControl('en-US');
+        } else {
+            alert("Voice control feature is disable, it's supported by Chrome");   
+        }
 
         window.onresize = handleResize;
         resetButton.click(handleResetView);
@@ -639,6 +559,55 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     function resetPlot() {
         jqColor.off('click');
         jqColorTable.off('click');
+    }
+
+    function zoom(scale: number) {
+        let eyeZ = renderer.getPosition()[2];
+        eyeZ = Math.log(-eyeZ + 1) * 50
+        eyeZ += scale;
+        eyeZ = - Math.exp(eyeZ / 50) + 1;
+        renderer.setZPosition(eyeZ);
+    }
+
+    function voiceControl(language: string) {
+        //Web Speech API of Google Chrome
+        //reference: https://developers.google.com/web/updates/2013/01/Voice-Driven-Web-Apps-Introduction-to-the-Web-Speech-API
+
+        let recognition = new webkitSpeechRecognition();
+        let final_transcript = ' ';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.lang = language;
+        recognition.start();
+
+        recognition.onresult = function (event) {
+            let interim_transcript = ' ';
+
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    final_transcript += event.results[i][0].transcript;
+                    console.log(event.results[i][0].transcript);
+                    if (event.results[i][0].transcript.indexOf('zoom in')>=0) {
+                        zoom(2);
+                    } else if (event.results[i][0].transcript.indexOf('zoom out') >= 0) {
+                        zoom(-2);                
+                    }
+                } else {
+                    interim_transcript += event.results[i][0].transcript;
+                }
+            }                
+        }
+
+        recognition.onend = function () {
+            if (isMobile) {
+                recognition.start();
+            }
+        }
+
+        recognition.onerror = function (event) {
+            alert('Error occurs, recognition is currently unavailable');    
+        }
     }
 }
 
