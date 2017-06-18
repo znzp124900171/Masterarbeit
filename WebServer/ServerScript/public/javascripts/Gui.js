@@ -3,8 +3,6 @@ function Gui(modelData, renderer, glContext) {
     var self = this;
     var gl = glContext.getContext();
     var canvas = document.getElementById('webgl');
-    var canvas2D = document.getElementById('canvas2D');
-    var ctx = canvas2D.getContext('2d');
     var fontSize = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size'));
     var jqModelList = $("#model");
     var jqResultList = $("#result");
@@ -281,12 +279,14 @@ function Gui(modelData, renderer, glContext) {
                 $('#content-wrapper').removeClass('content-wrapper');
                 handleResize();
                 toggleFullScreen();
+                window.screen.orientation.lockOrientation('landscape');
             }
             else {
                 $('#content-wrapper').addClass('content-wrapper');
                 navHeader.show();
                 navSidebar.show();
                 handleResize();
+                window.screen.orientation.lockOrientation('portrait');
             }
         };
         canvas.addEventListener("contextmenu", function (e) {
@@ -300,6 +300,9 @@ function Gui(modelData, renderer, glContext) {
         document.addEventListener('pointermove', pointerMove, false);
         document.addEventListener('keydown', keydown, false);
         window.addEventListener('devicemotion', deviceMotion, false);
+        window.addEventListener('orientationchange', function () {
+            screen.lockOrientation('portrait');
+        }, false);
         if (window.DeviceOrientationEvent) {
             window.addEventListener('deviceorientation', deviceOrientation, false);
         }

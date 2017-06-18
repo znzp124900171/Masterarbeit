@@ -92,6 +92,9 @@ a {
     max-height: 100px;
     z-index: 1030;
     .logo {
+        @media(max-width:767px){
+            display:none;
+        }
         -webkit-transition: width .3s ease-in-out;
         -o-transition: width .3s ease-in-out;
         transition: width .3s ease-in-out;
@@ -237,7 +240,7 @@ a {
     -o-transition: -o-transform 0.3s ease-in-out, width 0.3s ease-in-out;
     transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
     @media(max-width: 767px) {
-        padding-top: 100px;
+        padding-top: 50px;
         -webkit-transform: translate(-230px, 0);
         -ms-transform: translate(-230px, 0);
         -o-transform: translate(-230px, 0);
@@ -586,7 +589,7 @@ a {
     z-index: 1010;
 
     @media (max-width: 768px) {
-        padding-top: 100px;
+        padding-top: 50px;
     }
 
     .tab-content {

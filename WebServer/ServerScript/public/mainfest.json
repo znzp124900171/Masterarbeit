@@ -1,0 +1,12 @@
+{
+  "short_name": "ITE WebGL",
+  "name": "ITE Visualization Web App",
+  "icons": [
+    {}
+  ],
+  "orientation": "portrait",
+  "prefer_related_applications": false,
+  "display": "fullscreen",
+  "theme_color": "#3c8dbc",
+  "start_url": "."
+}

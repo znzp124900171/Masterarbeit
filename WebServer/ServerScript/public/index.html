@@ -7,6 +7,9 @@
     <title>ITE WebGL</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1,minimum-scale = 1.0 ,maximum-scale=1.0, user-scalable=no" name="viewport">
+    <!-- add web app to homescreen-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
     <!-- Font Awesome -->
@@ -14,6 +17,8 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="stylesheets/style.min.css">
     <link rel="stylesheet" href="stylesheets/skin-blue.min.css">
+
+    <link rel="manifest" href="/mainfest.json">
 
     <script src="javascripts/libs/jquery-2.1.1.min.js"></script>
     <script src="javascripts/libs/gl-matrix-min.js"></script>
@@ -30,11 +35,6 @@
     <script src="javascripts/Gui.js"></script>
     <script src="javascripts/Geometries.js"></script>
     <script src="javascripts/app.js"></script>
-
-    <script>
-        (function () { var script = document.createElement('script'); script.onload = function () { var stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop() { stats.update(); requestAnimationFrame(loop) }); }; script.src = '//rawgit.com/mrdoob/stats.js/master/build/stats.min.js'; document.head.appendChild(script); })()
-
-    </script>
 
 </head>
 
@@ -147,7 +147,7 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper" id="content-wrapper">
             <canvas style="margin: 0; padding: 0;" id='webgl'></canvas>
-            <canvas class="text-box" id="canvas2D" style="display:none;"></canvas>
+            <!--<canvas class="text-box" id="canvas2D"></canvas>-->
         </div>
         <!-- /.content-wrapper -->
 

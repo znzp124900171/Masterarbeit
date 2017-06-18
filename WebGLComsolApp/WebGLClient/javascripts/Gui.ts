@@ -15,8 +15,8 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var gl = glContext.getContext();
 
     var canvas = <HTMLCanvasElement>document.getElementById('webgl');
-    var canvas2D = <HTMLCanvasElement>document.getElementById('canvas2D');
-    var ctx: CanvasRenderingContext2D = canvas2D.getContext('2d');
+    //var canvas2D = <HTMLCanvasElement>document.getElementById('canvas2D');
+    //var ctx: CanvasRenderingContext2D = canvas2D.getContext('2d');
 
     var fontSize: number = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size'));  //get the root fontSize of Body
 
@@ -345,11 +345,13 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                 $('#content-wrapper').removeClass('content-wrapper');
                 handleResize();
                 toggleFullScreen();
+                (<any>window).screen.orientation.lockOrientation('landscape');
             } else {
                 $('#content-wrapper').addClass('content-wrapper');
                 navHeader.show();
                 navSidebar.show();
                 handleResize();
+                (<any>window).screen.orientation.lockOrientation('portrait');
             }
         }
 
@@ -367,6 +369,9 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         document.addEventListener('pointermove', pointerMove, false);
         document.addEventListener('keydown', keydown, false);
         window.addEventListener('devicemotion', deviceMotion, false);
+        window.addEventListener('orientationchange', function () {
+            (<any>screen).lockOrientation('portrait');
+        }, false);
 
         if ((<any>window).DeviceOrientationEvent) {
             window.addEventListener('deviceorientation', deviceOrientation, false);
