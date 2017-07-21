@@ -170,8 +170,9 @@ function PostProcessor(glContext: Web3DContext) {
         console.log('prepareTypeOnePlot is excuted');
         var byteOffset = 4;  //4 Bytes Offset for Magic Number
         var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
-        var geomType = 1;       //singelPoints
         var webGLData: WebGLGeom[] = [];
+        var geomType = renderGroup.geoType;       //singelPoints
+        var plotType = (plotGroup.type == TYPE_PLOTGROUP3D) ? 3 : ((plotGroup.type == TYPE_PLOTGROUP2D) ? 2 : 1);
 
         var diameter = calcModelDiameter(plotGroup);   //Diameter of the Model
 
@@ -213,14 +214,8 @@ function PostProcessor(glContext: Web3DContext) {
         console.log('prepareTypeTwoPlot is excuted');
         var byteOffset = 4;  //4 Bytes Offset for Magic Number
         var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
-        var geomType = 2;     //Lines have 2 points
-        var plotType = 0;
-
-        if (plotGroup.type == TYPE_PLOTGROUP3D) {
-            plotType = 3;
-        } else if (plotGroup.type == TYPE_PLOTGROUP2D) {
-            plotType = 2;
-        }
+        var geomType = renderGroup.geoType;
+        var plotType = (plotGroup.type == TYPE_PLOTGROUP3D) ? 3 : ((plotGroup.type == TYPE_PLOTGROUP2D) ? 2 : 1);
 
         var webGLData: WebGLGeom[];
 
@@ -229,17 +224,17 @@ function PostProcessor(glContext: Web3DContext) {
         var attributes = renderGroup.attributes;    //Description of the Attributes
 
         var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * plotType); //Offset always in Byte and Length in Float32 (4 Byte)
-        byteOffset += renderData.numVert * plotType * 4; // Offset in Bytes
+        byteOffset += renderData.numVert * plotType * Float32Array.BYTES_PER_ELEMENT; // Offset in Bytes
         
 
         var attribData = [];
         for (var name in attributes) {
             attribData[attributes[name].index] = new Float32Array(binData, byteOffset, renderData.numVert);
-            byteOffset += renderData.numVert * 4; // Offset in Bytes
+            byteOffset += renderData.numVert * Float32Array.BYTES_PER_ELEMENT; // Offset in Bytes
         }
 
         var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * 2);
-        byteOffset += renderData.numEle * geomType * 4;  //Offset in Bytes
+        byteOffset += renderData.numEle * geomType * Uint32Array.BYTES_PER_ELEMENT;  //Offset in Bytes
 
 
         if (binData.byteLength !== byteOffset) {
@@ -271,25 +266,25 @@ function PostProcessor(glContext: Web3DContext) {
         console.log('prepareTypeThreePlot is excuted');
         var byteOffset = 4;  //4 Bytes Offset for Magic Number
         var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
-
         var webGLData: WebGLGeom[];
-        var geomType = 3; //Triangles have 3 Points
+        var geomType = renderGroup.geoType;
+        var plotType = (plotGroup.type == TYPE_PLOTGROUP3D) ? 3 : ((plotGroup.type == TYPE_PLOTGROUP2D) ? 2 : 1);
 
         var diameter = calcModelDiameter(plotGroup);   //Diameter of the Model
 
         var attributes = renderGroup.attributes;    //Description of the Attributes
 
-        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * 3); //Offset always in Byte and Length in Float32 (4 Byte)
-        byteOffset += renderData.numVert * 3 * 4; // Offset in Bytes
+        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * plotType); //Offset always in Byte and Length in Float32 (4 Byte)
+        byteOffset += renderData.numVert * plotType * Float32Array.BYTES_PER_ELEMENT; // Offset in Bytes
 
         var attribData = [];
         for (var name in attributes) {
             attribData[attributes[name].index] = new Float32Array(binData, byteOffset, renderData.numVert);
-            byteOffset += renderData.numVert * 4; // Offset in Bytes
+            byteOffset += renderData.numVert * Float32Array.BYTES_PER_ELEMENT; // Offset in Bytes
         }
 
         var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * geomType);
-        byteOffset += renderData.numEle * geomType * 4;  //Offset in Bytes
+        byteOffset += renderData.numEle * geomType * Uint32Array.BYTES_PER_ELEMENT;  //Offset in Bytes
 
         webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);
 
@@ -301,49 +296,33 @@ function PostProcessor(glContext: Web3DContext) {
         console.log('prepareTypeTwo2DPlot is excuted');
         var byteOffset = 4;  //4 Bytes Offset for Magic Number
         var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
-        var geomType = 2;     //Lines have 2 points
-        var plotType = 2;     //2D Plots
-
         var webGLData: WebGLGeom[];
-
+        var geomType = renderGroup.geoType;
+        var plotType = (plotGroup.type == TYPE_PLOTGROUP3D) ? 3 : ((plotGroup.type == TYPE_PLOTGROUP2D) ? 2 : 1);
+        
         var diameter = calcModelDiameter(plotGroup);   //Diameter of the Model
 
         var attributes = renderGroup.attributes;    //Description of the Attributes
 
-        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * plotType); //Offset always in Byte and Length in Float32 (4 Byte)
-        byteOffset += renderData.numVert * plotType * 4; // Offset in Bytes
+        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * 3); //Offset always in Byte and Length in Float32 (4 Byte)
+        byteOffset += renderData.numVert * 3 * Float32Array.BYTES_PER_ELEMENT; // Offset in Bytes
         console.log('ByteOffset(vertexData): ' + renderData.numVert * plotType * 4);
 
         var attribData = [];
         for (var name in attributes) {
             attribData[attributes[name].index] = new Float32Array(binData, byteOffset, renderData.numVert);
-            byteOffset += renderData.numVert * 4; // Offset in Bytes
+            byteOffset += renderData.numVert * Float32Array.BYTES_PER_ELEMENT; // Offset in Bytes
         }
         console.log('ByteOffset(attribData): ' + renderData.numVert * 4);
-        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * 3);
-        byteOffset += renderData.numEle * 3 * 4;  //Offset in Bytes
+        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * geomType);
+        byteOffset += renderData.numEle * geomType * Uint32Array.BYTES_PER_ELEMENT;  //Offset in Bytes
         console.log('ByteOffset(elementData): ' + byteOffset);
         console.log('binData.byteLength : ' + binData.byteLength + '/nbtyeOffset' + byteOffset);
         if (binData.byteLength !== byteOffset) {
             console.log("Byte sizes differ");
         }
 
-        //check special Attributes
-        if (attributes[ATTR_RAD]) { // Render Tubes
-            //var attrRadius: RenderAttribute = attributes[ATTR_RAD];
-
-            //var scalation = diameter / attrRadius.max / 100 // Thickest tube is 1 %Percent of Model size, Default Thickness (can manually changed by User)
-
-            //var geomData = calcTube(renderData.numVert, renderData.numEle, vertexData, attribData[attrRadius.index], elementData, scalation);
-
-
-            //for (var i = 0; i < geomData.length; i++) {
-            //    webGLData[i] = createWebGLGeom(geomData[i]);
-            //}
-
-        } else {    // If no Tube then this here is a default Plot
-            webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);
-        }
+        webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);
 
         renderData.geomData = webGLData;
     }
@@ -381,12 +360,13 @@ function PostProcessor(glContext: Web3DContext) {
                         break;
                     case 2: prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
                         break;
-                    case 3: prepareTypeTwo2DPlot(model, plotGroup, result, renderGroup, renderData);
+                    case 3: prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
                         break;
                 }
+            } else {
+                throw "unsupport plotGroup type";
             }
             
-
             result.usrColor = glContext.getColorNames()[0];
             result.usrText = glContext.getTextureName()[0];
             result.usrScale = 1.0;
@@ -461,17 +441,14 @@ function PostProcessor(glContext: Web3DContext) {
             recipScale = 1 / rangeScale;
             result.scale[0] = recipScale;
             result.scale[1] = recipScale;
-            result.scale[2] = recipScale;
+            result.scale[2] = 0;
 
-            // 2D Model is rotation symmetric => no Offset
-            result.offset[0] = 0;
-            result.offset[1] = 0;
+            result.offset[0] = -(xMax+xMin) / 2;
+            result.offset[1] = -(yMax+yMin) / 2;
             result.offset[2] = 0;
         } else {
             throw "unsupported Bounding Box";
         }
-
-
     }
 
 }

@@ -9,20 +9,20 @@ interface Geometry {
     nVertices: number;
     nElements?: number;
     vertices: Float32Array;
-    indices?: Uint16Array;
     attributes?: Float32Array[];
+    indices?: Uint16Array;
     normals?: Float32Array;
     position?: Float32Array;
 }
 
 interface WebGLGeom {
     nVertices?: number;
-    vertices?: WebGLBuffer;
     nElements?: number;
+    vertices?: WebGLBuffer;
+    attributes?: WebGLBuffer[];
     indices?: WebGLBuffer;
     normals?: WebGLBuffer;
     position?: WebGLBuffer;
-    attributes?: WebGLBuffer[];
 } 
 
 // chain are necessary to extract Tubes out of the raw Data
