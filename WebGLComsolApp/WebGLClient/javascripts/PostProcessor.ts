@@ -233,7 +233,7 @@ function PostProcessor(glContext: Web3DContext) {
             byteOffset += renderData.numVert * Float32Array.BYTES_PER_ELEMENT; // Offset in Bytes
         }
 
-        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * 2);
+        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * geomType);
         byteOffset += renderData.numEle * geomType * Uint32Array.BYTES_PER_ELEMENT;  //Offset in Bytes
 
 
@@ -291,42 +291,6 @@ function PostProcessor(glContext: Web3DContext) {
         renderData.geomData = webGLData;
     }
 
-    // Prepare Plots based on Line data
-    var prepareTypeTwo2DPlot = function (model: Model, plotGroup: Result, result: Result, renderGroup: RenderGroup, renderData: RenderData): void {
-        console.log('prepareTypeTwo2DPlot is excuted');
-        var byteOffset = 4;  //4 Bytes Offset for Magic Number
-        var binData = renderData.rawData;   //Binary Data containing Vertices indices and Attributes
-        var webGLData: WebGLGeom[];
-        var geomType = renderGroup.geoType;
-        var plotType = (plotGroup.type == TYPE_PLOTGROUP3D) ? 3 : ((plotGroup.type == TYPE_PLOTGROUP2D) ? 2 : 1);
-        
-        var diameter = calcModelDiameter(plotGroup);   //Diameter of the Model
-
-        var attributes = renderGroup.attributes;    //Description of the Attributes
-
-        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * 3); //Offset always in Byte and Length in Float32 (4 Byte)
-        byteOffset += renderData.numVert * 3 * Float32Array.BYTES_PER_ELEMENT; // Offset in Bytes
-        console.log('ByteOffset(vertexData): ' + renderData.numVert * plotType * 4);
-
-        var attribData = [];
-        for (var name in attributes) {
-            attribData[attributes[name].index] = new Float32Array(binData, byteOffset, renderData.numVert);
-            byteOffset += renderData.numVert * Float32Array.BYTES_PER_ELEMENT; // Offset in Bytes
-        }
-        console.log('ByteOffset(attribData): ' + renderData.numVert * 4);
-        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * geomType);
-        byteOffset += renderData.numEle * geomType * Uint32Array.BYTES_PER_ELEMENT;  //Offset in Bytes
-        console.log('ByteOffset(elementData): ' + byteOffset);
-        console.log('binData.byteLength : ' + binData.byteLength + '/nbtyeOffset' + byteOffset);
-        if (binData.byteLength !== byteOffset) {
-            console.log("Byte sizes differ");
-        }
-
-        webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);
-
-        renderData.geomData = webGLData;
-    }
-
     /* 
     *  Prepares the raw Data of a plot
     * Calculate normals, arrows, bindBuffer
@@ -345,26 +309,13 @@ function PostProcessor(glContext: Web3DContext) {
         console.log("Preparation of Plot: " + model.name + " / " + plotGroup.name + " / " + result.name + " (" + result.type + ")");
         if (!result.noData && renderData.rawData) { //rawData exists
             renderGroup.geoType = getGeoType(result.type);  //1 = Points, 2 = Lines, 3 = Triangles
-            if (plotGroup.type == TYPE_PLOTGROUP3D) {
-                switch (renderGroup.geoType) {
-                    case 1: prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                    case 2: prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                    case 3: prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                }
-            } else if (plotGroup.type == TYPE_PLOTGROUP2D) {
-                switch (renderGroup.geoType) {
-                    case 1: prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                    case 2: prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                    case 3: prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                }
-            } else {
-                throw "unsupport plotGroup type";
+            switch (renderGroup.geoType) {
+                case 1: prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
+                    break;
+                case 2: prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
+                    break;
+                case 3: prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
+                    break;
             }
             
             result.usrColor = glContext.getColorNames()[0];

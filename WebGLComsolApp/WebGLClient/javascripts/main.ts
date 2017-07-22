@@ -1,16 +1,6 @@
 ﻿/// <reference path="libs/gl-matrix.d.ts"/>
 /// <reference path="libs/jquery.d.ts"/>
 
-interface JQueryStatic {
-    mobile: JQueryMobileStatic;
-}
-
-interface JQueryMobileStatic {
-    (): JQuery;
-    navigate(name: string): string;
-    navigate(name: string, value: string, append?: boolean): JQuery;
-}
-
 // All required Function should be checked here
 function checkBrowser(): boolean {
     var browserOk = true;

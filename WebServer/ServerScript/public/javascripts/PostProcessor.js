@@ -248,34 +248,16 @@ function PostProcessor(glContext) {
         console.log("Preparation of Plot: " + model.name + " / " + plotGroup.name + " / " + result.name + " (" + result.type + ")");
         if (!result.noData && renderData.rawData) {
             renderGroup.geoType = getGeoType(result.type);
-            if (plotGroup.type == TYPE_PLOTGROUP3D) {
-                switch (renderGroup.geoType) {
-                    case 1:
-                        prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                    case 2:
-                        prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                    case 3:
-                        prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                }
-            }
-            else if (plotGroup.type == TYPE_PLOTGROUP2D) {
-                switch (renderGroup.geoType) {
-                    case 1:
-                        prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                    case 2:
-                        prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                    case 3:
-                        prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
-                        break;
-                }
-            }
-            else {
-                throw "unsupport plotGroup type";
+            switch (renderGroup.geoType) {
+                case 1:
+                    prepareTypeOnePlot(model, plotGroup, result, renderGroup, renderData);
+                    break;
+                case 2:
+                    prepareTypeTwoPlot(model, plotGroup, result, renderGroup, renderData);
+                    break;
+                case 3:
+                    prepareTypeThreePlot(model, plotGroup, result, renderGroup, renderData);
+                    break;
             }
             result.usrColor = glContext.getColorNames()[0];
             result.usrText = glContext.getTextureName()[0];
