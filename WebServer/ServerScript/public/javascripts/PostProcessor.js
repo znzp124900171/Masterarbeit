@@ -178,7 +178,7 @@ function PostProcessor(glContext) {
             attribData[attributes[name].index] = new Float32Array(binData, byteOffset, renderData.numVert);
             byteOffset += renderData.numVert * Float32Array.BYTES_PER_ELEMENT;
         }
-        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * 2);
+        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * geomType);
         byteOffset += renderData.numEle * geomType * Uint32Array.BYTES_PER_ELEMENT;
         if (binData.byteLength !== byteOffset) {
             console.log("Byte sizes differ");
@@ -208,34 +208,6 @@ function PostProcessor(glContext) {
         }
         var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * geomType);
         byteOffset += renderData.numEle * geomType * Uint32Array.BYTES_PER_ELEMENT;
-        webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);
-        renderData.geomData = webGLData;
-    };
-    var prepareTypeTwo2DPlot = function (model, plotGroup, result, renderGroup, renderData) {
-        console.log('prepareTypeTwo2DPlot is excuted');
-        var byteOffset = 4;
-        var binData = renderData.rawData;
-        var webGLData;
-        var geomType = renderGroup.geoType;
-        var plotType = (plotGroup.type == TYPE_PLOTGROUP3D) ? 3 : ((plotGroup.type == TYPE_PLOTGROUP2D) ? 2 : 1);
-        var diameter = calcModelDiameter(plotGroup);
-        var attributes = renderGroup.attributes;
-        var vertexData = new Float32Array(binData, byteOffset, renderData.numVert * 3);
-        byteOffset += renderData.numVert * 3 * Float32Array.BYTES_PER_ELEMENT;
-        console.log('ByteOffset(vertexData): ' + renderData.numVert * plotType * 4);
-        var attribData = [];
-        for (var name in attributes) {
-            attribData[attributes[name].index] = new Float32Array(binData, byteOffset, renderData.numVert);
-            byteOffset += renderData.numVert * Float32Array.BYTES_PER_ELEMENT;
-        }
-        console.log('ByteOffset(attribData): ' + renderData.numVert * 4);
-        var elementData = new Uint32Array(binData, byteOffset, renderData.numEle * geomType);
-        byteOffset += renderData.numEle * geomType * Uint32Array.BYTES_PER_ELEMENT;
-        console.log('ByteOffset(elementData): ' + byteOffset);
-        console.log('binData.byteLength : ' + binData.byteLength + '/nbtyeOffset' + byteOffset);
-        if (binData.byteLength !== byteOffset) {
-            console.log("Byte sizes differ");
-        }
         webGLData = prepareDefaultPlot(renderData.numVert, renderData.numEle, geomType, attributes, vertexData, elementData, attribData);
         renderData.geomData = webGLData;
     };

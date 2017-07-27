@@ -1,6 +1,11 @@
 ﻿/// <refernce path="lib/gl-matrix.d.ts"/>
 /// <refernce path="lib/jquery.d.ts"/>
 
+interface Tick {
+    label: Array<string>;
+    normalization:Array<number>;
+}
+
 //The render engine 
 // calculates the M V P Matrices
 // start draw Call
@@ -96,6 +101,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var calibrationTextHeight: number;
     var calibrationTextFontSize: number;
 
+    var tick: Tick = {
+        label: [],
+        normalization: []
+    };
+
     //init constant Render Data
     initMatrices();
     initStaticData();
@@ -183,18 +193,18 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
             indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3])),
 
-            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.76, 0.85, 0,
-                -0.76, 0.78, 0,
-                -0.76, 0.70, 0,
-                -0.76, 0.62, 0,
-                -0.76, 0.54, 0,
-                -0.76, 0.46, 0,
-                -0.76, 0.38, 0,
-                -0.76, 0.30, 0,
-                -0.76, 0.22, 0,
-                -0.76, 0.14, 0,
-                -0.76, 0.06, 0,
-                -0.76, -0.02, 0
+            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85, 0,
+            -0.78, 0.73, 0,
+            -0.78, 0.66, 0,
+            -0.78, 0.59, 0,
+            -0.78, 0.52, 0,
+            -0.78, 0.45, 0,
+            -0.78, 0.38, 0,
+            -0.78, 0.3, 0,
+            -0.78, 0.23, 0,
+            -0.78, 0.16, 0,
+            -0.78, 0.09, 0,
+            -0.78, 0, 0
             ])),
 
             scalaPointSize: glc.setupArrayBuffer(new Float32Array([axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize]))
@@ -625,7 +635,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader3Lines = function (renderGroup: RenderGroup, usrText: string) {
-
+        drawLegend(renderGroup, usrText);
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
 
         var prog = programs[3];
@@ -654,7 +664,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader3Trias = function (renderGroup: RenderGroup, usrText: string) {
-        //drawLegend(renderGroup, usrText);
+       drawLegend(renderGroup, usrText);
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
 
         var prog = programs[3];
@@ -683,7 +693,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader103Trias = function (renderGroup: RenderGroup, usrText: string) {
-
+        drawLegend(renderGroup, usrText);
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
 
         var prog = programs[103];
@@ -779,6 +789,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader5Lines = function (renderGroup: RenderGroup, usrText: string, usrScale: number) {
+        drawLegend(renderGroup, usrText);
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFX];
         var defYAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFY];
@@ -835,6 +846,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader5Trias = function (renderGroup: RenderGroup, usrText: string, usrScale: number) {
+        drawLegend(renderGroup, usrText);
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFX];
         var defYAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFY];
@@ -892,6 +904,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader105Trias = function (renderGroup: RenderGroup, usrText: string, usrScale: number) {
+        drawLegend(renderGroup, usrText);
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFX];
         var defYAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFY];
@@ -978,8 +991,16 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         let colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         let minValue: number = colAttr.min;
         let maxValue: number = colAttr.max;
+        let ticks: Tick = {
+            label: [],
+            normalization: []
+        }
 
-        glContext.setLegendCalibrationTextures(scalaValue(minValue, maxValue, false), calibrationTextWidth, calibrationTextHeight, calibrationTextFontSize);
+        ticks = scalaValue(minValue, maxValue);
+        glContext.setLegendCalibrationTextures(ticks.label, calibrationTextWidth, calibrationTextHeight, calibrationTextFontSize);
+
+        console.log('label' + ticks.label);
+        
 
         //reset View
         let prog = programs[3];
@@ -1002,16 +1023,30 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorLegend.indexBuf);
         gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
 
-        drawScala();
+        drawScala(ticks.normalization);
 
     }
 
-    var drawScala = function () {
+    var drawScala = function (tickNormalization?: number[]) {
+        console.log('normalization' + tickNormalization);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.depthMask(false);
         let textures = glContext.getLegendCalibrationTextures();
-        for (let i = 0; i < 12; i++) {
+
+        if (tickNormalization) {
+            let ticksPosition = [0.76, 0.85, 0];
+            let yPosition: number;
+
+            for (let i = 0; i < tickNormalization.length; i++) {
+                yPosition = 0.78 - tickNormalization[i] * (0.78 - 0.02);
+                yPosition = Math.round(yPosition * 100) / 100;
+                ticksPosition.push(0.76, yPosition, 0);
+            }
+            console.log(ticksPosition);
+        }    
+        
+        for (let i = 0; i < 11; i++) {
             let prog = programs[6];
             gl.useProgram(prog.gl);
             gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
@@ -1020,6 +1055,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             gl.bindTexture(gl.TEXTURE_2D, textures[i]);
 
             gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
+            //glc.setupArrayBuffer(new Float32Array(ticksPosition))
             gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.scalaBuf);
             gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
 
@@ -1142,47 +1178,38 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     //set legend scala array
-    var scalaValue = function legendScala(min: number, max: number,normalization:boolean) {
-        let scalaValue = [];
-        let normalizedValue = [];
-        let maxDecade: number, minDecade: number, maxDigit: number, minDigit: number;
+    var scalaValue = function legendScala(min: number, max: number) {
         let range: number = max - min;
 
-        let maxDigits = min.toString().split('.')[1].length;
-        let minDigits = max.toString().split('.')[1].length;
-        let digits = Math.max(minDigits, maxDigits);
-        let decade = maxDecade-1;
-        
-        let value = Math.floor(max / Math.pow(10, decade));
+        let step: number = 0;
+        let tempStep = range / 12;
+        let mag = Math.floor(Math.log10(tempStep));
+        let magPow = Math.pow(10, mag);
 
-        let stepLengthDigits = (max - min) * digits;
+        let magMsd = tempStep / magPow;
 
-        if (min > 0) {
-            if (decade < 1) {
-                scalaValue.push(' ');
-                for (let i = 0; i < 11; i++) {
-                    scalaValue.push()
-                }
-            }
+        if (magMsd > 5.0) {
+            magMsd = 10.0;
+        } else if (magMsd > 2.0) {
+            magMsd = 5.0;
+        } else if (magMsd > 1.0) {
+            magMsd = 2.0;
         }
 
-        if (decade<=1 && digits > 1) {
-            scalaValue.push('10E-' + digits.toString());
-            for (let i = 0; i < 11; i++) {
-                scalaValue.push((max * digits - stepLengthDigits).toFixed(1).toString());
-            }
-        } else if (decade > 1) {
-            scalaValue.push('10E' + decade.toString());
-            for (let i = 0; i < 11; i++) {
-                scalaValue.push(value.toFixed(1).toString());
-                value = value - 0.2;
-            }
-        }
-        if (normalization) {
+        let start: number = Math.ceil(max / magPow);
 
-        } else {
-            return scalaValue;
+        tick.label.push('10E' + mag.toString());
+        for (let i = 0; i <20; i++) {
+            start = start - magMsd;
+            console.log(start);
+            if (start*magPow > min) {
+                tick.label.push(start.toString());
+                tick.normalization.push((max - start*magPow) / range);
+            } else {
+                break;
+            }
         }
+        return tick;
     }
 
     function checkGLerror() : boolean{

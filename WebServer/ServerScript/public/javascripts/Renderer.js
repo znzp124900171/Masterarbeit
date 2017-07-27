@@ -52,6 +52,10 @@ function Renderer(modelData, glc) {
     var calibrationTextWidth;
     var calibrationTextHeight;
     var calibrationTextFontSize;
+    var tick = {
+        label: [],
+        normalization: []
+    };
     initMatrices();
     initStaticData();
     function initMatrices() {
@@ -107,18 +111,18 @@ function Renderer(modelData, glc) {
                 -0.82, 0.0,])),
             colorBuf: glc.setupArrayBuffer(new Float32Array([1.0, 1.0, 0.0, 0.0])),
             indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3])),
-            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.76, 0.85, 0,
-                -0.76, 0.78, 0,
-                -0.76, 0.70, 0,
-                -0.76, 0.62, 0,
-                -0.76, 0.54, 0,
-                -0.76, 0.46, 0,
-                -0.76, 0.38, 0,
-                -0.76, 0.30, 0,
-                -0.76, 0.22, 0,
-                -0.76, 0.14, 0,
-                -0.76, 0.06, 0,
-                -0.76, -0.02, 0
+            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85, 0,
+                -0.78, 0.73, 0,
+                -0.78, 0.66, 0,
+                -0.78, 0.59, 0,
+                -0.78, 0.52, 0,
+                -0.78, 0.45, 0,
+                -0.78, 0.38, 0,
+                -0.78, 0.3, 0,
+                -0.78, 0.23, 0,
+                -0.78, 0.16, 0,
+                -0.78, 0.09, 0,
+                -0.78, 0, 0
             ])),
             scalaPointSize: glc.setupArrayBuffer(new Float32Array([axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize]))
         };
@@ -463,6 +467,7 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader3Lines = function (renderGroup, usrText) {
+        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var prog = programs[3];
         gl.useProgram(prog.gl);
@@ -486,6 +491,7 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader3Trias = function (renderGroup, usrText) {
+        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var prog = programs[3];
         gl.useProgram(prog.gl);
@@ -509,6 +515,7 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader103Trias = function (renderGroup, usrText) {
+        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var prog = programs[103];
         gl.useProgram(prog.gl);
@@ -585,6 +592,7 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader5Lines = function (renderGroup, usrText, usrScale) {
+        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr = renderGroup.attributes[ATTR_DEFX];
         var defYAttr = renderGroup.attributes[ATTR_DEFY];
@@ -635,6 +643,7 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader5Trias = function (renderGroup, usrText, usrScale) {
+        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr = renderGroup.attributes[ATTR_DEFX];
         var defYAttr = renderGroup.attributes[ATTR_DEFY];
@@ -685,6 +694,7 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader105Trias = function (renderGroup, usrText, usrScale) {
+        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr = renderGroup.attributes[ATTR_DEFX];
         var defYAttr = renderGroup.attributes[ATTR_DEFY];
@@ -755,7 +765,13 @@ function Renderer(modelData, glc) {
         let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         let minValue = colAttr.min;
         let maxValue = colAttr.max;
-        glContext.setLegendCalibrationTextures(scalaValue(minValue, maxValue, false), calibrationTextWidth, calibrationTextHeight, calibrationTextFontSize);
+        let ticks = {
+            label: [],
+            normalization: []
+        };
+        ticks = scalaValue(minValue, maxValue);
+        glContext.setLegendCalibrationTextures(ticks.label, calibrationTextWidth, calibrationTextHeight, calibrationTextFontSize);
+        console.log('label' + ticks.label);
         let prog = programs[3];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
@@ -770,14 +786,25 @@ function Renderer(modelData, glc) {
         gl.vertexAttribPointer(prog.attributes[GL_ATTR_COL], 1, gl.FLOAT, false, 0, 0);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, colorLegend.indexBuf);
         gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
-        drawScala();
+        drawScala(ticks.normalization);
     };
-    var drawScala = function () {
+    var drawScala = function (tickNormalization) {
+        console.log('normalization' + tickNormalization);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.depthMask(false);
         let textures = glContext.getLegendCalibrationTextures();
-        for (let i = 0; i < 12; i++) {
+        if (tickNormalization) {
+            let ticksPosition = [0.76, 0.85, 0];
+            let yPosition;
+            for (let i = 0; i < tickNormalization.length; i++) {
+                yPosition = 0.78 - tickNormalization[i] * (0.78 - 0.02);
+                yPosition = Math.round(yPosition * 100) / 100;
+                ticksPosition.push(0.76, yPosition, 0);
+            }
+            console.log(ticksPosition);
+        }
+        for (let i = 0; i < 11; i++) {
             let prog = programs[6];
             gl.useProgram(prog.gl);
             gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
@@ -878,43 +905,36 @@ function Renderer(modelData, glc) {
         gl.viewport(gl.drawingBufferWidth / 2, 0, gl.drawingBufferWidth / 2, gl.drawingBufferHeight);
         drawScene(-eyeSeperation);
     }
-    var scalaValue = function legendScala(min, max, normalization) {
-        let scalaValue = [];
-        let normalizedValue = [];
-        let maxDecade, minDecade, maxDigit, minDigit;
+    var scalaValue = function legendScala(min, max) {
         let range = max - min;
-        let maxDigits = min.toString().split('.')[1].length;
-        let minDigits = max.toString().split('.')[1].length;
-        let digits = Math.max(minDigits, maxDigits);
-        let decade = maxDecade - 1;
-        let value = Math.floor(max / Math.pow(10, decade));
-        let stepLengthDigits = (max - min) * digits;
-        if (min > 0) {
-            if (decade < 1) {
-                scalaValue.push(' ');
-                for (let i = 0; i < 11; i++) {
-                    scalaValue.push();
-                }
+        let step = 0;
+        let tempStep = range / 12;
+        let mag = Math.floor(Math.log10(tempStep));
+        let magPow = Math.pow(10, mag);
+        let magMsd = tempStep / magPow;
+        if (magMsd > 5.0) {
+            magMsd = 10.0;
+        }
+        else if (magMsd > 2.0) {
+            magMsd = 5.0;
+        }
+        else if (magMsd > 1.0) {
+            magMsd = 2.0;
+        }
+        let start = Math.ceil(max / magPow);
+        tick.label.push('10E' + mag.toString());
+        for (let i = 0; i < 20; i++) {
+            start = start - magMsd;
+            console.log(start);
+            if (start * magPow > min) {
+                tick.label.push(start.toString());
+                tick.normalization.push((max - start * magPow) / range);
+            }
+            else {
+                break;
             }
         }
-        if (decade <= 1 && digits > 1) {
-            scalaValue.push('10E-' + digits.toString());
-            for (let i = 0; i < 11; i++) {
-                scalaValue.push((max * digits - stepLengthDigits).toFixed(1).toString());
-            }
-        }
-        else if (decade > 1) {
-            scalaValue.push('10E' + decade.toString());
-            for (let i = 0; i < 11; i++) {
-                scalaValue.push(value.toFixed(1).toString());
-                value = value - 0.2;
-            }
-        }
-        if (normalization) {
-        }
-        else {
-            return scalaValue;
-        }
+        return tick;
     };
     function checkGLerror() {
         var error = gl.getError();
