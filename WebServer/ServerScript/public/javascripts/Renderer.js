@@ -31,6 +31,7 @@ function Renderer(modelData, glc) {
     var up;
     var eye;
     var transVec;
+    var transVecOrth;
     var mvpBackground;
     var quatTmp;
     var quatRot;
@@ -73,6 +74,8 @@ function Renderer(modelData, glc) {
         vec3.set(up, 0, 1, 0);
         transVec = vec3.create();
         vec3.set(transVec, 0, 0, 0);
+        transVecOrth = vec3.create();
+        vec3.set(transVecOrth, 0, 0, 0);
         mvpBackground = mat4.create();
         mat4.ortho(mvpBackground, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
         mvpColorLegend = mat4.create();
@@ -112,17 +115,14 @@ function Renderer(modelData, glc) {
             colorBuf: glc.setupArrayBuffer(new Float32Array([1.0, 1.0, 0.0, 0.0])),
             indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3])),
             scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85, 0,
-                -0.78, 0.73, 0,
-                -0.78, 0.66, 0,
-                -0.78, 0.59, 0,
-                -0.78, 0.52, 0,
+                -0.78, 0.74, 0,
+                -0.78, 0.64, 0,
+                -0.78, 0.54, 0,
                 -0.78, 0.45, 0,
-                -0.78, 0.38, 0,
-                -0.78, 0.3, 0,
-                -0.78, 0.23, 0,
-                -0.78, 0.16, 0,
-                -0.78, 0.09, 0,
-                -0.78, 0, 0
+                -0.78, 0.35, 0,
+                -0.78, 0.25, 0,
+                -0.78, 0.15, 0,
+                -0.78, 0.06, 0,
             ])),
             scalaPointSize: glc.setupArrayBuffer(new Float32Array([axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize]))
         };
@@ -263,14 +263,25 @@ function Renderer(modelData, glc) {
     this.getPosition = function () {
         return transVec;
     };
+    this.getPositionOrth = function () {
+        return transVecOrth;
+    };
     this.getSeperation = function () {
         return eyeSeperation;
+    };
+    this.getAxisSize = function () {
+        return axisSize;
     };
     this.setPosition = function (eyeX, eyeY, eyeZ) {
         transVec[0] = eyeX;
         transVec[1] = eyeY;
         transVec[2] = eyeZ;
         drawCallRequest = true;
+    };
+    this.setPositionOrth = function (X, Y, Z) {
+        transVecOrth[0] = X;
+        transVecOrth[1] = Y;
+        transVecOrth[2] = Z;
     };
     this.setPositionV = function (eyeVec) {
         transVec = eyeVec;
@@ -288,6 +299,14 @@ function Renderer(modelData, glc) {
         transVec[2] = eyeZ;
         drawCallRequest = true;
     };
+    this.setPositionVOrth = function (Vec) {
+        transVecOrth = Vec;
+        drawCallRequest = true;
+    };
+    this.setPositionXOrth = function (X) {
+        transVecOrth[0] = X;
+        drawCallRequest = true;
+    };
     this.setSeperation = function (seperation) {
         eyeSeperation = seperation;
         drawCallRequest = true;
@@ -301,6 +320,8 @@ function Renderer(modelData, glc) {
         calibrationTextHeight = textHeight;
         calibrationTextFontSize = textFontSize;
         drawCallRequest = true;
+    };
+    this.setTicksPosition = function () {
     };
     this.rotateObject = function (x, y) {
         quat.identity(quatTmp);
@@ -921,7 +942,7 @@ function Renderer(modelData, glc) {
         else if (magMsd > 1.0) {
             magMsd = 2.0;
         }
-        let start = Math.ceil(max / magPow);
+        let start = Math.ceil(max / 10 / magPow) * 10;
         tick.label.push('10E' + mag.toString());
         for (let i = 0; i < 20; i++) {
             start = start - magMsd;

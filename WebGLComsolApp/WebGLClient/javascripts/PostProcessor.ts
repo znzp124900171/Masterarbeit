@@ -329,13 +329,7 @@ function PostProcessor(glContext: Web3DContext) {
     //Must be called before a plot from this plotGroup can be rendered
     this.preparePlotGroup = function (model: Model, plotGroup: Result, groupId: number, dataId: number) {
         console.log("Preparation of Plotgroup: " + model.name + " / " + plotGroup.name + " (" + plotGroup.type + ")");
-        if (plotGroup.type === TYPE_PLOTGROUP3D) {  //check if Type is of PlotGroup3D
-            if (plotGroup.renderGroup[groupId] && plotGroup.renderGroup[groupId].renderData[dataId]) {
-                this.preparePlotByNumber(model, plotGroup, plotGroup, groupId, dataId);
-            } else {
-                plotGroup.noData = true;
-            }
-        } else if (plotGroup.type === TYPE_PLOTGROUP2D) {
+        if (plotGroup.type === TYPE_PLOTGROUP3D || plotGroup.type === TYPE_PLOTGROUP2D) {  //check if Type is of PlotGroup3D or PlotGroup2D
             if (plotGroup.renderGroup[groupId] && plotGroup.renderGroup[groupId].renderData[dataId]) {
                 this.preparePlotByNumber(model, plotGroup, plotGroup, groupId, dataId);
             } else {

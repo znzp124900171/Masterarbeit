@@ -232,9 +232,11 @@ function Gui(modelData, renderer, glContext) {
             canvas.width = width;
             if (isMobile) {
                 renderer.setCalibrationText(40, 40, 16);
+                renderer.setAxisSize(24);
             }
             else {
                 renderer.setCalibrationText(50, 50, 24);
+                renderer.setAxisSize(32);
             }
             if (vrOn) {
                 canvas.height = height;

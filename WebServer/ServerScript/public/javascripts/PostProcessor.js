@@ -241,15 +241,7 @@ function PostProcessor(glContext) {
     };
     this.preparePlotGroup = function (model, plotGroup, groupId, dataId) {
         console.log("Preparation of Plotgroup: " + model.name + " / " + plotGroup.name + " (" + plotGroup.type + ")");
-        if (plotGroup.type === TYPE_PLOTGROUP3D) {
-            if (plotGroup.renderGroup[groupId] && plotGroup.renderGroup[groupId].renderData[dataId]) {
-                this.preparePlotByNumber(model, plotGroup, plotGroup, groupId, dataId);
-            }
-            else {
-                plotGroup.noData = true;
-            }
-        }
-        else if (plotGroup.type === TYPE_PLOTGROUP2D) {
+        if (plotGroup.type === TYPE_PLOTGROUP3D || plotGroup.type === TYPE_PLOTGROUP2D) {
             if (plotGroup.renderGroup[groupId] && plotGroup.renderGroup[groupId].renderData[dataId]) {
                 this.preparePlotByNumber(model, plotGroup, plotGroup, groupId, dataId);
             }

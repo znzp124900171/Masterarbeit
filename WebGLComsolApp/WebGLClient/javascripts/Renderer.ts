@@ -69,6 +69,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     //Position of the Viewer
     var eye:            Float32Array;
     var transVec:       Float32Array;
+    var transVecOrth:   Float32Array;
 
     //3D Matrices and Quaternions
     var mvpBackground:  Float32Array;       // Model View Projection Matrix of Background
@@ -136,6 +137,9 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         transVec = vec3.create();
         vec3.set(transVec, 0, 0, 0);
 
+        transVecOrth = vec3.create();
+        vec3.set(transVecOrth, 0, 0, 0);
+
         //Background
         mvpBackground = mat4.create();
         mat4.ortho(mvpBackground, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
@@ -194,17 +198,14 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3])),
 
             scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85, 0,
-            -0.78, 0.73, 0,
-            -0.78, 0.66, 0,
-            -0.78, 0.59, 0,
-            -0.78, 0.52, 0,
+            -0.78, 0.74, 0,
+            -0.78, 0.64, 0,
+            -0.78, 0.54, 0,
             -0.78, 0.45, 0,
-            -0.78, 0.38, 0,
-            -0.78, 0.3, 0,
-            -0.78, 0.23, 0,
-            -0.78, 0.16, 0,
-            -0.78, 0.09, 0,
-            -0.78, 0, 0
+            -0.78, 0.35, 0,
+            -0.78, 0.25, 0,
+            -0.78, 0.15, 0,
+            -0.78, 0.06, 0,
             ])),
 
             scalaPointSize: glc.setupArrayBuffer(new Float32Array([axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize]))
@@ -373,9 +374,18 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         return transVec;
     }
 
+    this.getPositionOrth = function (): Float32Array {
+        return transVecOrth;
+    }
+
     // get the eyeSeperation
     this.getSeperation = function (): number {
         return eyeSeperation;
+    }
+
+    // get axis size
+    this.getAxisSize = function () {
+        return axisSize;
     }
 
     // sets the Position of the Viewer
@@ -384,6 +394,12 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         transVec[1] = eyeY;
         transVec[2] = eyeZ;
         drawCallRequest = true;
+    }
+
+    this.setPositionOrth = function (X: number, Y: number, Z: number) {
+        transVecOrth[0] = X;
+        transVecOrth[1] = Y;
+        transVecOrth[2] = Z;
     }
 
     //sets the Position of the Viewer as (Float32Array)
@@ -410,6 +426,16 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         drawCallRequest = true;
     }
 
+    this.setPositionVOrth = function (Vec: Float32Array) {
+        transVecOrth = Vec;
+        drawCallRequest = true;
+    }
+
+    this.setPositionXOrth = function (X: number) {
+        transVecOrth[0] = X;
+        drawCallRequest = true;
+    }
+
     //sets the seperation distance (pupillary distance) of plots in two viewports
     this.setSeperation = function (seperation: number) {
         eyeSeperation = seperation;
@@ -429,6 +455,9 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         drawCallRequest = true;
     }
 
+    this.setTicksPosition = function () {
+
+    }
     //rotate Object x and y in degrees
     //Changes the rotMatrix, and normalMatrix
     this.rotateObject = function (x: number, y: number) {
@@ -1057,6 +1086,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
             //glc.setupArrayBuffer(new Float32Array(ticksPosition))
             gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.scalaBuf);
+            //gl.bindBuffer(gl.ARRAY_BUFFER, ticksPosition);
             gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
 
             gl.enableVertexAttribArray(prog.attributes[GL_ATTR_SIZE]);
@@ -1196,7 +1226,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             magMsd = 2.0;
         }
 
-        let start: number = Math.ceil(max / magPow);
+        let start: number = Math.ceil(max / 10/ magPow)*10;
 
         tick.label.push('10E' + mag.toString());
         for (let i = 0; i <20; i++) {

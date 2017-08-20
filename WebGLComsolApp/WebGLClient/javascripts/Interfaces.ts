@@ -86,6 +86,7 @@ interface Renderer {
 
     //userInteraction (rotation, zooming)
     getPosition(): Float32Array;
+    getAxisSize(): number;
     setPosition(eyeX: number, eyeY: number, eyeZ: number): void;
     setPositionV(eyeVec: Float32Array): void;
     setXPosition(eyeX: number): void;

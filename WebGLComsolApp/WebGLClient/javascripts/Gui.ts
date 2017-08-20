@@ -294,8 +294,10 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
 
             if (isMobile) {
                 renderer.setCalibrationText(40, 40, 16);
+                renderer.setAxisSize(24);
             } else {
                 renderer.setCalibrationText(50, 50, 24);
+                renderer.setAxisSize(32);
             }
             
             //adjust the layout in VR mode
