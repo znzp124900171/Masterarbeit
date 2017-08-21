@@ -94,7 +94,7 @@ function Web3DContext(canvas: HTMLElement) {
     textures = initTextures();
     textTextures = initTextTextures();
 
-    function createTextCanvas(text, width, height, fontSize) {
+    function createTextCanvas(text:string, width:number, height:number, fontSize) {
         let ctx: CanvasRenderingContext2D = document.createElement("canvas").getContext("2d");
 
         ctx.canvas.width = width;
@@ -802,13 +802,19 @@ function Web3DContext(canvas: HTMLElement) {
 
     this.setLegendCalibrationTextures = function (scalaValue:any[],textWidth:number, textHeight:number,textFontSize:number) {
         let textCanvas = [];
-
-        textCanvas.push(createTextCanvas(scalaValue[0], textWidth+30, textHeight+15, textFontSize+2));
+        textCanvas.push(createTextCanvas(scalaValue[0], textWidth + 30, textHeight + 15, textFontSize + 2));
         // create text canvas for each scala value
-        for (let i = 1; i < scalaValue.length; i++) {
+        console.time('loop 1');
+        console.log('scalavalue length: ' + scalaValue.length);
+        for (let i = 1; i < 15; i++) {
             textCanvas.push(createTextCanvas(scalaValue[i], textWidth, textHeight, textFontSize));
+            if (i > scalaValue.length) {
+                break;
+            }
         }
-
+        console.timeEnd('loop 1');
+        console.time('loop 2');
+        console.log('canvas length: ' + textCanvas.length);
         for (let j = 0; j < textCanvas.length; j++) {
             legendCalibration[j] = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, legendCalibration[j]);
@@ -820,10 +826,7 @@ function Web3DContext(canvas: HTMLElement) {
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); //t in texture coordinate means y-axis
             gl.bindTexture(gl.TEXTURE_2D, null);            //unbound Texture Buffer
         }
-    }
-
-    this.getLegendCalibrationTextures = function () {
-        return legendCalibration;
+        console.timeEnd('loop 2');
     }
 
     this.setupArrayBuffer = function (binFloatArray): WebGLBuffer {
@@ -887,6 +890,10 @@ function Web3DContext(canvas: HTMLElement) {
     }
     this.getTextTexture = function (): WebGLTexture {
         return textTextures;
+    }
+
+    this.getLegendCalibrationTextures = function ():WebGLTexture {
+        return legendCalibration;
     }
 
 }

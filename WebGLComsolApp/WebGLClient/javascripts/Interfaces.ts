@@ -55,6 +55,18 @@ interface ColorLegend {
     colorBuf?: WebGLBuffer;
     scalaBuf?: WebGLBuffer;
     scalaPointSize?: WebGLBuffer;
+    scalaBuf10?: WebGLBuffer;
+    scalaPointSize10?: WebGLBuffer;
+    scalaBuf11?: WebGLBuffer;
+    scalaPointSize11?: WebGLBuffer;
+    scalaBuf12?: WebGLBuffer;
+    scalaPointSize12?: WebGLBuffer;
+    scalaBuf13?: WebGLBuffer;
+    scalaPointSize13?: WebGLBuffer;
+    scalaBuf14?: WebGLBuffer;
+    scalaPointSize14?: WebGLBuffer;
+    scalaBuf15?: WebGLBuffer;
+    scalaPointSize15?: WebGLBuffer;
 }
 
 interface CoordSys {

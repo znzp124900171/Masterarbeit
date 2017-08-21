@@ -3,7 +3,7 @@
 
 interface Tick {
     label: Array<string>;
-    normalization:Array<number>;
+    normalization: Array<number>;
 }
 
 //The render engine 
@@ -102,11 +102,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     var calibrationTextHeight: number;
     var calibrationTextFontSize: number;
 
-    var tick: Tick = {
-        label: [],
-        normalization: []
-    };
-
     //init constant Render Data
     initMatrices();
     initStaticData();
@@ -193,22 +188,9 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             -0.85, 0.0,
             -0.82, 0.0,])),
 
-            colorBuf: glc.setupArrayBuffer(new Float32Array([1.0,1.0,0.0,0.0])),
+            colorBuf: glc.setupArrayBuffer(new Float32Array([1.0, 1.0, 0.0, 0.0])),
 
             indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3])),
-
-            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85, 0,
-            -0.78, 0.74, 0,
-            -0.78, 0.64, 0,
-            -0.78, 0.54, 0,
-            -0.78, 0.45, 0,
-            -0.78, 0.35, 0,
-            -0.78, 0.25, 0,
-            -0.78, 0.15, 0,
-            -0.78, 0.06, 0,
-            ])),
-
-            scalaPointSize: glc.setupArrayBuffer(new Float32Array([axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize]))
         };
 
         coordSys = {
@@ -663,8 +645,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         }
     }
 
-    var drawRenderGroupShader3Lines = function (renderGroup: RenderGroup, usrText: string) {
-        drawLegend(renderGroup, usrText);
+    var drawRenderGroupShader3Lines = function (renderGroup: RenderGroup, usrText: string) { 
+        drawLegend(renderGroup, usrText);      
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
 
         var prog = programs[3];
@@ -693,7 +675,9 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader3Trias = function (renderGroup: RenderGroup, usrText: string) {
-       drawLegend(renderGroup, usrText);
+        console.time('legend');
+        drawLegend(renderGroup, usrText);
+        console.timeEnd('legend');
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
 
         var prog = programs[3];
@@ -1020,17 +1004,14 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         let colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         let minValue: number = colAttr.min;
         let maxValue: number = colAttr.max;
-        let ticks: Tick = {
-            label: [],
-            normalization: []
-        }
+        let ticks = <Tick>{};
 
-        ticks = scalaValue(minValue, maxValue);
+        ticks = legendScala(minValue, maxValue);
+        console.time('test');
+        console.log('tick label: ' + ticks.label);
         glContext.setLegendCalibrationTextures(ticks.label, calibrationTextWidth, calibrationTextHeight, calibrationTextFontSize);
-
-        console.log('label' + ticks.label);
+        console.timeEnd('test');
         
-
         //reset View
         let prog = programs[3];
         gl.useProgram(prog.gl);
@@ -1053,7 +1034,6 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
 
         drawScala(ticks.normalization);
-
     }
 
     var drawScala = function (tickNormalization?: number[]) {
@@ -1061,32 +1041,36 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.depthMask(false);
-        let textures = glContext.getLegendCalibrationTextures();
+        var textures = glContext.getLegendCalibrationTextures();
 
         if (tickNormalization) {
-            let ticksPosition = [0.76, 0.85, 0];
-            let yPosition: number;
+            var ticksPosition = [-0.78, 0.85, 0];
+            var yPosition: number;
+            var points = [axisSize];
 
-            for (let i = 0; i < tickNormalization.length; i++) {
+            for (var i = 0; i < tickNormalization.length; i++) {
                 yPosition = 0.78 - tickNormalization[i] * (0.78 - 0.02);
                 yPosition = Math.round(yPosition * 100) / 100;
-                ticksPosition.push(0.76, yPosition, 0);
+                ticksPosition.push(-0.78, yPosition, 0);
+                points.push(axisSize);
             }
-            console.log(ticksPosition);
-        }    
-        
-        for (let i = 0; i < 11; i++) {
-            let prog = programs[6];
+            console.log('ticksPosition: ' + ticksPosition);
+            console.log('points: ' + points);
+        }
+
+        for (var i = 0; i < tickNormalization.length+1; i++) {
+            var prog = programs[6];
             gl.useProgram(prog.gl);
             gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
             gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, textures[i]);
 
+            colorLegend.scalaBuf = glc.setupArrayBuffer(new Float32Array(ticksPosition));
+            colorLegend.scalaPointSize = glc.setupArrayBuffer(new Float32Array(points));
+
             gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
-            //glc.setupArrayBuffer(new Float32Array(ticksPosition))
             gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.scalaBuf);
-            //gl.bindBuffer(gl.ARRAY_BUFFER, ticksPosition);
             gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
 
             gl.enableVertexAttribArray(prog.attributes[GL_ATTR_SIZE]);
@@ -1130,7 +1114,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.depthMask(false);
         let textures = glContext.getTextTexture();
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < textures.length; i++) {
             let prog = programs[6];
             gl.useProgram(prog.gl);
             gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpFront);
@@ -1208,8 +1192,12 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     //set legend scala array
-    var scalaValue = function legendScala(min: number, max: number) {
+    function legendScala(min: number, max: number): Tick{
+        console.log('Max: ' + max);
+        console.log('Min: ' + min);
         let range: number = max - min;
+        let label = [];
+        let normalization = [];
 
         let step: number = 0;
         let tempStep = range / 12;
@@ -1227,19 +1215,27 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         }
 
         let start: number = Math.ceil(max / 10/ magPow)*10;
-
-        tick.label.push('10E' + mag.toString());
-        for (let i = 0; i <20; i++) {
+        while (start * magPow > max) {
+            console.log('start*magPow : ' + start * magPow);
             start = start - magMsd;
-            console.log(start);
-            if (start*magPow > min) {
-                tick.label.push(start.toString());
-                tick.normalization.push((max - start*magPow) / range);
+        }
+        label.push('10E' + mag.toString());
+        for (let i = 0; i < 20; i++) {
+
+            if (start * magPow > min) {
+                console.log('start*magPow : ' + start * magPow);
+                label.push(start.toString());
+                normalization.push((max - start*magPow) / range);
             } else {
                 break;
             }
+
+            start = start - magMsd;
         }
-        return tick;
+        return {
+            label: label,
+            normalization: normalization
+        };
     }
 
     function checkGLerror() : boolean{
@@ -1253,7 +1249,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     //The continous Loop for Rendering
-    (function renderLoop() {    
+    (function renderLoop() {
         if (drawCallRequest) {
             drawCallRequest = false;
             if (vr) {
@@ -1266,5 +1262,4 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
             requestAnimationFrame(renderLoop);
         }
     })();
-
 }

@@ -53,10 +53,6 @@ function Renderer(modelData, glc) {
     var calibrationTextWidth;
     var calibrationTextHeight;
     var calibrationTextFontSize;
-    var tick = {
-        label: [],
-        normalization: []
-    };
     initMatrices();
     initStaticData();
     function initMatrices() {
@@ -114,17 +110,6 @@ function Renderer(modelData, glc) {
                 -0.82, 0.0,])),
             colorBuf: glc.setupArrayBuffer(new Float32Array([1.0, 1.0, 0.0, 0.0])),
             indexBuf: glc.setupElementBuffer(new Uint16Array([0, 1, 2, 3])),
-            scalaBuf: glc.setupArrayBuffer(new Float32Array([-0.78, 0.85, 0,
-                -0.78, 0.74, 0,
-                -0.78, 0.64, 0,
-                -0.78, 0.54, 0,
-                -0.78, 0.45, 0,
-                -0.78, 0.35, 0,
-                -0.78, 0.25, 0,
-                -0.78, 0.15, 0,
-                -0.78, 0.06, 0,
-            ])),
-            scalaPointSize: glc.setupArrayBuffer(new Float32Array([axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize, axisSize]))
         };
         coordSys = {
             vertexBuf: glc.setupArrayBuffer(new Float32Array([0, 0, 0, 0.1, 0, 0, 0.09, 0.0, 0.005, 0.09, 0.001545085, 0.004755283, 0.09, 0.0029389262, 0.004045085,
@@ -512,7 +497,9 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader3Trias = function (renderGroup, usrText) {
+        console.time('legend');
         drawLegend(renderGroup, usrText);
+        console.timeEnd('legend');
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var prog = programs[3];
         gl.useProgram(prog.gl);
@@ -786,13 +773,12 @@ function Renderer(modelData, glc) {
         let colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         let minValue = colAttr.min;
         let maxValue = colAttr.max;
-        let ticks = {
-            label: [],
-            normalization: []
-        };
-        ticks = scalaValue(minValue, maxValue);
+        let ticks = {};
+        ticks = legendScala(minValue, maxValue);
+        console.time('test');
+        console.log('tick label: ' + ticks.label);
         glContext.setLegendCalibrationTextures(ticks.label, calibrationTextWidth, calibrationTextHeight, calibrationTextFontSize);
-        console.log('label' + ticks.label);
+        console.timeEnd('test');
         let prog = programs[3];
         gl.useProgram(prog.gl);
         gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
@@ -814,24 +800,29 @@ function Renderer(modelData, glc) {
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.depthMask(false);
-        let textures = glContext.getLegendCalibrationTextures();
+        var textures = glContext.getLegendCalibrationTextures();
         if (tickNormalization) {
-            let ticksPosition = [0.76, 0.85, 0];
-            let yPosition;
-            for (let i = 0; i < tickNormalization.length; i++) {
+            var ticksPosition = [-0.78, 0.85, 0];
+            var yPosition;
+            var points = [axisSize];
+            for (var i = 0; i < tickNormalization.length; i++) {
                 yPosition = 0.78 - tickNormalization[i] * (0.78 - 0.02);
                 yPosition = Math.round(yPosition * 100) / 100;
-                ticksPosition.push(0.76, yPosition, 0);
+                ticksPosition.push(-0.78, yPosition, 0);
+                points.push(axisSize);
             }
-            console.log(ticksPosition);
+            console.log('ticksPosition: ' + ticksPosition);
+            console.log('points: ' + points);
         }
-        for (let i = 0; i < 11; i++) {
-            let prog = programs[6];
+        for (var i = 0; i < tickNormalization.length + 1; i++) {
+            var prog = programs[6];
             gl.useProgram(prog.gl);
             gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpBackground);
             gl.uniform1i(prog.uniforms[GL_UNI_TEX], 0);
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, textures[i]);
+            colorLegend.scalaBuf = glc.setupArrayBuffer(new Float32Array(ticksPosition));
+            colorLegend.scalaPointSize = glc.setupArrayBuffer(new Float32Array(points));
             gl.enableVertexAttribArray(prog.attributes[GL_ATTR_VTX]);
             gl.bindBuffer(gl.ARRAY_BUFFER, colorLegend.scalaBuf);
             gl.vertexAttribPointer(prog.attributes[GL_ATTR_VTX], 3, gl.FLOAT, false, 0, 0);
@@ -867,7 +858,7 @@ function Renderer(modelData, glc) {
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         gl.depthMask(false);
         let textures = glContext.getTextTexture();
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < textures.length; i++) {
             let prog = programs[6];
             gl.useProgram(prog.gl);
             gl.uniformMatrix4fv(prog.uniforms[GL_UNI_MVP], false, mvpFront);
@@ -926,8 +917,12 @@ function Renderer(modelData, glc) {
         gl.viewport(gl.drawingBufferWidth / 2, 0, gl.drawingBufferWidth / 2, gl.drawingBufferHeight);
         drawScene(-eyeSeperation);
     }
-    var scalaValue = function legendScala(min, max) {
+    function legendScala(min, max) {
+        console.log('Max: ' + max);
+        console.log('Min: ' + min);
         let range = max - min;
+        let label = [];
+        let normalization = [];
         let step = 0;
         let tempStep = range / 12;
         let mag = Math.floor(Math.log10(tempStep));
@@ -943,20 +938,27 @@ function Renderer(modelData, glc) {
             magMsd = 2.0;
         }
         let start = Math.ceil(max / 10 / magPow) * 10;
-        tick.label.push('10E' + mag.toString());
-        for (let i = 0; i < 20; i++) {
+        while (start * magPow > max) {
+            console.log('start*magPow : ' + start * magPow);
             start = start - magMsd;
-            console.log(start);
+        }
+        label.push('10E' + mag.toString());
+        for (let i = 0; i < 20; i++) {
             if (start * magPow > min) {
-                tick.label.push(start.toString());
-                tick.normalization.push((max - start * magPow) / range);
+                console.log('start*magPow : ' + start * magPow);
+                label.push(start.toString());
+                normalization.push((max - start * magPow) / range);
             }
             else {
                 break;
             }
+            start = start - magMsd;
         }
-        return tick;
-    };
+        return {
+            label: label,
+            normalization: normalization
+        };
+    }
     function checkGLerror() {
         var error = gl.getError();
         if (error) {

@@ -668,9 +668,17 @@ function Web3DContext(canvas) {
     this.setLegendCalibrationTextures = function (scalaValue, textWidth, textHeight, textFontSize) {
         let textCanvas = [];
         textCanvas.push(createTextCanvas(scalaValue[0], textWidth + 30, textHeight + 15, textFontSize + 2));
-        for (let i = 1; i < scalaValue.length; i++) {
+        console.time('loop 1');
+        console.log('scalavalue length: ' + scalaValue.length);
+        for (let i = 1; i < 15; i++) {
             textCanvas.push(createTextCanvas(scalaValue[i], textWidth, textHeight, textFontSize));
+            if (i > scalaValue.length) {
+                break;
+            }
         }
+        console.timeEnd('loop 1');
+        console.time('loop 2');
+        console.log('canvas length: ' + textCanvas.length);
         for (let j = 0; j < textCanvas.length; j++) {
             legendCalibration[j] = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, legendCalibration[j]);
@@ -681,9 +689,7 @@ function Web3DContext(canvas) {
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
             gl.bindTexture(gl.TEXTURE_2D, null);
         }
-    };
-    this.getLegendCalibrationTextures = function () {
-        return legendCalibration;
+        console.timeEnd('loop 2');
     };
     this.setupArrayBuffer = function (binFloatArray) {
         var tmpBuf = gl.createBuffer();
@@ -738,5 +744,8 @@ function Web3DContext(canvas) {
     };
     this.getTextTexture = function () {
         return textTextures;
+    };
+    this.getLegendCalibrationTextures = function () {
+        return legendCalibration;
     };
 }
