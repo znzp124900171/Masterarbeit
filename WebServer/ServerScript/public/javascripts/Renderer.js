@@ -345,7 +345,12 @@ function Renderer(modelData, glc) {
         drawCallRequest = true;
     };
     this.resizeVRCanvas = function () {
-        mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / 2 / gl.drawingBufferHeight, 0.05, 100.0);
+        if (gl.drawingBufferWidth > 800) {
+            mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.05, 100.0);
+        }
+        else {
+            mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / 2 / gl.drawingBufferHeight, 0.05, 100.0);
+        }
         drawCallRequest = true;
     };
     var drawPlotGroup = function () {
@@ -473,7 +478,6 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader3Lines = function (renderGroup, usrText) {
-        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var prog = programs[3];
         gl.useProgram(prog.gl);
@@ -495,6 +499,7 @@ function Renderer(modelData, glc) {
                 gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
             }
         }
+        drawLegend(renderGroup, usrText);
     };
     var drawRenderGroupShader3Trias = function (renderGroup, usrText) {
         console.time('legend');
@@ -523,7 +528,6 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader103Trias = function (renderGroup, usrText) {
-        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var prog = programs[103];
         gl.useProgram(prog.gl);
@@ -551,6 +555,7 @@ function Renderer(modelData, glc) {
                 gl.drawElements(gl.TRIANGLES, geom.nElements * 3, gl.UNSIGNED_SHORT, 0);
             }
         }
+        drawLegend(renderGroup, usrText);
     };
     var drawRenderGroupShader4 = function (renderGroup, usrScale, usrColor) {
         var prog = programs[4];
@@ -600,7 +605,6 @@ function Renderer(modelData, glc) {
         }
     };
     var drawRenderGroupShader5Lines = function (renderGroup, usrText, usrScale) {
-        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr = renderGroup.attributes[ATTR_DEFX];
         var defYAttr = renderGroup.attributes[ATTR_DEFY];
@@ -649,9 +653,9 @@ function Renderer(modelData, glc) {
                 gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
             }
         }
+        drawLegend(renderGroup, usrText);
     };
     var drawRenderGroupShader5Trias = function (renderGroup, usrText, usrScale) {
-        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr = renderGroup.attributes[ATTR_DEFX];
         var defYAttr = renderGroup.attributes[ATTR_DEFY];
@@ -700,9 +704,9 @@ function Renderer(modelData, glc) {
                 gl.drawElements(gl.TRIANGLES, geom.nElements * 3, gl.UNSIGNED_SHORT, 0);
             }
         }
+        drawLegend(renderGroup, usrText);
     };
     var drawRenderGroupShader105Trias = function (renderGroup, usrText, usrScale) {
-        drawLegend(renderGroup, usrText);
         var colAttr = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr = renderGroup.attributes[ATTR_DEFX];
         var defYAttr = renderGroup.attributes[ATTR_DEFY];
@@ -757,6 +761,7 @@ function Renderer(modelData, glc) {
                 gl.drawElements(gl.TRIANGLES, geom.nElements * 3, gl.UNSIGNED_SHORT, 0);
             }
         }
+        drawLegend(renderGroup, usrText);
     };
     var drawBackground = function () {
         gl.useProgram(programs[2].gl);
@@ -902,9 +907,16 @@ function Renderer(modelData, glc) {
         if (plotType === 3) {
             if (seperation) {
                 mat4.identity(mFront);
-                mat4.translate(mFront, mFront, new Float32Array([(-0.3 - seperation / 3) * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.2, 0]));
-                mat4.identity(vpFront);
-                mat4.lookAt(vpFront, new Float32Array([0, 0, 2]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+                if (gl.drawingBufferWidth > 800) {
+                    mat4.translate(mFront, mFront, new Float32Array([(-0.3 - seperation / 3) * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.2, 0]));
+                    mat4.identity(vpFront);
+                    mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+                }
+                else {
+                    mat4.translate(mFront, mFront, new Float32Array([(-0.3 - seperation / 3) * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.2, 0]));
+                    mat4.identity(vpFront);
+                    mat4.lookAt(vpFront, new Float32Array([0, 0, 2]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+                }
                 mat4.multiply(vpFront, pScene, vpFront);
             }
             drawFront();

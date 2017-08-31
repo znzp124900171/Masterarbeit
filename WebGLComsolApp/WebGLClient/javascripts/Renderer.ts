@@ -496,7 +496,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
 
     // when VR feature is actived, full screen the canvas and update the Render engine
     this.resizeVRCanvas = function () {
-        mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / 2 / gl.drawingBufferHeight, 0.05, 100.0);
+        if (gl.drawingBufferWidth > 800) {
+            mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.05, 100.0);
+        } else {
+            mat4.perspective(pScene, viewAngle, gl.drawingBufferWidth / 2 / gl.drawingBufferHeight, 0.05, 100.0);
+        }
 
         drawCallRequest = true;
     }
@@ -646,7 +650,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader3Lines = function (renderGroup: RenderGroup, usrText: string) { 
-        drawLegend(renderGroup, usrText);      
+             
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
 
         var prog = programs[3];
@@ -671,7 +675,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
             }
         }
-      
+        drawLegend(renderGroup, usrText);  
     }
 
     var drawRenderGroupShader3Trias = function (renderGroup: RenderGroup, usrText: string) {
@@ -706,7 +710,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader103Trias = function (renderGroup: RenderGroup, usrText: string) {
-        drawLegend(renderGroup, usrText);
+        
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
 
         var prog = programs[103];
@@ -738,6 +742,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 gl.drawElements(gl.TRIANGLES, geom.nElements * 3, gl.UNSIGNED_SHORT, 0);
             }
         }
+
+        drawLegend(renderGroup, usrText);
     }
 
     var drawRenderGroupShader4 = function (renderGroup: RenderGroup, usrScale: number, usrColor: string) {
@@ -802,7 +808,7 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
     }
 
     var drawRenderGroupShader5Lines = function (renderGroup: RenderGroup, usrText: string, usrScale: number) {
-        drawLegend(renderGroup, usrText);
+        
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFX];
         var defYAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFY];
@@ -856,10 +862,12 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 gl.drawElements(gl.LINES, geom.nElements * 2, gl.UNSIGNED_SHORT, 0);
             }
         }
+
+        drawLegend(renderGroup, usrText);
     }
 
     var drawRenderGroupShader5Trias = function (renderGroup: RenderGroup, usrText: string, usrScale: number) {
-        drawLegend(renderGroup, usrText);
+        
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFX];
         var defYAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFY];
@@ -913,11 +921,11 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 gl.drawElements(gl.TRIANGLES, geom.nElements * 3, gl.UNSIGNED_SHORT, 0);
             }
         }
-        
+        drawLegend(renderGroup, usrText);
     }
 
     var drawRenderGroupShader105Trias = function (renderGroup: RenderGroup, usrText: string, usrScale: number) {
-        drawLegend(renderGroup, usrText);
+        
         var colAttr: RenderAttribute = renderGroup.attributes[ATTR_COLOR] || renderGroup.attributes[ATTR_ISO];
         var defXAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFX];
         var defYAttr: RenderAttribute = renderGroup.attributes[ATTR_DEFY];
@@ -978,6 +986,8 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
                 gl.drawElements(gl.TRIANGLES, geom.nElements * 3, gl.UNSIGNED_SHORT, 0);
             }
         }
+
+        drawLegend(renderGroup, usrText);
     }
 
     //paint the background
@@ -1171,9 +1181,17 @@ function Renderer(modelData: ModelCmds, glc: Web3DContext) {
         if (plotType === 3) {
             if (seperation) {
                 mat4.identity(mFront);
-                mat4.translate(mFront, mFront, new Float32Array([(-0.3 -seperation/3) * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.2, 0]));
-                mat4.identity(vpFront);
-                mat4.lookAt(vpFront, new Float32Array([0, 0, 2]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+
+                if (gl.drawingBufferWidth > 800) {
+                    mat4.translate(mFront, mFront, new Float32Array([(-0.3 - seperation / 3) * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.2, 0]));
+                    mat4.identity(vpFront);
+                    mat4.lookAt(vpFront, new Float32Array([0, 0, 1]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+                } else {
+                    mat4.translate(mFront, mFront, new Float32Array([(-0.3 - seperation / 3) * gl.drawingBufferWidth / gl.drawingBufferHeight, -0.2, 0]));
+                    mat4.identity(vpFront);
+                    mat4.lookAt(vpFront, new Float32Array([0, 0, 2]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]));
+                }
+                
                 mat4.multiply(vpFront, pScene, vpFront);
             }
             drawFront();

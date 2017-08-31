@@ -148,10 +148,10 @@ function Gui(modelData, renderer, glContext) {
                 if (renderer.getSeperation() > 0.01) {
                     switch (evt.keyCode) {
                         case 37:
-                            renderer.setSeperation(renderer.getSeperation() - 0.01);
+                            renderer.setSeperation(renderer.getSeperation() - 0.005);
                             break;
                         case 39:
-                            renderer.setSeperation(renderer.getSeperation() + 0.01);
+                            renderer.setSeperation(renderer.getSeperation() + 0.005);
                             break;
                         case 38:
                             renderer.setZPosition(renderer.getPosition()[2] + 0.2);
@@ -231,7 +231,7 @@ function Gui(modelData, renderer, glContext) {
                 || document.body.clientHeight;
             canvas.width = width;
             if (isMobile) {
-                renderer.setCalibrationText(40, 40, 16);
+                renderer.setCalibrationText(36, 36, 14);
                 renderer.setAxisSize(24);
             }
             else {
