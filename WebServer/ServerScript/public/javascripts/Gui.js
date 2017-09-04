@@ -1,8 +1,13 @@
 function Gui(modelData, renderer, glContext) {
-    let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     var self = this;
     var gl = glContext.getContext();
     var canvas = document.getElementById('webgl');
+    var hammertime = new Hammer.Manager(canvas);
+    hammertime.add(new Hammer.Tap({ event: 'doubletap', taps: 2 }));
+    hammertime.add(new Hammer.Tap({ event: 'singletap' }));
+    hammertime.get('doubletap').recognizeWith('singletap');
+    hammertime.get('singletap').requireFailure('doubletap');
     var fontSize = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size'));
     var jqModelList = $("#model");
     var jqResultList = $("#result");
@@ -45,6 +50,18 @@ function Gui(modelData, renderer, glContext) {
         var toggleVR;
         var deviceOrientation;
         var deviceMotion;
+        hammertime.on('singletap doubletap', function (ev) {
+            if (ev.type === 'singletap') {
+                zoom(10);
+            }
+            else {
+                zoom(-10);
+            }
+        });
+        if (isMobile) {
+            hammertime.on('press panleft panright', function (ev) {
+            });
+        }
         pointerDown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();

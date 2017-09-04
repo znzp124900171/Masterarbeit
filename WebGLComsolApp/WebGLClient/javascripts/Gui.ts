@@ -1,5 +1,6 @@
 ﻿/// <reference path="libs/gl-matrix.d.ts"/>
 /// <reference path="libs/jquery.d.ts"/>
+/// <reference path="libs/hammerjs.d.ts"/>
 
 interface OrientationPosition {
     x: number,
@@ -9,12 +10,20 @@ interface OrientationPosition {
 declare function webkitSpeechRecognition(): void; // use Web Speech API, only works in Chrome
 
 function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) {
-    let isMobile: boolean = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); //agent check
+    var isMobile: boolean = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); //agent check
 
     var self = this;
     var gl = glContext.getContext();
 
     var canvas = <HTMLCanvasElement>document.getElementById('webgl');
+
+    // distinguish singletap and doubletap using Hammer.js
+    var hammertime = new Hammer.Manager(canvas);
+    hammertime.add(new Hammer.Tap({ event: 'doubletap', taps: 2 }));
+    hammertime.add(new Hammer.Tap({ event: 'singletap' }));
+    hammertime.get('doubletap').recognizeWith('singletap');
+    hammertime.get('singletap').requireFailure('doubletap');
+    
     //var canvas2D = <HTMLCanvasElement>document.getElementById('canvas2D');
     //var ctx: CanvasRenderingContext2D = canvas2D.getContext('2d');
 
@@ -77,6 +86,34 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         var deviceOrientation;
         var deviceMotion;
 
+        // single tap to zoom in, double tap to zoomout
+        hammertime.on('singletap doubletap', function (ev) {
+            if (ev.type === 'singletap') {
+                zoom(10);
+            } else {
+                zoom(-10);
+            }
+        })
+
+        // attach pan action to zoom in and out, if so, disable the pointermove handler by detecting isMobile
+        //hammertime.on('panleft', function (ev) {
+        //    zoom(ev.deltaX/120);
+        //})
+        //hammertime.on('panright', function (ev) {
+        //    zoom(ev.deltaX / 120);
+        //})
+        //hammertime.on('panup', function (ev) {
+        //    zoom(-ev.deltaY/120);
+        //})
+        //hammertime.on('pandown', function (ev) {
+        //    zoom(-ev.deltaY / 120);
+        //})
+
+        if (isMobile) {
+            hammertime.on('press panleft panright', function (ev) {
+            })
+        }
+
         pointerDown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();
@@ -104,7 +141,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
             }
         }
         pointerMove = function (evt) {
-            if (pointerOne) {   //first Pointer
+            if (pointerOne) {   //first Pointer // using if(pointerOne && !isMobile) to disable the pointerMove on mobile devices 
                 if (pointerTwo) {   //first and second Pointer => pitch
                     var firstPosition, secondPosition;
                     var newPosition = { x: evt.clientX, y: evt.clientY };
@@ -173,6 +210,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
                     }
                 }
             }
+            
         }
         pointerLeave = function (evt) {
             if (pointerOne) {
