@@ -58,10 +58,6 @@ function Gui(modelData, renderer, glContext) {
                 zoom(-10);
             }
         });
-        if (isMobile) {
-            hammertime.on('press panleft panright', function (ev) {
-            });
-        }
         pointerDown = function (evt) {
             if (evt.preventDefault) {
                 evt.preventDefault();

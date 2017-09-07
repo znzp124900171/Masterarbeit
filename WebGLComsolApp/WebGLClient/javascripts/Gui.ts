@@ -18,6 +18,7 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
     var canvas = <HTMLCanvasElement>document.getElementById('webgl');
 
     // distinguish singletap and doubletap using Hammer.js
+    //var hammertime = new Hammer(canvas);
     var hammertime = new Hammer.Manager(canvas);
     hammertime.add(new Hammer.Tap({ event: 'doubletap', taps: 2 }));
     hammertime.add(new Hammer.Tap({ event: 'singletap' }));
@@ -108,11 +109,6 @@ function Gui(modelData: ModelCmds, renderer: Renderer, glContext: Web3DContext) 
         //hammertime.on('pandown', function (ev) {
         //    zoom(-ev.deltaY / 120);
         //})
-
-        if (isMobile) {
-            hammertime.on('press panleft panright', function (ev) {
-            })
-        }
 
         pointerDown = function (evt) {
             if (evt.preventDefault) {
